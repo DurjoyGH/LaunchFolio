@@ -3,17 +3,27 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 
 export default function Navbar() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
+    setLoggedIn(!!localStorage.getItem("token"));
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+    router.push("/");
+  };
 
   return (
     <nav
@@ -32,9 +42,9 @@ export default function Navbar() {
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
           {[
-            { label: "Features", href: "#features" },
-            { label: "How it works", href: "#how-it-works" },
-            { label: "Pricing", href: "#pricing" },
+            { label: "Features", href: "/#features" },
+            { label: "How it works", href: "/#how-it-works" },
+            { label: "Pricing", href: "/#pricing" },
           ].map(({ label, href }) => (
             <a
               key={label}
@@ -49,16 +59,36 @@ export default function Navbar() {
 
         {/* CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/auth/login"
-            className="text-sm font-medium transition-colors hover:text-white"
-            style={{ color: "var(--color-text-secondary)" }}
-          >
-            Sign in
-          </Link>
-          <Link href="/auth/register">
-            <Button size="sm">Get Started Free</Button>
-          </Link>
+          {loggedIn ? (
+            <>
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm">Dashboard</Button>
+              </Link>
+              <Link href="/generate">
+                <Button size="sm">+ Generate</Button>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-sm font-medium transition-colors hover:text-white"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/auth/login"
+                className="text-sm font-medium transition-colors hover:text-white"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                Sign in
+              </Link>
+              <Link href="/auth/register">
+                <Button size="sm">Get Started Free</Button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -84,7 +114,7 @@ export default function Navbar() {
             {["Features", "How it works", "Pricing"].map((label) => (
               <a
                 key={label}
-                href={`#${label.toLowerCase().replace(" ", "-")}`}
+                href={`/#${label.toLowerCase().replace(" ", "-")}`}
                 onClick={() => setMobileOpen(false)}
                 className="text-sm"
                 style={{ color: "var(--color-text-secondary)" }}
@@ -93,12 +123,28 @@ export default function Navbar() {
               </a>
             ))}
             <div className="flex flex-col gap-2 pt-2">
-              <Link href="/auth/login" className="text-sm text-center py-2" style={{ color: "var(--color-text-secondary)" }}>
-                Sign in
-              </Link>
-              <Link href="/auth/register">
-                <Button size="sm" className="w-full">Get Started Free</Button>
-              </Link>
+              {loggedIn ? (
+                <>
+                  <Link href="/dashboard" className="text-sm text-center py-2 text-white" onClick={() => setMobileOpen(false)}>
+                    Dashboard
+                  </Link>
+                  <Link href="/generate" onClick={() => setMobileOpen(false)}>
+                    <Button size="sm" className="w-full">+ Generate</Button>
+                  </Link>
+                  <button onClick={handleLogout} className="text-sm text-center py-2" style={{ color: "var(--color-text-secondary)" }}>
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth/login" className="text-sm text-center py-2" style={{ color: "var(--color-text-secondary)" }}>
+                    Sign in
+                  </Link>
+                  <Link href="/auth/register">
+                    <Button size="sm" className="w-full">Get Started Free</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

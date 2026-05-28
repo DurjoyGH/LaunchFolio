@@ -7,12 +7,13 @@ const COMPONENT_REGISTRY = {
   hero: ["HeroOne", "HeroTwo", "HeroThree"],
   about: ["AboutOne", "AboutTwo"],
   skills: ["SkillsOne", "SkillsTwo"],
+  education: ["EducationOne"],
   projects: ["ProjectsOne", "ProjectsTwo"],
   contact: ["ContactOne", "ContactTwo"],
   footer: ["FooterOne"],
 };
 
-const REQUIRED_SECTIONS = ["navbar", "hero", "about", "skills", "projects", "contact", "footer"];
+const REQUIRED_SECTIONS = ["navbar", "hero", "about", "skills", "education", "projects", "contact", "footer"];
 
 /**
  * Validates AI blueprint against known component registry.

@@ -25,7 +25,7 @@ const createPortfolio = async (req, res, next) => {
 const listPortfolios = async (req, res, next) => {
   try {
     const portfolios = await Portfolio.find({ userId: req.user.id })
-      .select("status input.name input.title deployment createdAt deployedAt")
+      .select("status input.name input.title input.customDomain deployment createdAt deployedAt")
       .sort("-createdAt")
       .limit(20)
       .lean();
@@ -66,4 +66,41 @@ const getPortfolioStatus = async (req, res, next) => {
   }
 };
 
-module.exports = { createPortfolio, listPortfolios, getPortfolio, getPortfolioStatus };
+/**
+ * Delete a portfolio.
+ */
+const deletePortfolio = async (req, res, next) => {
+  try {
+    const portfolio = await Portfolio.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user.id,
+    });
+    if (!portfolio) return errorResponse(res, { statusCode: 404, message: "Portfolio not found" });
+
+    return successResponse(res, { message: "Portfolio deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Get the last portfolio input for pre-filling the form.
+ */
+const getLastInput = async (req, res, next) => {
+  try {
+    const portfolio = await Portfolio.findOne({ userId: req.user.id })
+      .select("input")
+      .sort("-createdAt")
+      .lean();
+
+    if (!portfolio) {
+      return successResponse(res, { data: { input: null } });
+    }
+
+    return successResponse(res, { data: { input: portfolio.input } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { createPortfolio, listPortfolios, getPortfolio, getPortfolioStatus, deletePortfolio, getLastInput };

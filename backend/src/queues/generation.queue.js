@@ -71,6 +71,7 @@ const startGenerationWorker = () => {
         portfolioId,
         userName: portfolio.input.name,
         localPath,
+        customDomain: portfolio.input.customDomain,
       });
 
       // 4. Update record

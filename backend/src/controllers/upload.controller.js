@@ -5,10 +5,14 @@ const { Readable } = require("stream");
 /**
  * Upload buffer to Cloudinary via stream.
  */
-const uploadToCloudinary = (buffer, folder) =>
+const uploadToCloudinary = (buffer, folder, resourceType = "image") =>
   new Promise((resolve, reject) => {
+    const options = {
+      folder,
+      resource_type: resourceType,
+    };
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: "image", transformation: [{ quality: "auto", fetch_format: "auto" }] },
+      options,
       (err, result) => (err ? reject(err) : resolve(result))
     );
     Readable.from(buffer).pipe(uploadStream);
@@ -17,7 +21,7 @@ const uploadToCloudinary = (buffer, folder) =>
 const uploadProfileImage = async (req, res, next) => {
   try {
     if (!req.file) return errorResponse(res, { statusCode: 400, message: "No file uploaded" });
-    const result = await uploadToCloudinary(req.file.buffer, "launchfolio/profiles");
+    const result = await uploadToCloudinary(req.file.buffer, "launchfolio/user-pic");
     return successResponse(res, {
       data: { url: result.secure_url, publicId: result.public_id },
     });
@@ -29,7 +33,7 @@ const uploadProfileImage = async (req, res, next) => {
 const uploadProjectImage = async (req, res, next) => {
   try {
     if (!req.file) return errorResponse(res, { statusCode: 400, message: "No file uploaded" });
-    const result = await uploadToCloudinary(req.file.buffer, "launchfolio/projects");
+    const result = await uploadToCloudinary(req.file.buffer, "launchfolio/projects-pic");
     return successResponse(res, {
       data: { url: result.secure_url, publicId: result.public_id },
     });
@@ -38,4 +42,16 @@ const uploadProjectImage = async (req, res, next) => {
   }
 };
 
-module.exports = { uploadProfileImage, uploadProjectImage };
+const uploadResume = async (req, res, next) => {
+  try {
+    if (!req.file) return errorResponse(res, { statusCode: 400, message: "No file uploaded" });
+    const result = await uploadToCloudinary(req.file.buffer, "launchfolio/resumes", "raw");
+    return successResponse(res, {
+      data: { url: result.secure_url, publicId: result.public_id },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { uploadProfileImage, uploadProjectImage, uploadResume };

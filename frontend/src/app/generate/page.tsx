@@ -1,23 +1,33 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import PersonalInfoStep from "@/components/generate/steps/PersonalInfoStep";
 import SkillsStep from "@/components/generate/steps/SkillsStep";
 import ProjectsStep from "@/components/generate/steps/ProjectsStep";
+import EducationStep from "@/components/generate/steps/EducationStep";
 import DesignStep from "@/components/generate/steps/DesignStep";
 import ReviewStep from "@/components/generate/steps/ReviewStep";
 
 const STEPS = [
   { id: 1, label: "Personal Info", icon: "◎" },
   { id: 2, label: "Skills", icon: "⬡" },
-  { id: 3, label: "Projects", icon: "◈" },
-  { id: 4, label: "Design", icon: "✦" },
-  { id: 5, label: "Review", icon: "→" },
+  { id: 3, label: "Education", icon: "◆" },
+  { id: 4, label: "Projects", icon: "◈" },
+  { id: 5, label: "Design", icon: "✦" },
+  { id: 6, label: "Review", icon: "→" },
 ];
 
 export type Skill = { name: string; level: string };
+export type Education = {
+  institution: string;
+  degree: string;
+  field: string;
+  startYear: string;
+  endYear: string;
+  description: string;
+};
 export type Project = {
   title: string;
   description: string;
@@ -35,7 +45,10 @@ export type FormData = {
   location: string;
   phone: string;
   profileImage: string;
+  resumeUrl: string;
+  customDomain: string;
   skills: Skill[];
+  education: Education[];
   projects: Project[];
   social: { github: string; linkedin: string; twitter: string; website: string };
   designPreferences: { theme: string; style: string; primaryColor: string; fontPreference: string };
@@ -49,7 +62,10 @@ const INITIAL_FORM: FormData = {
   location: "",
   phone: "",
   profileImage: "",
+  resumeUrl: "",
+  customDomain: "",
   skills: [],
+  education: [],
   projects: [],
   social: { github: "", linkedin: "", twitter: "", website: "" },
   designPreferences: { theme: "dark", style: "modern", primaryColor: "#6366f1", fontPreference: "Inter" },
@@ -61,6 +77,42 @@ export default function GeneratePage() {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [prefilled, setPrefilled] = useState(false);
+
+  // Pre-fill from last portfolio
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/portfolio/last-input`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.success && data.data.input) {
+          const prev = data.data.input;
+          setFormData((f) => ({
+            ...f,
+            name: prev.name || f.name,
+            title: prev.title || f.title,
+            bio: prev.bio || f.bio,
+            email: prev.email || f.email,
+            location: prev.location || f.location,
+            phone: prev.phone || f.phone,
+            profileImage: prev.profileImage || f.profileImage,
+            resumeUrl: prev.resumeUrl || f.resumeUrl,
+            skills: prev.skills?.length ? prev.skills : f.skills,
+            education: prev.education?.length ? prev.education : f.education,
+            projects: prev.projects?.length ? prev.projects : f.projects,
+            social: { ...f.social, ...prev.social },
+            designPreferences: { ...f.designPreferences, ...prev.designPreferences },
+          }));
+          setPrefilled(true);
+        }
+      } catch { /* ignore */ }
+    };
+    load();
+  }, []);
 
   const update = useCallback((partial: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...partial }));
@@ -97,6 +149,11 @@ export default function GeneratePage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-white mb-2">Generate Your Portfolio</h1>
           <p style={{ color: "var(--color-text-secondary)" }}>Fill in your details — AI does the rest.</p>
+          {prefilled && (
+            <p className="text-xs mt-2 px-3 py-1 inline-block rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+              ✓ Pre-filled from your last portfolio
+            </p>
+          )}
         </div>
 
         {/* Step indicator */}
@@ -128,16 +185,17 @@ export default function GeneratePage() {
           )}
           {step === 1 && <PersonalInfoStep {...stepProps} />}
           {step === 2 && <SkillsStep {...stepProps} />}
-          {step === 3 && <ProjectsStep {...stepProps} />}
-          {step === 4 && <DesignStep {...stepProps} />}
-          {step === 5 && <ReviewStep formData={formData} />}
+          {step === 3 && <EducationStep {...stepProps} />}
+          {step === 4 && <ProjectsStep {...stepProps} />}
+          {step === 5 && <DesignStep {...stepProps} />}
+          {step === 6 && <ReviewStep formData={formData} />}
 
           {/* Navigation */}
           <div className="flex justify-between mt-8 pt-6 border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
             <Button variant="ghost" onClick={() => step > 1 && setStep(step - 1)} disabled={step === 1}>
               ← Back
             </Button>
-            {step < 5 ? (
+            {step < 6 ? (
               <Button onClick={() => setStep(step + 1)}>
                 Continue →
               </Button>

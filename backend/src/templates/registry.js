@@ -10,6 +10,7 @@ const { getAboutTemplate } = require("./sections/about.templates");
 const { getSkillsTemplate } = require("./sections/skills.templates");
 const { getProjectsTemplate } = require("./sections/projects.templates");
 const { getContactTemplate } = require("./sections/contact.templates");
+const { getEducationTemplate } = require("./sections/education.templates");
 const { getFooterTemplate } = require("./sections/footer.templates");
 
 const SECTION_GENERATORS = {
@@ -17,6 +18,7 @@ const SECTION_GENERATORS = {
   hero: getHeroTemplate,
   about: getAboutTemplate,
   skills: getSkillsTemplate,
+  education: getEducationTemplate,
   projects: getProjectsTemplate,
   contact: getContactTemplate,
   footer: getFooterTemplate,

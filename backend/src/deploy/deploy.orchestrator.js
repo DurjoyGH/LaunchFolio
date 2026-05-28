@@ -13,7 +13,7 @@ const { createDeployment, waitForDeployment } = require("./vercel.service");
  * @param {string} params.localPath
  * @returns {{ repoUrl, deployUrl, vercelProjectId, vercelDeployId }}
  */
-const deployPortfolio = async ({ portfolioId, userName, localPath }) => {
+const deployPortfolio = async ({ portfolioId, userName, localPath, customDomain }) => {
   // 1. Push to GitHub (source backup — non-blocking on failure)
   let repoUrl = "";
   try {
@@ -24,7 +24,10 @@ const deployPortfolio = async ({ portfolioId, userName, localPath }) => {
   }
 
   // 2. Deploy to Vercel via file upload
-  const projectName = `launchfolio-${portfolioId.slice(-8)}`;
+  // Use user's custom domain if provided, otherwise generate one
+  const projectName = customDomain
+    ? customDomain.toLowerCase().replace(/[^a-z0-9-]/g, "")
+    : `launchfolio-${portfolioId.slice(-8)}`;
   const deploy = await createDeployment({ projectName, localPath });
   console.log(`[Deploy] Vercel deployment created: ${deploy.id}`);
 

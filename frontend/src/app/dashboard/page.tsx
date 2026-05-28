@@ -121,8 +121,8 @@ export default function DashboardPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {portfolios.map((p) => (
-              <Link key={p._id} href={`/portfolio/${p._id}`}>
-                <div className="card p-6 hover:-translate-y-1 group">
+              <div key={p._id} className="card p-6 hover:-translate-y-1 group relative">
+                <Link href={`/portfolio/${p._id}`}>
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="font-semibold text-white group-hover:text-indigo-400 transition-colors">
@@ -139,11 +139,30 @@ export default function DashboardPage() {
                     </p>
                   )}
 
-                  <p className="text-xs mt-auto" style={{ color: "var(--color-text-muted)" }}>
+                  <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
                     {new Date(p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
-                </div>
-              </Link>
+                </Link>
+
+                {/* Delete button */}
+                <button
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    if (!confirm("Delete this portfolio? This cannot be undone.")) return;
+                    try {
+                      const token = localStorage.getItem("token");
+                      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/portfolio/${p._id}`, {
+                        method: "DELETE",
+                        headers: { Authorization: `Bearer ${token}` },
+                      });
+                      setPortfolios((prev) => prev.filter((x) => x._id !== p._id));
+                    } catch { /* ignore */ }
+                  }}
+                  className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-1 rounded-lg text-red-400 hover:bg-red-500/10 border border-red-500/20"
+                >
+                  ✕
+                </button>
+              </div>
             ))}
           </div>
         )}

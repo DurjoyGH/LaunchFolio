@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Button from "@/components/ui/Button";
 import type { FormData, Project } from "@/app/generate/page";
 
@@ -22,6 +22,8 @@ export default function ProjectsStep({ formData, update }: Props) {
   const [editing, setEditing] = useState<Project | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [techInput, setTechInput] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageRef = useRef<HTMLInputElement>(null);
 
   const openNew = () => {
     setEditing({ ...EMPTY_PROJECT });
@@ -56,6 +58,29 @@ export default function ProjectsStep({ formData, update }: Props) {
     setTechInput("");
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editing) return;
+    setUploadingImage(true);
+    try {
+      const token = localStorage.getItem("token");
+      const fd = new window.FormData();
+      fd.append("image", file);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/project`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditing({ ...editing, image: data.data.url });
+      }
+    } catch (err) {
+      console.error("Project image upload failed:", err);
+    }
+    setUploadingImage(false);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -69,11 +94,14 @@ export default function ProjectsStep({ formData, update }: Props) {
       <div className="space-y-3">
         {formData.projects.map((p, i) => (
           <div key={i} className="flex items-center justify-between p-4 rounded-xl border" style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}>
-            <div>
-              <p className="font-medium text-white">{p.title}</p>
-              <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
-                {p.techStack.slice(0, 3).join(", ")}
-              </p>
+            <div className="flex items-center gap-3">
+              {p.image && <img src={p.image} alt={p.title} className="w-10 h-10 rounded-lg object-cover" />}
+              <div>
+                <p className="font-medium text-white">{p.title}</p>
+                <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>
+                  {p.techStack.slice(0, 3).join(", ")}
+                </p>
+              </div>
             </div>
             <div className="flex gap-2">
               <button onClick={() => openEdit(i)} className="text-xs px-3 py-1 rounded-lg border hover:border-white/20 transition-colors" style={{ borderColor: "var(--color-border-subtle)", color: "var(--color-text-secondary)" }}>Edit</button>
@@ -90,6 +118,25 @@ export default function ProjectsStep({ formData, update }: Props) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
           <div className="card w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-bold text-white">{editingIndex !== null ? "Edit Project" : "Add Project"}</h3>
+
+            {/* Project image upload */}
+            <div
+              className="w-full h-32 rounded-xl border-2 border-dashed flex items-center justify-center cursor-pointer hover:border-white/30 transition-colors overflow-hidden"
+              style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}
+              onClick={() => imageRef.current?.click()}
+            >
+              {editing.image ? (
+                <img src={editing.image} alt="Project" className="w-full h-full object-cover" />
+              ) : (
+                <div className="text-center">
+                  <span className="text-2xl block mb-1">🖼️</span>
+                  <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                    {uploadingImage ? "Uploading..." : "Click to upload project image"}
+                  </span>
+                </div>
+              )}
+            </div>
+            <input ref={imageRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
             <input className="input" placeholder="Project Title *" value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} />
             <textarea rows={3} className="input resize-none" placeholder="Description" value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })} />
@@ -111,7 +158,6 @@ export default function ProjectsStep({ formData, update }: Props) {
 
             <input className="input" placeholder="Live URL (optional)" value={editing.liveUrl} onChange={(e) => setEditing({ ...editing, liveUrl: e.target.value })} />
             <input className="input" placeholder="GitHub URL (optional)" value={editing.githubUrl} onChange={(e) => setEditing({ ...editing, githubUrl: e.target.value })} />
-            <input className="input" placeholder="Project Image URL (optional)" value={editing.image} onChange={(e) => setEditing({ ...editing, image: e.target.value })} />
 
             <div className="flex gap-3 pt-2">
               <Button onClick={save} className="flex-1">Save Project</Button>

@@ -4,6 +4,8 @@ const getContactTemplate = ({ blueprint, userInput, content }) => {
   const heading = content.contactHeading || "Get In Touch";
   const subtext = content.contactSubtext || "I'd love to hear from you.";
   const email = userInput.email || "";
+  const phone = userInput.phone || "";
+  const resumeUrl = userInput.resumeUrl || "";
   const social = userInput.social || {};
 
   if (variant === "ContactTwo") {
@@ -16,6 +18,8 @@ const getContactTemplate = ({ blueprint, userInput, content }) => {
           <h2 className="text-4xl font-bold text-white mb-4">${heading}</h2>
           <p className="text-gray-400 mb-8">${subtext}</p>
           ${email ? `<a href="mailto:${email}" className="text-lg font-medium block mb-2" style={{ color: "${primary}" }}>${email}</a>` : ""}
+          ${phone ? `<p className="text-gray-400 mb-2">📞 ${phone}</p>` : ""}
+          ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-white mt-4 transition-opacity hover:opacity-90" style={{ background: "linear-gradient(135deg, ${primary}, ${blueprint.secondaryColor})" }}>📄 Resume</a>` : ""}
           <div className="flex gap-4 mt-6">
             ${social.github ? `<a href="${social.github}" target="_blank" className="px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors">GitHub</a>` : ""}
             ${social.linkedin ? `<a href="${social.linkedin}" target="_blank" className="px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors">LinkedIn</a>` : ""}
@@ -43,7 +47,9 @@ const getContactTemplate = ({ blueprint, userInput, content }) => {
         <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "${primary}" }}>Contact</span>
         <h2 className="text-4xl font-bold text-white mb-4">${heading}</h2>
         <p className="text-gray-400 mb-10">${subtext}</p>
-        ${email ? `<a href="mailto:${email}" className="inline-block px-8 py-4 rounded-full font-semibold text-white mb-8 transition-opacity hover:opacity-90" style={{ background: "linear-gradient(135deg, ${primary}, ${blueprint.secondaryColor})" }}>${email}</a>` : ""}
+        ${email ? `<a href="mailto:${email}" className="inline-block px-8 py-4 rounded-full font-semibold text-white mb-4 transition-opacity hover:opacity-90" style={{ background: "linear-gradient(135deg, ${primary}, ${blueprint.secondaryColor})" }}>${email}</a>` : ""}
+        ${phone ? `<p className="text-gray-400 mb-4">📞 ${phone}</p>` : ""}
+        ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white mb-6 transition-opacity hover:opacity-90 border border-white/20 hover:border-white/40">📄 Download Resume</a>` : ""}
         <div className="flex gap-4 justify-center mt-4">
           ${social.github ? `<a href="${social.github}" target="_blank" className="px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5">GitHub</a>` : ""}
           ${social.linkedin ? `<a href="${social.linkedin}" target="_blank" className="px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5">LinkedIn</a>` : ""}

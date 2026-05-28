@@ -26,6 +26,15 @@ const projectSchema = Joi.object({
   image: Joi.string().uri().allow("", null).optional(),
 });
 
+const educationSchema = Joi.object({
+  institution: Joi.string().required(),
+  degree: Joi.string().required(),
+  field: Joi.string().allow("", null).optional(),
+  startYear: Joi.string().allow("", null).optional(),
+  endYear: Joi.string().allow("", null).optional(),
+  description: Joi.string().allow("", null).optional(),
+});
+
 const portfolioInputSchema = Joi.object({
   name: Joi.string().required(),
   title: Joi.string().required(),
@@ -34,7 +43,10 @@ const portfolioInputSchema = Joi.object({
   location: Joi.string().allow("", null).optional(),
   phone: Joi.string().allow("", null).optional(),
   profileImage: Joi.string().uri().allow("", null).optional(),
+  resumeUrl: Joi.string().uri().allow("", null).optional(),
+  customDomain: Joi.string().allow("", null).optional(),
   skills: Joi.array().items(skillSchema).default([]),
+  education: Joi.array().items(educationSchema).default([]),
   projects: Joi.array().items(projectSchema).default([]),
   social: Joi.object({
     github: Joi.string().uri().allow("", null).optional(),

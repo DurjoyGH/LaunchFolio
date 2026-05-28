@@ -38,6 +38,30 @@ export default function DesignStep({ formData, update }: Props) {
         </p>
       </div>
 
+      {/* Custom Domain */}
+      <div>
+        <label className="text-sm font-semibold text-white mb-2 block">Custom Domain</label>
+        <div className="flex items-center gap-0">
+          <input
+            type="text"
+            placeholder="your-name"
+            value={formData.customDomain}
+            onChange={(e) => update({ customDomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
+            className="input rounded-r-none flex-1"
+            style={{ borderRight: "none" }}
+          />
+          <span
+            className="px-4 py-2.5 text-sm rounded-r-xl border border-l-0 font-mono whitespace-nowrap"
+            style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)", color: "var(--color-text-muted)" }}
+          >
+            .vercel.app
+          </span>
+        </div>
+        <p className="text-xs mt-1.5" style={{ color: "var(--color-text-muted)" }}>
+          Use a unique name (e.g. <strong>tarin-portfolio</strong>). Short/common names may get a suffix from Vercel.
+        </p>
+      </div>
+
       {/* Theme */}
       <div>
         <label className="text-sm font-semibold text-white mb-3 block">Color Theme</label>

@@ -82,10 +82,15 @@ const waitForDeployment = async (deploymentId, maxAttempts = 30) => {
         `${VERCEL_API}/v13/deployments/${deploymentId}`,
         { headers: getHeaders() }
       );
-      const { readyState, url } = res.data;
+      const { readyState, url, alias } = res.data;
       console.log(`[Vercel] Deploy ${deploymentId}: ${readyState}`);
 
-      if (readyState === "READY") return { url: `https://${url}`, state: "ready" };
+      if (readyState === "READY") {
+        // Prefer the production alias (clean URL) over the deployment URL (hash URL)
+        const productionUrl = alias?.length > 0 ? `https://${alias[0]}` : `https://${url}`;
+        console.log(`[Vercel] Production URL: ${productionUrl}`);
+        return { url: productionUrl, state: "ready" };
+      }
       if (readyState === "ERROR" || readyState === "CANCELED") {
         throw new Error(`Vercel deployment ${readyState.toLowerCase()}`);
       }

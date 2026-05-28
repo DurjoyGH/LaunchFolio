@@ -18,6 +18,8 @@ const portfolioSchema = new mongoose.Schema(
       location: { type: String },
       phone: { type: String },
       profileImage: { type: String }, // Cloudinary URL
+      resumeUrl: { type: String },    // Cloudinary URL
+      customDomain: { type: String },  // User-chosen subdomain prefix
       skills: [
         {
           name: { type: String },
@@ -33,6 +35,16 @@ const portfolioSchema = new mongoose.Schema(
           liveUrl: { type: String },
           githubUrl: { type: String },
           image: { type: String }, // Cloudinary URL
+        },
+      ],
+      education: [
+        {
+          institution: { type: String },
+          degree: { type: String },
+          field: { type: String },
+          startYear: { type: String },
+          endYear: { type: String },
+          description: { type: String },
         },
       ],
       social: {
