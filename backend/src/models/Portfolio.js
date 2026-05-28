@@ -55,9 +55,16 @@ const portfolioSchema = new mongoose.Schema(
       },
       designPreferences: {
         theme: { type: String, enum: ["dark", "light", "auto"], default: "dark" },
-        style: { type: String, enum: ["modern", "minimal", "bold", "elegant"], default: "modern" },
+        style: { type: String, enum: ["modern", "minimal", "bold", "elegant", "developer", "creative", "corporate", "glassmorphism", "futuristic"], default: "creative" },
         primaryColor: { type: String },
         fontPreference: { type: String },
+        buttonColor: { type: String },
+        buttonTextColor: { type: String },
+        navBgColor: { type: String },
+        navLinkColor: { type: String },
+        textColor: { type: String },
+        heroAnimation: { type: String, enum: ["fadeUp", "slideIn", "typewriter", "glow", "none"], default: "fadeUp" },
+        logoStyle: { type: String, enum: ["initial", "name", "photo", "photoName"], default: "initial" },
       },
     },
 

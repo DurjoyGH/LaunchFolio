@@ -10,18 +10,21 @@ const buildBlueprintPrompt = (userInput) => {
     bio,
     skills = [],
     projects = [],
+    education = [],
     social = {},
     designPreferences = {},
   } = userInput;
 
   const skillNames = skills.map((s) => s.name).join(", ") || "Not specified";
   const projectTitles = projects.map((p) => p.title).join(", ") || "None";
+  const eduSummary = education.map((e) => `${e.degree} at ${e.institution}`).join(", ") || "None";
   const { theme = "dark", style = "modern", primaryColor, fontPreference } = designPreferences;
 
   return `
-You are a professional portfolio design planner for an AI-powered portfolio generation platform called LaunchFolio.
+You are a professional portfolio design AI for LaunchFolio — an AI-powered portfolio generator.
 
-Your task is to analyze the following user information and generate a structured JSON portfolio blueprint.
+Your job is to analyze the user's profile and generate a UNIQUE portfolio blueprint.
+Every portfolio must feel VISUALLY DISTINCT. You must intelligently combine components to create diversity.
 
 == USER INFORMATION ==
 Name: ${name}
@@ -29,27 +32,50 @@ Professional Title: ${title}
 Bio: ${bio || "Not provided"}
 Skills: ${skillNames}
 Projects: ${projectTitles}
+Education: ${eduSummary}
 GitHub: ${social.github || "Not provided"}
 LinkedIn: ${social.linkedin || "Not provided"}
-Design Preference: ${style}
+Design Style Preference: ${style}
 Theme: ${theme}
 Primary Color Preference: ${primaryColor || "Choose best fit"}
 Font Preference: ${fontPreference || "Choose best fit"}
 
 == AVAILABLE COMPONENT VARIANTS ==
-- navbar: NavbarOne, NavbarTwo
-- hero: HeroOne, HeroTwo, HeroThree
-- about: AboutOne, AboutTwo
-- skills: SkillsOne, SkillsTwo
-- projects: ProjectsOne, ProjectsTwo
-- contact: ContactOne, ContactTwo
-- footer: FooterOne
+- navbar: NavbarCentered, NavbarGlass, NavbarMinimal, NavbarBold, NavbarFloating
+- hero: HeroCentered, HeroSplit, HeroGradient, HeroMinimal, HeroCreative, HeroGrid
+- about: AboutCard, AboutTimeline, AboutSplit, AboutMinimal
+- skills: SkillsGrid, SkillsProgress, SkillsCards, SkillsTags
+- education: EducationTimeline, EducationCards, EducationMinimal
+- projects: ProjectsGrid, ProjectsShowcase, ProjectsMinimal, ProjectsCards, ProjectsMasonry
+- contact: ContactModern, ContactSplit, ContactGlass, ContactMinimal
+- footer: FooterSimple, FooterCentered, FooterColumns
 
-== INSTRUCTIONS ==
-1. Select the most appropriate component variants based on the user's style preference.
-2. Choose a color palette that matches their personality and field.
-3. Generate compelling, professional content (bio, tagline, CTA).
-4. Return ONLY this exact JSON structure:
+== STYLE PERSONALITIES ==
+Choose ONE that best fits the user:
+- "minimal" — Clean whitespace, understated, mono fonts
+- "developer" — Technical, terminal-inspired
+- "creative" — Bold colors, asymmetric, playful
+- "corporate" — Professional, structured, formal
+- "glassmorphism" — Frosted glass, translucent, modern
+- "futuristic" — Neon accents, dark, glowing effects
+
+== DESIGN TOKENS ==
+Choose design tokens that match the personality:
+- spacing: "compact" | "comfortable" | "spacious"
+- radius: "none" | "sm" | "md" | "lg" | "full"
+- shadow: "none" | "soft" | "medium" | "dramatic"
+- animation: "none" | "subtle" | "smooth" | "energetic"
+
+== RULES ==
+1. DO NOT always pick the same components. Vary your choices based on user data.
+2. If user has many projects, prefer ProjectsGrid or ProjectsMasonry.
+3. If user has a photo, prefer HeroSplit or HeroCreative.
+4. If user style is "minimal", pick Minimal variants.
+5. Match the personality with coherent component choices.
+6. Generate a color palette that feels cohesive with the personality.
+7. Choose colors that are NOT generic (#6366f1 every time). Be creative.
+
+Return ONLY this exact JSON structure:
 
 {
   "theme": "dark" | "light",
@@ -57,21 +83,34 @@ Font Preference: ${fontPreference || "Choose best fit"}
   "primaryColor": "#hexcode",
   "secondaryColor": "#hexcode",
   "accentColor": "#hexcode",
-  "layout": "modern" | "minimal" | "bold" | "elegant",
+  "personality": "minimal" | "developer" | "creative" | "corporate" | "glassmorphism" | "futuristic",
+  "designTokens": {
+    "spacing": "compact" | "comfortable" | "spacious",
+    "radius": "none" | "sm" | "md" | "lg" | "full",
+    "shadow": "none" | "soft" | "medium" | "dramatic",
+    "animation": "none" | "subtle" | "smooth" | "energetic"
+  },
   "sections": [
-    { "type": "navbar", "variant": "NavbarOne" | "NavbarTwo" },
-    { "type": "hero", "variant": "HeroOne" | "HeroTwo" | "HeroThree" },
-    { "type": "about", "variant": "AboutOne" | "AboutTwo" },
-    { "type": "skills", "variant": "SkillsOne" | "SkillsTwo" },
-    { "type": "projects", "variant": "ProjectsOne" | "ProjectsTwo" },
-    { "type": "contact", "variant": "ContactOne" | "ContactTwo" },
-    { "type": "footer", "variant": "FooterOne" }
+    { "type": "navbar", "variant": "..." },
+    { "type": "hero", "variant": "..." },
+    { "type": "about", "variant": "..." },
+    { "type": "skills", "variant": "..." },
+    { "type": "education", "variant": "..." },
+    { "type": "projects", "variant": "..." },
+    { "type": "contact", "variant": "..." },
+    { "type": "footer", "variant": "..." }
   ],
   "content": {
     "tagline": "Short professional tagline (max 10 words)",
     "bio": "Professional bio paragraph (2-3 sentences)",
     "ctaText": "Primary CTA button text (3-5 words)",
-    "ctaSecondaryText": "Secondary CTA text (3-5 words)"
+    "ctaSecondaryText": "Secondary CTA text (3-5 words)",
+    "aboutHeading": "About section heading",
+    "aboutSubtext": "About section subtext",
+    "skillsHeading": "Skills section heading",
+    "projectsHeading": "Projects section heading",
+    "contactHeading": "Contact section heading",
+    "contactSubtext": "Contact section subtext"
   }
 }
 `;
@@ -86,7 +125,7 @@ Name: ${userInput.name}
 Title: ${userInput.title}
 Skills: ${userInput.skills?.map((s) => s.name).join(", ")}
 Projects: ${userInput.projects?.map((p) => p.title).join(", ")}
-Style: ${blueprint.layout}
+Personality: ${blueprint.personality || "creative"}
 
 Write enhanced, professional content. Return JSON:
 {

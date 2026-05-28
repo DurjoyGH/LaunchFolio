@@ -51,7 +51,14 @@ export type FormData = {
   education: Education[];
   projects: Project[];
   social: { github: string; linkedin: string; twitter: string; website: string };
-  designPreferences: { theme: string; style: string; primaryColor: string; fontPreference: string };
+  designPreferences: {
+    theme: string; style: string; primaryColor: string; fontPreference: string;
+    buttonColor: string; buttonTextColor: string;
+    navBgColor: string; navLinkColor: string;
+    textColor: string;
+    heroAnimation: string;
+    logoStyle: string;
+  };
 };
 
 const INITIAL_FORM: FormData = {
@@ -68,7 +75,11 @@ const INITIAL_FORM: FormData = {
   education: [],
   projects: [],
   social: { github: "", linkedin: "", twitter: "", website: "" },
-  designPreferences: { theme: "dark", style: "modern", primaryColor: "#6366f1", fontPreference: "Inter" },
+  designPreferences: {
+    theme: "dark", style: "creative", primaryColor: "#6366f1", fontPreference: "Inter",
+    buttonColor: "", buttonTextColor: "", navBgColor: "", navLinkColor: "",
+    textColor: "", heroAnimation: "fadeUp", logoStyle: "initial",
+  },
 };
 
 export default function GeneratePage() {
@@ -132,7 +143,13 @@ export default function GeneratePage() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if (!data.success) throw new Error(data.message || "Failed to start generation");
+      if (!data.success) {
+        // Show specific validation errors if available
+        const msg = data.errors?.length
+          ? `${data.message}: ${data.errors.join(", ")}`
+          : data.message || "Failed to start generation";
+        throw new Error(msg);
+      }
       router.push(`/portfolio/${data.data.portfolioId}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");

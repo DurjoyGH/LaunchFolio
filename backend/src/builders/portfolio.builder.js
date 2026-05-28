@@ -77,7 +77,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 `);
 
-  // /app/globals.css
+  // /app/globals.css — with design tokens
+  const { designTokens = {} } = blueprint;
+  const spacing = { compact: "3rem", comfortable: "5rem", spacious: "8rem" }[designTokens.spacing] || "5rem";
+  const radius = { none: "0", sm: "0.5rem", md: "1rem", lg: "1.5rem", full: "9999px" }[designTokens.radius] || "1.5rem";
+  const shadow = {
+    none: "none",
+    soft: "0 4px 20px rgba(0,0,0,0.1)",
+    medium: "0 8px 30px rgba(0,0,0,0.2)",
+    dramatic: "0 16px 60px rgba(0,0,0,0.4)",
+  }[designTokens.shadow] || "0 4px 20px rgba(0,0,0,0.1)";
+  const animDuration = { none: "0s", subtle: "0.15s", smooth: "0.3s", energetic: "0.5s" }[designTokens.animation] || "0.3s";
+
+  const dp = userInput.designPreferences || {};
+  
+  // Resolve colors based on user preference or theme
+  const isDark = theme === "dark";
+  const textColor = dp.textColor || (isDark ? "#e2e8f0" : "#1a202c");
+  const textMuted = isDark ? "#9ca3af" : "#6b7280";
+  const btnBg = dp.buttonColor || primaryColor;
+  const btnText = dp.buttonTextColor || "#ffffff";
+  const navBg = dp.navBgColor || (isDark ? "rgba(10,10,15,0.9)" : "rgba(255,255,255,0.9)");
+  const navLink = dp.navLinkColor || (isDark ? "#9ca3af" : "#4b5563");
+  const navLinkHover = dp.textColor || (isDark ? "#ffffff" : "#111827");
+  const cardBg = isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)";
+  const borderColor = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
+
   write(outputPath, "app/globals.css", `@import "tailwindcss";
 
 @theme inline {
@@ -87,15 +112,80 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 
 @layer base {
+  :root {
+    --section-spacing: ${spacing};
+    --card-radius: ${radius};
+    --card-shadow: ${shadow};
+    --anim-duration: ${animDuration};
+    
+    --color-text-main: ${textColor};
+    --color-text-muted: ${textMuted};
+    --color-btn-bg: ${btnBg};
+    --color-btn-text: ${btnText};
+    --color-nav-bg: ${navBg};
+    --color-nav-link: ${navLink};
+    --color-nav-hover: ${navLinkHover};
+    --color-card-bg: ${cardBg};
+    --color-border: ${borderColor};
+  }
+
   html { scroll-behavior: smooth; }
 
   body {
-    background: ${theme === "dark" ? "#0a0a0f" : "#fafafa"};
-    color: ${theme === "dark" ? "#e2e8f0" : "#1a202c"};
+    background: ${isDark ? "#0a0a0f" : "#fafafa"};
+    color: var(--color-text-main);
     font-family: var(--font-body), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+
+  .text-white { color: var(--color-text-main); }
+  .text-gray-300 { color: var(--color-text-main); opacity: 0.9; }
+  .text-gray-400 { color: var(--color-text-muted); }
+  .text-gray-500 { color: var(--color-text-muted); opacity: 0.8; }
+  
+  .border-white\\/5, .border-white\\/10 { border-color: var(--color-border); }
+  
+  .nav-link {
+    color: var(--color-nav-link);
+    transition: color var(--anim-duration);
+  }
+  .nav-link:hover { color: var(--color-nav-hover); }
+
+  .btn-primary {
+    background: var(--color-btn-bg);
+    color: var(--color-btn-text);
+  }
+
+  section { padding-top: var(--section-spacing); padding-bottom: var(--section-spacing); }
+
+  ::selection {
+    background: ${primaryColor}40;
+    color: var(--color-text-main);
+  }
 }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes glowPulse {
+  0% { text-shadow: 0 0 10px ${primaryColor}40; }
+  50% { text-shadow: 0 0 25px ${primaryColor}80; }
+  100% { text-shadow: 0 0 10px ${primaryColor}40; }
+}
+
+.anim-fadeUp { animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.anim-slideIn { animation: slideIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.anim-glow { animation: glowPulse 3s infinite; }
+.anim-typewriter { overflow: hidden; white-space: nowrap; border-right: 2px solid ${primaryColor}; animation: typing 2s steps(40, end), blink-caret .75s step-end infinite; }
+
+@keyframes typing { from { width: 0 } to { width: 100% } }
+@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: ${primaryColor}; } }
 `);
 
   // Write each section component
@@ -113,6 +203,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       next: "15.5.18",
       react: "19.1.0",
       "react-dom": "19.1.0",
+      "react-icons": "^5.0.1",
+      "lucide-react": "^0.477.0"
     },
     devDependencies: {
       "@tailwindcss/postcss": "^4",
@@ -155,6 +247,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   // .gitignore
   write(outputPath, ".gitignore", `.next\nnode_modules\n.env\n.env.local\n`);
+  
+  // .npmrc to prevent peer dependency issues with React 19
+  write(outputPath, ".npmrc", `legacy-peer-deps=true\n`);
 };
 
 // Helpers

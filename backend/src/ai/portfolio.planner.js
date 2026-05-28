@@ -1,19 +1,32 @@
 const { generateJSON } = require("./gemini.client");
 const { buildBlueprintPrompt } = require("./prompt.builder");
 
-// Component registry — all available variants
+// Component registry — all available variants per section
 const COMPONENT_REGISTRY = {
-  navbar: ["NavbarOne", "NavbarTwo"],
-  hero: ["HeroOne", "HeroTwo", "HeroThree"],
-  about: ["AboutOne", "AboutTwo"],
-  skills: ["SkillsOne", "SkillsTwo"],
-  education: ["EducationOne"],
-  projects: ["ProjectsOne", "ProjectsTwo"],
-  contact: ["ContactOne", "ContactTwo"],
-  footer: ["FooterOne"],
+  navbar: ["NavbarCentered", "NavbarGlass", "NavbarMinimal", "NavbarBold", "NavbarFloating"],
+  hero: ["HeroCentered", "HeroSplit", "HeroGradient", "HeroMinimal", "HeroCreative", "HeroGrid"],
+  about: ["AboutCard", "AboutTimeline", "AboutSplit", "AboutMinimal"],
+  skills: ["SkillsGrid", "SkillsProgress", "SkillsCards", "SkillsTags"],
+  education: ["EducationTimeline", "EducationCards", "EducationMinimal"],
+  projects: ["ProjectsGrid", "ProjectsShowcase", "ProjectsMinimal", "ProjectsCards", "ProjectsMasonry"],
+  contact: ["ContactModern", "ContactSplit", "ContactGlass", "ContactMinimal"],
+  footer: ["FooterSimple", "FooterCentered", "FooterColumns"],
 };
 
 const REQUIRED_SECTIONS = ["navbar", "hero", "about", "skills", "education", "projects", "contact", "footer"];
+
+/**
+ * Style personality presets — maps design personality to recommended component combinations.
+ * AI may override any of these based on user data.
+ */
+const STYLE_PRESETS = {
+  minimal: { navbar: "NavbarMinimal", hero: "HeroMinimal", about: "AboutMinimal", skills: "SkillsTags", projects: "ProjectsMinimal", contact: "ContactMinimal", footer: "FooterSimple", education: "EducationMinimal" },
+  developer: { navbar: "NavbarMinimal", hero: "HeroMinimal", about: "AboutTimeline", skills: "SkillsProgress", projects: "ProjectsMinimal", contact: "ContactMinimal", footer: "FooterSimple", education: "EducationMinimal" },
+  creative: { navbar: "NavbarGlass", hero: "HeroCreative", about: "AboutSplit", skills: "SkillsCards", projects: "ProjectsMasonry", contact: "ContactGlass", footer: "FooterCentered", education: "EducationCards" },
+  corporate: { navbar: "NavbarCentered", hero: "HeroSplit", about: "AboutTimeline", skills: "SkillsGrid", projects: "ProjectsCards", contact: "ContactSplit", footer: "FooterColumns", education: "EducationTimeline" },
+  glassmorphism: { navbar: "NavbarGlass", hero: "HeroGradient", about: "AboutCard", skills: "SkillsCards", projects: "ProjectsGrid", contact: "ContactGlass", footer: "FooterCentered", education: "EducationCards" },
+  futuristic: { navbar: "NavbarFloating", hero: "HeroGradient", about: "AboutTimeline", skills: "SkillsTags", projects: "ProjectsMasonry", contact: "ContactGlass", footer: "FooterSimple", education: "EducationTimeline" },
+};
 
 /**
  * Validates AI blueprint against known component registry.
@@ -32,15 +45,22 @@ const validateBlueprint = (blueprint) => {
     return { type, variant: availableVariants[0] };
   });
 
+  // Validate design tokens
+  const designTokens = {
+    spacing: ["compact", "comfortable", "spacious"].includes(blueprint.designTokens?.spacing) ? blueprint.designTokens.spacing : "comfortable",
+    radius: ["none", "sm", "md", "lg", "full"].includes(blueprint.designTokens?.radius) ? blueprint.designTokens.radius : "lg",
+    shadow: ["none", "soft", "medium", "dramatic"].includes(blueprint.designTokens?.shadow) ? blueprint.designTokens.shadow : "soft",
+    animation: ["none", "subtle", "smooth", "energetic"].includes(blueprint.designTokens?.animation) ? blueprint.designTokens.animation : "smooth",
+  };
+
   return {
     theme: ["dark", "light"].includes(blueprint.theme) ? blueprint.theme : "dark",
     font: blueprint.font || "Inter",
     primaryColor: blueprint.primaryColor || "#6366f1",
     secondaryColor: blueprint.secondaryColor || "#8b5cf6",
     accentColor: blueprint.accentColor || "#06b6d4",
-    layout: ["modern", "minimal", "bold", "elegant"].includes(blueprint.layout)
-      ? blueprint.layout
-      : "modern",
+    personality: Object.keys(STYLE_PRESETS).includes(blueprint.personality) ? blueprint.personality : "creative",
+    designTokens,
     sections: validatedSections,
     content: blueprint.content || {},
   };
@@ -57,4 +77,4 @@ const planPortfolio = async (userInput) => {
   return validateBlueprint(raw);
 };
 
-module.exports = { planPortfolio, COMPONENT_REGISTRY };
+module.exports = { planPortfolio, COMPONENT_REGISTRY, STYLE_PRESETS };

@@ -1,6 +1,11 @@
+/**
+ * Contact section templates.
+ * 4 variants: ContactModern, ContactSplit, ContactGlass, ContactMinimal
+ */
 const getContactTemplate = ({ blueprint, userInput, content }) => {
-  const { variant } = blueprint.sections.find((s) => s.type === "contact") || { variant: "ContactOne" };
+  const { variant } = blueprint.sections.find((s) => s.type === "contact") || { variant: "ContactModern" };
   const primary = blueprint.primaryColor;
+  const secondary = blueprint.secondaryColor;
   const heading = content.contactHeading || "Get In Touch";
   const subtext = content.contactSubtext || "I'd love to hear from you.";
   const email = userInput.email || "";
@@ -8,29 +13,49 @@ const getContactTemplate = ({ blueprint, userInput, content }) => {
   const resumeUrl = userInput.resumeUrl || "";
   const social = userInput.social || {};
 
-  if (variant === "ContactTwo") {
-    return `export default function Contact() {
+  const socialBtns = (cls) => {
+    const links = [];
+    if (social.github) links.push(`<a href="${social.github}" target="_blank" className="flex items-center gap-2 ${cls}"><Github className="w-4 h-4" /><span>GitHub</span></a>`);
+    if (social.linkedin) links.push(`<a href="${social.linkedin}" target="_blank" className="flex items-center gap-2 ${cls}"><Linkedin className="w-4 h-4" /><span>LinkedIn</span></a>`);
+    if (social.twitter) links.push(`<a href="${social.twitter}" target="_blank" className="flex items-center gap-2 ${cls}"><Twitter className="w-4 h-4" /><span>Twitter</span></a>`);
+    return links.join("\n            ");
+  };
+
+  const socialImports = `import { Github, Linkedin, Twitter, Mail, Phone, FileText, ArrowRight } from "lucide-react";`;
+
+  // ContactSplit — two columns with form
+  if (variant === "ContactSplit") {
+    return `
+${socialImports}
+
+export default function Contact() {
   return (
     <section id="contact" className="py-24 px-6">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16">
         <div>
-          <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "${primary}" }}>Contact</span>
+          <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "var(--color-primary)" }}>Contact</span>
           <h2 className="text-4xl font-bold text-white mb-4">${heading}</h2>
           <p className="text-gray-400 mb-8">${subtext}</p>
-          ${email ? `<a href="mailto:${email}" className="text-lg font-medium block mb-2" style={{ color: "${primary}" }}>${email}</a>` : ""}
-          ${phone ? `<p className="text-gray-400 mb-2">📞 ${phone}</p>` : ""}
-          ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-white mt-4 transition-opacity hover:opacity-90" style={{ background: "linear-gradient(135deg, ${primary}, ${blueprint.secondaryColor})" }}>📄 Resume</a>` : ""}
-          <div className="flex gap-4 mt-6">
-            ${social.github ? `<a href="${social.github}" target="_blank" className="px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors">GitHub</a>` : ""}
-            ${social.linkedin ? `<a href="${social.linkedin}" target="_blank" className="px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors">LinkedIn</a>` : ""}
-            ${social.twitter ? `<a href="${social.twitter}" target="_blank" className="px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors">Twitter</a>` : ""}
+          <div className="space-y-4">
+            ${email ? `<a href="mailto:${email}" className="flex items-center gap-3 text-lg font-medium hover:opacity-80 transition-opacity" style={{ color: "var(--color-primary)" }}>
+              <Mail className="w-5 h-5" /> ${email}
+            </a>` : ""}
+            ${phone ? `<p className="flex items-center gap-3 text-gray-400">
+              <Phone className="w-5 h-5" /> ${phone}
+            </p>` : ""}
+            ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium btn-primary mt-4 transition-opacity hover:opacity-90">
+              <FileText className="w-5 h-5" /> Resume
+            </a>` : ""}
+          </div>
+          <div className="flex gap-4 mt-8 flex-wrap">
+            ${socialBtns("px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors")}
           </div>
         </div>
         <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-          <input type="text" placeholder="Your Name" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[${primary}] transition-colors" />
-          <input type="email" placeholder="Your Email" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[${primary}] transition-colors" />
-          <textarea rows={5} placeholder="Your Message" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[${primary}] transition-colors resize-none" />
-          <button type="submit" className="w-full py-3 rounded-xl font-semibold text-white transition-opacity hover:opacity-90" style={{ background: "linear-gradient(135deg, ${primary}, ${blueprint.secondaryColor})" }}>
+          <input type="text" placeholder="Your Name" className="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-gray-500 focus:outline-none transition-colors" style={{ background: "var(--color-card-bg)" }} />
+          <input type="email" placeholder="Your Email" className="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-gray-500 focus:outline-none transition-colors" style={{ background: "var(--color-card-bg)" }} />
+          <textarea rows={5} placeholder="Your Message" className="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-gray-500 focus:outline-none transition-colors resize-none" style={{ background: "var(--color-card-bg)" }} />
+          <button type="submit" className="w-full py-3 rounded-xl font-semibold btn-primary transition-opacity hover:opacity-90">
             Send Message
           </button>
         </form>
@@ -40,20 +65,95 @@ const getContactTemplate = ({ blueprint, userInput, content }) => {
 }`;
   }
 
-  return `export default function Contact() {
+  // ContactGlass — glassmorphism centered card
+  if (variant === "ContactGlass") {
+    return `
+${socialImports}
+
+export default function Contact() {
+  return (
+    <section id="contact" className="py-24 px-6">
+      <div className="max-w-2xl mx-auto">
+        <div className="p-8 md:p-12 rounded-3xl border border-white/10 text-center backdrop-blur-xl" style={{ background: "var(--color-card-bg)" }}>
+          <h2 className="text-3xl font-bold text-white mb-4">${heading}</h2>
+          <p className="text-gray-400 mb-8">${subtext}</p>
+          <div className="flex flex-col items-center gap-4">
+            ${email ? `<a href="mailto:${email}" className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-semibold btn-primary transition-all hover:scale-105">
+              <Mail className="w-5 h-5" /> ${email}
+            </a>` : ""}
+            ${phone ? `<p className="flex items-center gap-2 text-gray-400">
+              <Phone className="w-5 h-5" /> ${phone}
+            </p>` : ""}
+            ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-white border border-white/20 hover:border-white/40 transition-colors mt-2">
+              <FileText className="w-5 h-5" /> Download Resume
+            </a>` : ""}
+          </div>
+          <div className="flex gap-4 justify-center mt-8 flex-wrap">
+            ${socialBtns("px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5")}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}`;
+  }
+
+  // ContactMinimal — simple and clean
+  if (variant === "ContactMinimal") {
+    return `
+${socialImports}
+
+export default function Contact() {
+  return (
+    <section id="contact" className="py-24 px-6">
+      <div className="max-w-2xl mx-auto">
+        <p className="text-sm font-mono mb-4" style={{ color: "var(--color-primary)" }}>// contact</p>
+        <h2 className="text-3xl font-bold text-white mb-4">${heading}</h2>
+        <p className="text-gray-400 mb-8 text-lg">${subtext}</p>
+        <div className="space-y-4">
+          ${email ? `<a href="mailto:${email}" className="flex items-center gap-3 text-lg font-medium hover:opacity-80 transition-opacity" style={{ color: "var(--color-primary)" }}>
+            <ArrowRight className="w-5 h-5" /> ${email}
+          </a>` : ""}
+          ${phone ? `<p className="flex items-center gap-3 text-gray-400">
+            <ArrowRight className="w-5 h-5" /> ${phone}
+          </p>` : ""}
+          ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors">
+            <ArrowRight className="w-5 h-5" /> Download Resume
+          </a>` : ""}
+        </div>
+        <div className="flex gap-6 mt-10 pt-8 border-t border-white/5 flex-wrap">
+          ${socialBtns("text-sm text-gray-600 hover:text-white font-mono transition-colors")}
+        </div>
+      </div>
+    </section>
+  );
+}`;
+  }
+
+  // ContactModern — default, centered CTA
+  return `
+${socialImports}
+
+export default function Contact() {
   return (
     <section id="contact" className="py-24 px-6 text-center">
       <div className="max-w-2xl mx-auto">
-        <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "${primary}" }}>Contact</span>
+        <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "var(--color-primary)" }}>Contact</span>
         <h2 className="text-4xl font-bold text-white mb-4">${heading}</h2>
         <p className="text-gray-400 mb-10">${subtext}</p>
-        ${email ? `<a href="mailto:${email}" className="inline-block px-8 py-4 rounded-full font-semibold text-white mb-4 transition-opacity hover:opacity-90" style={{ background: "linear-gradient(135deg, ${primary}, ${blueprint.secondaryColor})" }}>${email}</a>` : ""}
-        ${phone ? `<p className="text-gray-400 mb-4">📞 ${phone}</p>` : ""}
-        ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white mb-6 transition-opacity hover:opacity-90 border border-white/20 hover:border-white/40">📄 Download Resume</a>` : ""}
-        <div className="flex gap-4 justify-center mt-4">
-          ${social.github ? `<a href="${social.github}" target="_blank" className="px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5">GitHub</a>` : ""}
-          ${social.linkedin ? `<a href="${social.linkedin}" target="_blank" className="px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5">LinkedIn</a>` : ""}
-          ${social.twitter ? `<a href="${social.twitter}" target="_blank" className="px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5">Twitter</a>` : ""}
+        <div className="flex flex-col items-center gap-4">
+          ${email ? `<a href="mailto:${email}" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold btn-primary transition-opacity hover:opacity-90">
+            <Mail className="w-5 h-5" /> ${email}
+          </a>` : ""}
+          ${phone ? `<p className="flex items-center gap-2 text-gray-400">
+            <Phone className="w-5 h-5" /> ${phone}
+          </p>` : ""}
+          ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white border border-white/20 hover:border-white/40 transition-colors mt-2">
+            <FileText className="w-5 h-5" /> Download Resume
+          </a>` : ""}
+        </div>
+        <div className="flex gap-4 justify-center mt-8 flex-wrap">
+          ${socialBtns("px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5")}
         </div>
       </div>
     </section>

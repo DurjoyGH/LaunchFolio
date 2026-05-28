@@ -6,10 +6,12 @@ const THEMES = [
 ];
 
 const STYLES = [
-  { value: "modern", label: "Modern", desc: "Clean lines, bold typography" },
-  { value: "minimal", label: "Minimal", desc: "Less is more, pure whitespace" },
-  { value: "bold", label: "Bold", desc: "High contrast, strong statements" },
-  { value: "elegant", label: "Elegant", desc: "Refined, premium feel" },
+  { value: "minimal", label: "Minimal", desc: "Clean whitespace, understated" },
+  { value: "developer", label: "Developer", desc: "Technical, terminal-inspired" },
+  { value: "creative", label: "Creative", desc: "Bold, asymmetric, playful" },
+  { value: "corporate", label: "Corporate", desc: "Professional, structured" },
+  { value: "glassmorphism", label: "Glass", desc: "Frosted glass, translucent" },
+  { value: "futuristic", label: "Futuristic", desc: "Neon accents, glowing" },
 ];
 
 const FONTS = ["Inter", "Poppins", "Raleway", "Roboto", "Space Grotesk"];
@@ -19,10 +21,43 @@ const COLORS = [
   "#ef4444", "#ec4899", "#3b82f6", "#84cc16", "#f97316",
 ];
 
+const HERO_ANIMATIONS = [
+  { value: "fadeUp", label: "Fade Up" },
+  { value: "slideIn", label: "Slide In" },
+  { value: "typewriter", label: "Typewriter" },
+  { value: "glow", label: "Glow Pulse" },
+  { value: "none", label: "None" },
+];
+
+const LOGO_STYLES = [
+  { value: "initial", label: "Initial (A)", desc: "First letter in a box" },
+  { value: "name", label: "Name Only", desc: "Just your name" },
+  { value: "photo", label: "Photo", desc: "Your profile picture" },
+  { value: "photoName", label: "Photo + Name", desc: "Photo with your name" },
+];
+
 interface Props {
   formData: FormData;
   update: (partial: Partial<FormData>) => void;
 }
+
+const ColorPicker = ({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder: string }) => (
+  <div className="flex items-center gap-3">
+    <input
+      type="color"
+      value={value || placeholder}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-8 h-8 rounded-lg cursor-pointer border-0 overflow-hidden flex-shrink-0"
+    />
+    <div className="flex-1">
+      <p className="text-xs font-medium text-white">{label}</p>
+      <p className="text-xs font-mono" style={{ color: "var(--color-text-muted)" }}>{value || "auto"}</p>
+    </div>
+    {value && (
+      <button onClick={() => onChange("")} className="text-xs text-gray-600 hover:text-white">Reset</button>
+    )}
+  </div>
+);
 
 export default function DesignStep({ formData, update }: Props) {
   const dp = formData.designPreferences;
@@ -34,7 +69,7 @@ export default function DesignStep({ formData, update }: Props) {
       <div>
         <h2 className="text-xl font-bold text-white mb-1">Design Preferences</h2>
         <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-          Tell the AI how your portfolio should look and feel.
+          Customize every visual detail of your portfolio.
         </p>
       </div>
 
@@ -80,10 +115,10 @@ export default function DesignStep({ formData, update }: Props) {
         </div>
       </div>
 
-      {/* Style */}
+      {/* Style Personality */}
       <div>
-        <label className="text-sm font-semibold text-white mb-3 block">Design Style</label>
-        <div className="grid grid-cols-2 gap-3">
+        <label className="text-sm font-semibold text-white mb-3 block">Design Personality</label>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {STYLES.map((s) => (
             <button
               key={s.value}
@@ -121,9 +156,51 @@ export default function DesignStep({ formData, update }: Props) {
             title="Custom color"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-full" style={{ backgroundColor: dp.primaryColor }} />
-          <span className="text-sm font-mono" style={{ color: "var(--color-text-secondary)" }}>{dp.primaryColor}</span>
+      </div>
+
+      {/* Detailed Color Controls */}
+      <div>
+        <label className="text-sm font-semibold text-white mb-3 block">Color Customization</label>
+        <p className="text-xs mb-4" style={{ color: "var(--color-text-muted)" }}>Leave on &quot;auto&quot; to let AI choose, or pick your own.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl border" style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}>
+          <ColorPicker label="Button Background" value={dp.buttonColor} onChange={(v) => set("buttonColor", v)} placeholder={dp.primaryColor} />
+          <ColorPicker label="Button Text" value={dp.buttonTextColor} onChange={(v) => set("buttonTextColor", v)} placeholder="#ffffff" />
+          <ColorPicker label="Navbar Background" value={dp.navBgColor} onChange={(v) => set("navBgColor", v)} placeholder="#0a0a0f" />
+          <ColorPicker label="Navbar Links" value={dp.navLinkColor} onChange={(v) => set("navLinkColor", v)} placeholder="#9ca3af" />
+          <ColorPicker label="Body Text" value={dp.textColor} onChange={(v) => set("textColor", v)} placeholder="#e2e8f0" />
+        </div>
+      </div>
+
+      {/* Hero Animation */}
+      <div>
+        <label className="text-sm font-semibold text-white mb-3 block">Hero Animation</label>
+        <div className="flex flex-wrap gap-2">
+          {HERO_ANIMATIONS.map((a) => (
+            <button
+              key={a.value}
+              onClick={() => set("heroAnimation", a.value)}
+              className={`px-4 py-2 rounded-full text-sm border transition-all ${dp.heroAnimation === a.value ? "border-indigo-500/60 bg-indigo-500/10 text-white" : "border-white/5 hover:border-white/10 text-gray-400"}`}
+            >
+              {a.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Navbar Logo Style */}
+      <div>
+        <label className="text-sm font-semibold text-white mb-3 block">Navbar Logo Style</label>
+        <div className="grid grid-cols-2 gap-3">
+          {LOGO_STYLES.map((l) => (
+            <button
+              key={l.value}
+              onClick={() => set("logoStyle", l.value)}
+              className={`p-3 rounded-xl border text-left transition-all ${dp.logoStyle === l.value ? "border-indigo-500/60 bg-indigo-500/10" : "border-white/5 hover:border-white/10"}`}
+            >
+              <p className="text-sm font-medium text-white">{l.label}</p>
+              <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>{l.desc}</p>
+            </button>
+          ))}
         </div>
       </div>
 

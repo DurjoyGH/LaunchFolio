@@ -56,9 +56,16 @@ const portfolioInputSchema = Joi.object({
   }).default({}),
   designPreferences: Joi.object({
     theme: Joi.string().valid("dark", "light", "auto").default("dark"),
-    style: Joi.string().valid("modern", "minimal", "bold", "elegant").default("modern"),
+    style: Joi.string().valid("minimal", "developer", "creative", "corporate", "glassmorphism", "futuristic", "modern", "bold", "elegant").default("creative"),
     primaryColor: Joi.string().allow("", null).optional(),
     fontPreference: Joi.string().allow("", null).optional(),
+    buttonColor: Joi.string().allow("", null).optional(),
+    buttonTextColor: Joi.string().allow("", null).optional(),
+    navBgColor: Joi.string().allow("", null).optional(),
+    navLinkColor: Joi.string().allow("", null).optional(),
+    textColor: Joi.string().allow("", null).optional(),
+    heroAnimation: Joi.string().valid("fadeUp", "slideIn", "typewriter", "glow", "none").default("fadeUp"),
+    logoStyle: Joi.string().valid("initial", "name", "photo", "photoName").default("initial"),
   }).default({}),
 });
 
