@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ────────────────────────────────────── */
+@theme inline {
+  --color-bg-primary: #07070f;
+  --color-bg-secondary: #0e0e1a;
+  --color-bg-card: #111121;
+  --color-bg-card-hover: #161628;
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-hover: rgba(255, 255, 255, 0.12);
+
+  --color-text-primary: #f1f1f5;
+  --color-text-secondary: #8b8fa8;
+  --color-text-muted: #4a4d65;
+
+  --color-brand-primary: #6366f1;
+  --color-brand-secondary: #8b5cf6;
+  --color-brand-accent: #06b6d4;
+}
+
+:root {
+  --gradient-brand: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --gradient-hero: radial-gradient(ellipse at 60% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 0% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+}
+
+/* ─── Base (inside @layer so Tailwind utilities can override) ─── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--color-border-hover); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+}
+
+/* ─── Component classes (inside @layer so Tailwind utilities can override) ─── */
+@layer components {
+  .gradient-text {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border-subtle);
+  }
+
+  .card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .card:hover {
+    border-color: var(--color-border-hover);
+  }
+
+  .btn-primary {
+    background: var(--gradient-brand);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border-subtle);
+    cursor: pointer;
+    font-weight: 500;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--color-border-hover);
+    color: var(--color-text-primary);
+  }
+
+  .input {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    color: var(--color-text-primary);
+    padding: 12px 16px;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .input:focus {
+    border-color: var(--color-brand-primary);
+  }
+
+  /* Step form indicator */
+  .step-active { background: var(--gradient-brand); color: white; }
+  .step-done   { background: var(--color-brand-primary); color: white; opacity: 0.6; }
+  .step-idle   { background: var(--color-bg-card); color: var(--color-text-muted); border: 1px solid var(--color-border-subtle); }
+}
+
+/* ─── Animations ──────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-10px); }
+}
+
+@layer utilities {
+  .anim-fade-up {
+    animation: fade-up 0.6s ease both;
+  }
+
+  .anim-fade-in {
+    animation: fade-in 0.4s ease both;
+  }
+
+  .anim-float {
+    animation: float-bob 6s ease-in-out infinite;
+  }
+}
