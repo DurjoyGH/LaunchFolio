@@ -1,13 +1,14 @@
-import { InputHTMLAttributes, forwardRef } from "react";
+import { InputHTMLAttributes, ReactNode, forwardRef } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   hint?: string;
+  rightElement?: ReactNode;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, hint, className = "", ...props }, ref) => {
+  ({ label, error, hint, rightElement, className = "", ...props }, ref) => {
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
@@ -15,11 +16,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {label}
           </label>
         )}
-        <input
-          ref={ref}
-          className={`input ${error ? "border-red-500/50 focus:border-red-500" : ""} ${className}`}
-          {...props}
-        />
+        <div className="relative">
+          <input
+            ref={ref}
+            className={`input ${error ? "border-red-500/50 focus:border-red-500" : ""} ${rightElement ? "pr-12" : ""} ${className}`}
+            {...props}
+          />
+          {rightElement && (
+            <div className="absolute inset-y-0 right-3 flex items-center">
+              {rightElement}
+            </div>
+          )}
+        </div>
         {error && <p className="text-xs text-red-400">{error}</p>}
         {hint && !error && <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>{hint}</p>}
       </div>

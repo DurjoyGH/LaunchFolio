@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import Button from "@/components/ui/Button";
 import PersonalInfoStep from "@/components/generate/steps/PersonalInfoStep";
 import SkillsStep from "@/components/generate/steps/SkillsStep";
@@ -175,14 +176,14 @@ export default function GeneratePage() {
       });
       const data = await res.json();
       if (!data.success) {
-        const msg = data.errors?.length
-          ? `${data.message}: ${data.errors.join(", ")}`
-          : data.message || "Failed to start generation";
-        throw new Error(msg);
+        throw new Error("GENERATION_FAILED");
       }
+      toast.success("Generation started. Your live link is on the way.");
       router.push(`/portfolio/${data.data.portfolioId}`);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const message = "Failed to start generation. Please try again.";
+      setError(message);
+      toast.error(message);
       setSubmitting(false);
     }
   };

@@ -111,7 +111,10 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden px-6 pb-6 glass border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
+        <div
+          className="md:hidden px-6 pb-6 border-t"
+          style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-primary)" }}
+        >
           <div className="flex flex-col gap-4 pt-4">
             {["Features", "How it works", "Pricing", "About Us", "Contact"].map((label) => (
               <a

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
@@ -12,6 +13,7 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,11 +27,23 @@ export default function RegisterPage() {
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (!data.success) throw new Error(data.message || "Registration failed");
+      if (!data.success) {
+        const msg = typeof data.message === "string" ? data.message.toLowerCase() : "";
+        if (msg.includes("exists") || msg.includes("already")) {
+          throw new Error("ACCOUNT_EXISTS");
+        }
+        throw new Error("REGISTER_FAILED");
+      }
       if (data.data?.token) localStorage.setItem("token", data.data.token);
+      toast.success("Account created. Let's build your portfolio.");
       router.push("/generate");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const code = err instanceof Error ? err.message : "REGISTER_FAILED";
+      const message = code === "ACCOUNT_EXISTS"
+        ? "An account already exists with this email."
+        : "Internal server error. Please try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -110,12 +124,35 @@ export default function RegisterPage() {
             />
             <Input
               label="Password"
-              type="password"
-              placeholder="Min. 8 characters"
+              type={showPassword ? "text" : "password"}
+              placeholder="Min. 6 characters"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
+              minLength={6}
               required
-              hint="At least 8 characters"
+              hint="At least 6 characters"
+              rightElement={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="text-xs text-gray-400 hover:text-white transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M3 3l18 18" />
+                      <path d="M10.5 10.5a2 2 0 0 0 3 3" />
+                      <path d="M9.4 5.6A10.1 10.1 0 0 1 12 5c5.1 0 9.4 3.1 11 7-0.7 1.7-1.8 3.2-3.1 4.4" />
+                      <path d="M6.9 6.9C5.1 8.2 3.7 10 3 12c1.6 3.9 5.9 7 11 7 1.1 0 2.2-0.1 3.2-0.4" />
+                    </svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              }
             />
 
             <Button type="submit" loading={loading} className="w-full" size="lg">

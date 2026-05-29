@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 
@@ -31,6 +32,8 @@ export default function DashboardPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<Portfolio | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -58,6 +61,25 @@ export default function DashboardPage() {
     localStorage.removeItem("token");
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, { method: "POST", credentials: "include" });
     router.push("/");
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/portfolio/${deleteTarget._id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setPortfolios((prev) => prev.filter((x) => x._id !== deleteTarget._id));
+      toast.success("Portfolio deleted.");
+    } catch {
+      toast.error("Failed to delete. Please try again.");
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
+    }
   };
 
   return (
@@ -149,17 +171,9 @@ export default function DashboardPage() {
 
                 {/* Delete button */}
                 <button
-                  onClick={async (e) => {
+                  onClick={(e) => {
                     e.stopPropagation();
-                    if (!confirm("Delete this portfolio? This cannot be undone.")) return;
-                    try {
-                      const token = localStorage.getItem("token");
-                      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/portfolio/${p._id}`, {
-                        method: "DELETE",
-                        headers: { Authorization: `Bearer ${token}` },
-                      });
-                      setPortfolios((prev) => prev.filter((x) => x._id !== p._id));
-                    } catch { /* ignore */ }
+                    setDeleteTarget(p);
                   }}
                   className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-1 rounded-lg text-red-400 hover:bg-red-500/10 border border-red-500/20"
                 >
@@ -170,6 +184,25 @@ export default function DashboardPage() {
           </div>
         )}
       </main>
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ background: "rgba(7, 7, 15, 0.8)" }}>
+          <div className="card w-full max-w-md p-6">
+            <h3 className="text-lg font-semibold text-white mb-2">Delete portfolio?</h3>
+            <p className="text-sm mb-6" style={{ color: "var(--color-text-secondary)" }}>
+              This will permanently remove {deleteTarget.input.name}. This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button variant="ghost" onClick={() => setDeleteTarget(null)} disabled={deleting}>
+                Cancel
+              </Button>
+              <Button variant="danger" onClick={confirmDelete} loading={deleting}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
