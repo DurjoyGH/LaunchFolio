@@ -73,6 +73,9 @@ export default function DashboardPage() {
             <span className="text-sm hidden sm:block" style={{ color: "var(--color-text-secondary)" }}>
               {userName && `Hello, ${userName.split(" ")[0]} 👋`}
             </span>
+              <Link href="/">
+                <Button variant="ghost" size="sm">Back to Home</Button>
+              </Link>
             <Button variant="ghost" size="sm" onClick={handleLogout}>Sign Out</Button>
           </div>
         </div>

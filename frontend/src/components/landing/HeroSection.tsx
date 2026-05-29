@@ -1,7 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 
 export default function HeroSection() {
+  const router = useRouter();
+
+  const handleGenerate = () => {
+    const token = localStorage.getItem("token");
+    router.push(token ? "/generate" : "/auth/register");
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20">
       {/* Background gradients */}
@@ -21,7 +31,7 @@ export default function HeroSection() {
           style={{ borderColor: "rgba(99,102,241,0.3)", backgroundColor: "rgba(99,102,241,0.08)" }}>
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "var(--color-brand-accent)" }} />
           <span className="text-sm font-medium" style={{ color: "var(--color-brand-accent)" }}>
-            Powered by Gemini AI
+            Powered by Smart AI
           </span>
         </div>
 
@@ -43,14 +53,12 @@ export default function HeroSection() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center anim-fade-up"
           style={{ animationDelay: "0.3s" }}>
-          <Link href="/auth/register">
-            <Button size="lg">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Generate My Portfolio
-            </Button>
-          </Link>
+          <Button size="lg" onClick={handleGenerate}>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Generate My Portfolio
+          </Button>
           <a href="#how-it-works">
             <Button variant="ghost" size="lg">See How It Works</Button>
           </a>

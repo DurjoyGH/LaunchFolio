@@ -1,31 +1,31 @@
 const steps = [
   {
     number: "01",
-    title: "Fill the Form",
+    title: "Share Your Details",
     description:
-      "Enter your name, skills, projects, social links, and pick your preferred design style and colors.",
-    detail: "Multi-step wizard — takes about 3 minutes",
+      "Tell us about yourself and the work you want to showcase. Choose IT or non-IT and add only what matters.",
+    detail: "Guided form — about 3 minutes",
   },
   {
     number: "02",
-    title: "AI Plans Your Portfolio",
+    title: "Pick Your Style",
     description:
-      "Gemini AI analyzes your data, selects the best sections, component variants, color palette, and generates all copy.",
-    detail: "Blueprint JSON is generated in seconds",
+      "Choose a theme, color palette, and layout style. We tailor the structure to fit your profile.",
+    detail: "Looks great by default",
   },
   {
     number: "03",
-    title: "Builder Assembles It",
+    title: "Review & Generate",
     description:
-      "Our builder engine loads matching React components, injects your data and design tokens, and writes a clean Next.js project.",
-    detail: "Component-based — no AI code sprawl",
+      "Preview the summary, adjust any sections, and generate your portfolio with a single click.",
+    detail: "Clear, simple, fast",
   },
   {
     number: "04",
-    title: "Deployed & Live",
+    title: "Live Link Ready",
     description:
-      "The project is pushed to a GitHub repo, deployed to Vercel, and you receive a live URL — all automatically.",
-    detail: "Usually live within 2–5 minutes",
+      "Your portfolio goes live automatically and you get a shareable link right away.",
+    detail: "Usually live within a few minutes",
   },
 ];
 
@@ -70,10 +70,11 @@ export default function HowItWorksSection() {
                     {step.description}
                   </p>
                   <span
-                    className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full border"
+                    className="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full border"
                     style={{ borderColor: "rgba(99,102,241,0.2)", color: "var(--color-brand-primary)", backgroundColor: "rgba(99,102,241,0.05)" }}
                   >
-                    ◉ {step.detail}
+                    <span className="text-[10px] leading-none">◉</span>
+                    <span>{step.detail}</span>
                   </span>
                 </div>
               </div>

@@ -45,6 +45,8 @@ export default function Navbar() {
             { label: "Features", href: "/#features" },
             { label: "How it works", href: "/#how-it-works" },
             { label: "Pricing", href: "/#pricing" },
+            { label: "About Us", href: "/#about-us" },
+            { label: "Contact", href: "/#contact" },
           ].map(({ label, href }) => (
             <a
               key={label}
@@ -111,7 +113,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="md:hidden px-6 pb-6 glass border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
           <div className="flex flex-col gap-4 pt-4">
-            {["Features", "How it works", "Pricing"].map((label) => (
+            {["Features", "How it works", "Pricing", "About Us", "Contact"].map((label) => (
               <a
                 key={label}
                 href={`/#${label.toLowerCase().replace(" ", "-")}`}

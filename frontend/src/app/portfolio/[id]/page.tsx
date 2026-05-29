@@ -12,10 +12,10 @@ const STATUS_CONFIG: Record<
   PortfolioStatus,
   { label: string; badge: "warning" | "info" | "success" | "error" | "default"; description: string }
 > = {
-  queued: { label: "Queued", badge: "default", description: "Waiting for a worker to pick up your job..." },
-  generating: { label: "AI Planning", badge: "info", description: "Gemini AI is analyzing your profile and creating the portfolio blueprint..." },
-  building: { label: "Building", badge: "info", description: "Builder engine is assembling your React components..." },
-  deploying: { label: "Deploying", badge: "warning", description: "Pushing to GitHub and deploying to Vercel..." },
+  queued: { label: "Queued", badge: "default", description: "We are preparing your request..." },
+  generating: { label: "Planning", badge: "info", description: "We are tailoring your portfolio content and layout..." },
+  building: { label: "Building", badge: "info", description: "We are assembling your portfolio..." },
+  deploying: { label: "Publishing", badge: "warning", description: "We are publishing your portfolio online..." },
   deployed: { label: "Live!", badge: "success", description: "Your portfolio is live and ready to share!" },
   failed: { label: "Failed", badge: "error", description: "Something went wrong during generation." },
 };
@@ -124,7 +124,7 @@ export default function PortfolioStatusPage() {
                   Open Live Portfolio →
                 </Button>
               </a>
-              <Link href="/dashboard">
+              <Link href="/dashboard" className="block mt-4">
                 <Button variant="ghost" className="w-full">Back to Dashboard</Button>
               </Link>
             </div>

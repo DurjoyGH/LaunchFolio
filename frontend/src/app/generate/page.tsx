@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import PersonalInfoStep from "@/components/generate/steps/PersonalInfoStep";
@@ -194,7 +195,13 @@ export default function GeneratePage() {
   // ===== STEP 0: User Type Selection =====
   if (step === 0) {
     return (
-      <div className="min-h-screen px-6 py-12 flex items-center justify-center" style={{ background: "var(--color-bg-primary)" }}>
+      <div className="min-h-screen px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
+        <div className="max-w-6xl mx-auto">
+          <Link href="/dashboard">
+            <Button variant="ghost" size="sm">← Back to Dashboard</Button>
+          </Link>
+        </div>
+        <div className="flex items-center justify-center mt-6">
         <div className="max-w-2xl w-full text-center">
           <h1 className="text-4xl font-bold text-white mb-3">Create Your Portfolio</h1>
           <p className="text-lg mb-12" style={{ color: "var(--color-text-secondary)" }}>
@@ -237,6 +244,7 @@ export default function GeneratePage() {
             </button>
           </div>
         </div>
+        </div>
       </div>
     );
   }
@@ -245,6 +253,11 @@ export default function GeneratePage() {
   return (
     <div className="min-h-screen px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
       <div className="max-w-3xl mx-auto">
+        <div className="mb-6">
+          <Link href="/dashboard">
+            <Button variant="ghost" size="sm">← Back to Dashboard</Button>
+          </Link>
+        </div>
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-white mb-2">Generate Your Portfolio</h1>
           <p style={{ color: "var(--color-text-secondary)" }}>Fill in your details — AI does the rest.</p>

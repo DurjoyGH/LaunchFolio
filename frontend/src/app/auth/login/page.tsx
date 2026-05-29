@@ -40,6 +40,11 @@ export default function LoginPage() {
       <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-hero)" }} />
 
       <div className="relative z-10 w-full max-w-md">
+        <div className="mb-6">
+          <Link href="/" className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
+            &larr; Back to Home
+          </Link>
+        </div>
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="LaunchFolio" width={36} height={36} className="rounded-lg" />
