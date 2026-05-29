@@ -1,82 +1,105 @@
 /**
  * Footer section templates.
  * 3 variants: FooterSimple, FooterCentered, FooterColumns
+ * Supports dynamic social links (any platform key).
  */
-const getFooterTemplate = ({ blueprint, userInput }) => {
-  const { variant } = blueprint.sections.find((s) => s.type === "footer") || { variant: "FooterSimple" };
-  const name = userInput.name;
+
+// Maps social platform keys to display labels and icons (emoji fallback)
+const SOCIAL_META = {
+  github:    { label: "GitHub",    emoji: "🐙" },
+  linkedin:  { label: "LinkedIn",  emoji: "🔗" },
+  twitter:   { label: "X",         emoji: "𝕏"  },
+  website:   { label: "Website",   emoji: "🌐" },
+  facebook:  { label: "Facebook",  emoji: "📘" },
+  instagram: { label: "Instagram", emoji: "📸" },
+  youtube:   { label: "YouTube",   emoji: "▶️" },
+  tiktok:    { label: "TikTok",    emoji: "🎵" },
+  snapchat:  { label: "Snapchat",  emoji: "👻" },
+  pinterest: { label: "Pinterest", emoji: "📌" },
+  threads:   { label: "Threads",   emoji: "🧵" },
+};
+
+const getFooterTemplate = ({ blueprint, userInput, content }) => {
+  const sectionDef = blueprint.sections.find((s) => s.type === "footer");
+  const variant = sectionDef?.variant || "FooterSimple";
+  const name = userInput.name || "";
   const social = userInput.social || {};
   const year = new Date().getFullYear();
+  const primary = blueprint.primaryColor || "#6366f1";
 
-  const socialLinks = (cls) => {
+  // Build active sections list from blueprint for nav links
+  const sectionTypes = blueprint.sections.map((s) => s.type).filter(
+    (t) => !["navbar", "footer"].includes(t)
+  );
+
+  // Generate social link JSX for all platforms the user added
+  const buildSocialLinks = (cls) => {
     const links = [];
-    if (social.github) links.push(`<a href="${social.github}" target="_blank" className="flex items-center gap-2 ${cls}"><Github className="w-4 h-4" /><span>GitHub</span></a>`);
-    if (social.linkedin) links.push(`<a href="${social.linkedin}" target="_blank" className="flex items-center gap-2 ${cls}"><Linkedin className="w-4 h-4" /><span>LinkedIn</span></a>`);
-    if (social.twitter) links.push(`<a href="${social.twitter}" target="_blank" className="flex items-center gap-2 ${cls}"><Twitter className="w-4 h-4" /><span>Twitter</span></a>`);
-    if (social.website) links.push(`<a href="${social.website}" target="_blank" className="flex items-center gap-2 ${cls}"><Globe className="w-4 h-4" /><span>Website</span></a>`);
+    for (const [key, url] of Object.entries(social)) {
+      if (!url || !url.trim()) continue;
+      const meta = SOCIAL_META[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), emoji: "🔗" };
+      links.push(`<a href="${url}" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 ${cls}"><span>${meta.emoji}</span><span>${meta.label}</span></a>`);
+    }
     return links.join("\n            ");
   };
 
-  const socialImports = Object.keys(social).length ? `import { Github, Linkedin, Twitter, Globe } from "lucide-react";` : "";
+  const socialLinks = buildSocialLinks("text-sm text-gray-500 hover:text-white transition-colors");
+  const hasSocial = Object.values(social).some((v) => v && v.trim());
 
-  // FooterCentered — centered with social icons
+  // Nav links from sections
+  const navLinks = sectionTypes.slice(0, 4).map((t) => {
+    const label = t.charAt(0).toUpperCase() + t.slice(1);
+    return `<a href="#${t}" className="text-sm text-gray-500 hover:text-white transition-colors">${label}</a>`;
+  }).join("\n            ");
+
+  // FooterCentered
   if (variant === "FooterCentered") {
     return `
-${socialImports}
-
 export default function Footer() {
   return (
     <footer className="py-12 px-6 text-center border-t border-white/5">
       <div className="max-w-4xl mx-auto">
-        <p className="text-2xl font-bold text-white mb-4">${name.split(" ")[0]}<span style={{ color: "var(--color-primary)" }}>.</span></p>
-        <div className="flex flex-wrap gap-6 justify-center mb-8">
-          ${socialLinks("text-sm text-gray-500 hover:text-white transition-colors")}
+        <p className="text-2xl font-bold text-white mb-4">${name.split(" ")[0]}<span style={{color:"${primary}"}}>.</span></p>
+        ${hasSocial ? `<div className="flex flex-wrap gap-6 justify-center mb-8">
+          ${buildSocialLinks("flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors")}
+        </div>` : ""}
+        <div className="flex flex-wrap gap-6 justify-center mb-6">
+          ${navLinks}
         </div>
-        <div className="flex flex-wrap gap-6 justify-center text-sm text-gray-600 mb-6">
-          <a href="#about" className="hover:text-white transition-colors">About</a>
-          <a href="#projects" className="hover:text-white transition-colors">Projects</a>
-          <a href="#skills" className="hover:text-white transition-colors">Skills</a>
-          <a href="#contact" className="hover:text-white transition-colors">Contact</a>
-        </div>
-        <p className="text-xs text-gray-700">© ${year} ${name}. Built with LaunchFolio.</p>
+        <p className="text-xs text-gray-700">© ${year} ${name}. Built with <span style={{color:"${primary}"}}>LaunchFolio</span>.</p>
       </div>
     </footer>
   );
 }`;
   }
 
-  // FooterColumns — multi-column layout
+  // FooterColumns
   if (variant === "FooterColumns") {
     return `
-${socialImports}
-
 export default function Footer() {
   return (
     <footer className="py-16 px-6 border-t border-white/5">
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12">
         <div>
           <p className="text-xl font-bold text-white mb-3">${name}</p>
-          <p className="text-sm text-gray-500 leading-relaxed">${userInput.title || "Developer"}</p>
+          <p className="text-sm text-gray-500 leading-relaxed">${userInput.title || ""}</p>
         </div>
         <div>
           <p className="text-sm font-semibold text-white mb-4">Navigation</p>
           <div className="flex flex-col gap-2">
-            <a href="#about" className="text-sm text-gray-500 hover:text-white transition-colors">About</a>
-            <a href="#skills" className="text-sm text-gray-500 hover:text-white transition-colors">Skills</a>
-            <a href="#projects" className="text-sm text-gray-500 hover:text-white transition-colors">Projects</a>
-            <a href="#contact" className="text-sm text-gray-500 hover:text-white transition-colors">Contact</a>
+            ${navLinks}
           </div>
         </div>
-        <div>
+        ${hasSocial ? `<div>
           <p className="text-sm font-semibold text-white mb-4">Connect</p>
           <div className="flex flex-col gap-3">
-            ${socialLinks("text-sm text-gray-500 hover:text-white transition-colors")}
+            ${socialLinks}
           </div>
-        </div>
+        </div>` : "<div />"}
       </div>
       <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
         <p className="text-xs text-gray-700">© ${year} ${name}</p>
-        <p className="text-xs text-gray-700">Built with <span style={{ color: "var(--color-primary)" }}>LaunchFolio</span></p>
+        <p className="text-xs text-gray-700">Built with <span style={{color:"${primary}"}}>LaunchFolio</span></p>
       </div>
     </footer>
   );
@@ -85,16 +108,14 @@ export default function Footer() {
 
   // FooterSimple — default
   return `
-${socialImports}
-
 export default function Footer() {
   return (
     <footer className="py-8 px-6 border-t border-white/5">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
         <p className="text-sm text-gray-600">© ${year} ${name}. All rights reserved.</p>
-        <div className="flex flex-wrap gap-6">
-          ${socialLinks("text-sm text-gray-600 hover:text-white transition-colors")}
-        </div>
+        ${hasSocial ? `<div className="flex flex-wrap gap-6">
+          ${socialLinks}
+        </div>` : ""}
       </div>
     </footer>
   );

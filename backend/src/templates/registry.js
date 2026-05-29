@@ -12,6 +12,11 @@ const { getEducationTemplate } = require("./sections/education.templates");
 const { getProjectsTemplate } = require("./sections/projects.templates");
 const { getContactTemplate } = require("./sections/contact.templates");
 const { getFooterTemplate } = require("./sections/footer.templates");
+const { getGalleryTemplate } = require("./sections/gallery.templates");
+const { getServicesTemplate } = require("./sections/services.templates");
+const { getTestimonialsTemplate } = require("./sections/testimonials.templates");
+const { getHobbiesTemplate } = require("./sections/hobbies.templates");
+const { getAchievementsTemplate } = require("./sections/achievements.templates");
 
 const SECTION_GENERATORS = {
   navbar: getNavbarTemplate,
@@ -20,6 +25,11 @@ const SECTION_GENERATORS = {
   skills: getSkillsTemplate,
   education: getEducationTemplate,
   projects: getProjectsTemplate,
+  gallery: getGalleryTemplate,
+  services: getServicesTemplate,
+  testimonials: getTestimonialsTemplate,
+  hobbies: getHobbiesTemplate,
+  achievements: getAchievementsTemplate,
   contact: getContactTemplate,
   footer: getFooterTemplate,
 };

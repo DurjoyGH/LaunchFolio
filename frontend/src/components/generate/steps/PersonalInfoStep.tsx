@@ -11,6 +11,7 @@ interface Props {
 }
 
 export default function PersonalInfoStep({ formData, update }: Props) {
+  const isITUser = formData.userType === "it";
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
   const photoRef = useRef<HTMLInputElement>(null);
@@ -159,15 +160,18 @@ export default function PersonalInfoStep({ formData, update }: Props) {
         <input ref={resumeRef} type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleResumeUpload} />
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold text-white mb-3">Social Links</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label="GitHub URL" placeholder="https://github.com/username" value={formData.social.github} onChange={(e) => updateSocial("github", e.target.value)} />
-          <Input label="LinkedIn URL" placeholder="https://linkedin.com/in/username" value={formData.social.linkedin} onChange={(e) => updateSocial("linkedin", e.target.value)} />
-          <Input label="Twitter / X URL" placeholder="https://twitter.com/username" value={formData.social.twitter} onChange={(e) => updateSocial("twitter", e.target.value)} />
-          <Input label="Personal Website" placeholder="https://yourwebsite.com" value={formData.social.website} onChange={(e) => updateSocial("website", e.target.value)} />
+      {/* Social Links - Only for IT users */}
+      {isITUser && (
+        <div>
+          <h3 className="text-sm font-semibold text-white mb-3">Social Links</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input label="GitHub URL" placeholder="https://github.com/username" value={formData.social.github} onChange={(e) => updateSocial("github", e.target.value)} />
+            <Input label="LinkedIn URL" placeholder="https://linkedin.com/in/username" value={formData.social.linkedin} onChange={(e) => updateSocial("linkedin", e.target.value)} />
+            <Input label="Twitter / X URL" placeholder="https://twitter.com/username" value={formData.social.twitter} onChange={(e) => updateSocial("twitter", e.target.value)} />
+            <Input label="Personal Website" placeholder="https://yourwebsite.com" value={formData.social.website} onChange={(e) => updateSocial("website", e.target.value)} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

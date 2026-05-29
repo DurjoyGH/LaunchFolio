@@ -9,63 +9,10 @@ const portfolioSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Raw user input
+    // Raw user input — stored as flexible Mixed so all user data is preserved
     input: {
-      name: { type: String, required: true },
-      title: { type: String, required: true },
-      bio: { type: String },
-      email: { type: String },
-      location: { type: String },
-      phone: { type: String },
-      profileImage: { type: String }, // Cloudinary URL
-      resumeUrl: { type: String },    // Cloudinary URL
-      customDomain: { type: String },  // User-chosen subdomain prefix
-      skills: [
-        {
-          name: { type: String },
-          level: { type: String, enum: ["beginner", "intermediate", "advanced", "expert"] },
-          icon: { type: String },
-        },
-      ],
-      projects: [
-        {
-          title: { type: String },
-          description: { type: String },
-          techStack: [String],
-          liveUrl: { type: String },
-          githubUrl: { type: String },
-          image: { type: String }, // Cloudinary URL
-        },
-      ],
-      education: [
-        {
-          institution: { type: String },
-          degree: { type: String },
-          field: { type: String },
-          startYear: { type: String },
-          endYear: { type: String },
-          description: { type: String },
-        },
-      ],
-      social: {
-        github: { type: String },
-        linkedin: { type: String },
-        twitter: { type: String },
-        website: { type: String },
-      },
-      designPreferences: {
-        theme: { type: String, enum: ["dark", "light", "auto"], default: "dark" },
-        style: { type: String, enum: ["modern", "minimal", "bold", "elegant", "developer", "creative", "corporate", "glassmorphism", "futuristic"], default: "creative" },
-        primaryColor: { type: String },
-        fontPreference: { type: String },
-        buttonColor: { type: String },
-        buttonTextColor: { type: String },
-        navBgColor: { type: String },
-        navLinkColor: { type: String },
-        textColor: { type: String },
-        heroAnimation: { type: String, enum: ["fadeUp", "slideIn", "typewriter", "glow", "none"], default: "fadeUp" },
-        logoStyle: { type: String, enum: ["initial", "name", "photo", "photoName"], default: "initial" },
-      },
+      type: mongoose.Schema.Types.Mixed,
+      required: true,
     },
 
     // AI-generated blueprint

@@ -13,15 +13,32 @@ const getContactTemplate = ({ blueprint, userInput, content }) => {
   const resumeUrl = userInput.resumeUrl || "";
   const social = userInput.social || {};
 
+  // Dynamic social link builder — supports any platform key
+  const SOCIAL_META = {
+    github:    { label: "GitHub",    emoji: "🐙" },
+    linkedin:  { label: "LinkedIn",  emoji: "🔗" },
+    twitter:   { label: "X",         emoji: "𝕏"  },
+    website:   { label: "Website",   emoji: "🌐" },
+    facebook:  { label: "Facebook",  emoji: "📘" },
+    instagram: { label: "Instagram", emoji: "📸" },
+    youtube:   { label: "YouTube",   emoji: "▶️" },
+    tiktok:    { label: "TikTok",    emoji: "🎵" },
+    snapchat:  { label: "Snapchat",  emoji: "👻" },
+    pinterest: { label: "Pinterest", emoji: "📌" },
+    threads:   { label: "Threads",   emoji: "🧵" },
+  };
+
   const socialBtns = (cls) => {
     const links = [];
-    if (social.github) links.push(`<a href="${social.github}" target="_blank" className="flex items-center gap-2 ${cls}"><Github className="w-4 h-4" /><span>GitHub</span></a>`);
-    if (social.linkedin) links.push(`<a href="${social.linkedin}" target="_blank" className="flex items-center gap-2 ${cls}"><Linkedin className="w-4 h-4" /><span>LinkedIn</span></a>`);
-    if (social.twitter) links.push(`<a href="${social.twitter}" target="_blank" className="flex items-center gap-2 ${cls}"><Twitter className="w-4 h-4" /><span>Twitter</span></a>`);
+    for (const [key, url] of Object.entries(social)) {
+      if (!url || !url.trim()) continue;
+      const meta = SOCIAL_META[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), emoji: "🔗" };
+      links.push(`<a href="${url}" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 ${cls}"><span>${meta.emoji}</span><span>${meta.label}</span></a>`);
+    }
     return links.join("\n            ");
   };
 
-  const socialImports = `import { Github, Linkedin, Twitter, Mail, Phone, FileText, ArrowRight } from "lucide-react";`;
+  const socialImports = `import { Mail, Phone, FileText, ArrowRight } from "lucide-react";`;
 
   // ContactSplit — two columns with form
   if (variant === "ContactSplit") {

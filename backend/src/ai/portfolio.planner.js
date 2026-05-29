@@ -9,11 +9,14 @@ const COMPONENT_REGISTRY = {
   skills: ["SkillsGrid", "SkillsProgress", "SkillsCards", "SkillsTags"],
   education: ["EducationTimeline", "EducationCards", "EducationMinimal"],
   projects: ["ProjectsGrid", "ProjectsShowcase", "ProjectsMinimal", "ProjectsCards", "ProjectsMasonry"],
+  gallery: ["GalleryMasonry", "GalleryGrid", "GalleryShowcase"],
+  services: ["ServicesGrid", "ServicesCards", "ServicesMinimal"],
+  testimonials: ["TestimonialsCards", "TestimonialsGrid", "TestimonialsQuote"],
+  hobbies: ["HobbiesGrid", "HobbiesCards", "HobbiesList"],
+  achievements: ["AchievementsCards", "AchievementsTimeline", "AchievementsTrophy"],
   contact: ["ContactModern", "ContactSplit", "ContactGlass", "ContactMinimal"],
   footer: ["FooterSimple", "FooterCentered", "FooterColumns"],
 };
-
-const REQUIRED_SECTIONS = ["navbar", "hero", "about", "skills", "education", "projects", "contact", "footer"];
 
 /**
  * Style personality presets — maps design personality to recommended component combinations.
@@ -30,20 +33,28 @@ const STYLE_PRESETS = {
 
 /**
  * Validates AI blueprint against known component registry.
- * Falls back to safe defaults if AI returns invalid variants.
+ * Supports dynamic section lists — no hardcoded REQUIRED_SECTIONS.
  */
 const validateBlueprint = (blueprint) => {
-  const validatedSections = REQUIRED_SECTIONS.map((type) => {
-    const aiSection = blueprint.sections?.find((s) => s.type === type);
-    const availableVariants = COMPONENT_REGISTRY[type];
+  let validatedSections = [];
 
-    if (aiSection && availableVariants.includes(aiSection.variant)) {
-      return { type, variant: aiSection.variant };
+  if (Array.isArray(blueprint.sections)) {
+    for (const s of blueprint.sections) {
+      if (s && s.type && COMPONENT_REGISTRY[s.type]) {
+        const variants = COMPONENT_REGISTRY[s.type];
+        const variant = variants.includes(s.variant) ? s.variant : variants[0];
+        validatedSections.push({ type: s.type, variant });
+      }
     }
+  }
 
-    // Fallback to first available variant
-    return { type, variant: availableVariants[0] };
-  });
+  // Ensure minimum sections exist
+  const types = validatedSections.map((s) => s.type);
+  if (!types.includes("navbar")) validatedSections.unshift({ type: "navbar", variant: "NavbarCentered" });
+  if (!types.includes("hero")) validatedSections.splice(1, 0, { type: "hero", variant: "HeroCentered" });
+  if (!types.includes("about")) validatedSections.splice(2, 0, { type: "about", variant: "AboutCard" });
+  if (!types.includes("contact")) validatedSections.push({ type: "contact", variant: "ContactModern" });
+  if (!types.includes("footer")) validatedSections.push({ type: "footer", variant: "FooterSimple" });
 
   // Validate design tokens
   const designTokens = {
@@ -68,8 +79,6 @@ const validateBlueprint = (blueprint) => {
 
 /**
  * Main portfolio planner — calls AI and returns a validated blueprint.
- * @param {Object} userInput
- * @returns {Promise<Object>} blueprint
  */
 const planPortfolio = async (userInput) => {
   const prompt = buildBlueprintPrompt(userInput);

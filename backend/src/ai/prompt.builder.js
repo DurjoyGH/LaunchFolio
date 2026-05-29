@@ -8,37 +8,65 @@ const buildBlueprintPrompt = (userInput) => {
     name,
     title,
     bio,
+    userType = "it",
     skills = [],
     projects = [],
     education = [],
+    services = [],
+    testimonials = [],
+    gallery = [],
+    hobbies = [],
+    achievements = [],
     social = {},
+    selectedSections = [],
     designPreferences = {},
   } = userInput;
 
-  const skillNames = skills.map((s) => s.name).join(", ") || "Not specified";
+  const skillNames = skills.map((s) => s.name).join(", ") || "None";
   const projectTitles = projects.map((p) => p.title).join(", ") || "None";
-  const eduSummary = education.map((e) => `${e.degree} at ${e.institution}`).join(", ") || "None";
-  const { theme = "dark", style = "modern", primaryColor, fontPreference } = designPreferences;
+  const serviceTitles = services.map((s) => s.title).join(", ") || "None";
+  const { theme = "dark", style = "modern", primaryColor, fontPreference, palette } = designPreferences;
+
+  // Build section list based on user type
+  let sectionGuide = "";
+  if (userType === "nonit") {
+    const mandatory = ["navbar", "hero", "about", "education", "contact", "footer"];
+    const optional = selectedSections || [];
+    const allSections = [...mandatory.slice(0, 3), ...optional, ...mandatory.slice(3)];
+    sectionGuide = `
+The user selected these sections (MANDATORY + optional): ${allSections.join(", ")}
+ONLY include these exact sections in your response. Do NOT add extra sections.`;
+  } else {
+    sectionGuide = `
+Include these sections: navbar, hero, about, skills, education, projects, contact, footer.
+If user has no projects, you may skip "projects".`;
+  }
 
   return `
-You are a professional portfolio design AI for LaunchFolio — an AI-powered portfolio generator.
+You are a professional portfolio design AI for LaunchFolio.
 
 Your job is to analyze the user's profile and generate a UNIQUE portfolio blueprint.
-Every portfolio must feel VISUALLY DISTINCT. You must intelligently combine components to create diversity.
+Every portfolio must feel VISUALLY DISTINCT. Vary layouts aggressively.
 
 == USER INFORMATION ==
+User Type: ${userType === "nonit" ? "Non-IT / General" : "IT / Developer"}
 Name: ${name}
 Professional Title: ${title}
 Bio: ${bio || "Not provided"}
 Skills: ${skillNames}
 Projects: ${projectTitles}
-Education: ${eduSummary}
-GitHub: ${social.github || "Not provided"}
-LinkedIn: ${social.linkedin || "Not provided"}
-Design Style Preference: ${style}
+Services: ${serviceTitles}
+Has Gallery: ${gallery.length > 0}
+Has Testimonials: ${testimonials.length > 0}
+Has Hobbies: ${hobbies.length > 0}
+Has Achievements: ${achievements.length > 0}
+Design Style: ${style}
 Theme: ${theme}
-Primary Color Preference: ${primaryColor || "Choose best fit"}
-Font Preference: ${fontPreference || "Choose best fit"}
+Color Palette: ${palette || "Not specified"}
+Primary Color: ${primaryColor || "Auto"}
+Font: ${fontPreference || "Auto"}
+
+== SECTION RULES ==${sectionGuide}
 
 == AVAILABLE COMPONENT VARIANTS ==
 - navbar: NavbarCentered, NavbarGlass, NavbarMinimal, NavbarBold, NavbarFloating
@@ -47,70 +75,54 @@ Font Preference: ${fontPreference || "Choose best fit"}
 - skills: SkillsGrid, SkillsProgress, SkillsCards, SkillsTags
 - education: EducationTimeline, EducationCards, EducationMinimal
 - projects: ProjectsGrid, ProjectsShowcase, ProjectsMinimal, ProjectsCards, ProjectsMasonry
+- gallery: GalleryMasonry, GalleryGrid, GalleryShowcase
+- services: ServicesGrid, ServicesCards, ServicesMinimal
+- testimonials: TestimonialsCards, TestimonialsGrid, TestimonialsQuote
+- hobbies: HobbiesGrid, HobbiesCards, HobbiesList
+- achievements: AchievementsCards, AchievementsTimeline, AchievementsTrophy
 - contact: ContactModern, ContactSplit, ContactGlass, ContactMinimal
 - footer: FooterSimple, FooterCentered, FooterColumns
 
 == STYLE PERSONALITIES ==
-Choose ONE that best fits the user:
-- "minimal" — Clean whitespace, understated, mono fonts
-- "developer" — Technical, terminal-inspired
-- "creative" — Bold colors, asymmetric, playful
-- "corporate" — Professional, structured, formal
-- "glassmorphism" — Frosted glass, translucent, modern
-- "futuristic" — Neon accents, dark, glowing effects
+Choose ONE: "minimal", "developer", "creative", "corporate", "glassmorphism", "futuristic"
 
 == DESIGN TOKENS ==
-Choose design tokens that match the personality:
 - spacing: "compact" | "comfortable" | "spacious"
 - radius: "none" | "sm" | "md" | "lg" | "full"
 - shadow: "none" | "soft" | "medium" | "dramatic"
 - animation: "none" | "subtle" | "smooth" | "energetic"
 
-== RULES ==
-1. DO NOT always pick the same components. Vary your choices based on user data.
-2. If user has many projects, prefer ProjectsGrid or ProjectsMasonry.
-3. If user has a photo, prefer HeroSplit or HeroCreative.
-4. If user style is "minimal", pick Minimal variants.
-5. Match the personality with coherent component choices.
-6. Generate a color palette that feels cohesive with the personality.
-7. Choose colors that are NOT generic (#6366f1 every time). Be creative.
+== CRITICAL RULES ==
+1. VARY component choices. Never use the same combination twice.
+2. Choose colors that are NOT generic. Be creative with the palette.
+3. For Non-IT users, prefer clean/modern/elegant styles.
+4. Each section MUST use a DIFFERENT variant from previous generations.
 
-Return ONLY this exact JSON structure:
+Return ONLY this JSON:
 
 {
   "theme": "dark" | "light",
-  "font": "Inter" | "Poppins" | "Raleway" | "Roboto" | "Space Grotesk",
+  "font": "Inter" | "Poppins" | "Raleway" | "Roboto" | "Space Grotesk" | "Montserrat" | "Nunito" | "Playfair Display",
   "primaryColor": "#hexcode",
   "secondaryColor": "#hexcode",
   "accentColor": "#hexcode",
-  "personality": "minimal" | "developer" | "creative" | "corporate" | "glassmorphism" | "futuristic",
-  "designTokens": {
-    "spacing": "compact" | "comfortable" | "spacious",
-    "radius": "none" | "sm" | "md" | "lg" | "full",
-    "shadow": "none" | "soft" | "medium" | "dramatic",
-    "animation": "none" | "subtle" | "smooth" | "energetic"
-  },
+  "personality": "...",
+  "designTokens": { "spacing": "...", "radius": "...", "shadow": "...", "animation": "..." },
   "sections": [
     { "type": "navbar", "variant": "..." },
     { "type": "hero", "variant": "..." },
-    { "type": "about", "variant": "..." },
-    { "type": "skills", "variant": "..." },
-    { "type": "education", "variant": "..." },
-    { "type": "projects", "variant": "..." },
-    { "type": "contact", "variant": "..." },
-    { "type": "footer", "variant": "..." }
+    ... only sections the user selected ...
   ],
   "content": {
-    "tagline": "Short professional tagline (max 10 words)",
-    "bio": "Professional bio paragraph (2-3 sentences)",
-    "ctaText": "Primary CTA button text (3-5 words)",
-    "ctaSecondaryText": "Secondary CTA text (3-5 words)",
+    "tagline": "Short tagline (max 10 words)",
+    "bio": "Professional bio (2-3 sentences) — ONLY if user did not provide one",
+    "ctaText": "CTA button text",
+    "ctaSecondaryText": "Secondary CTA text",
     "aboutHeading": "About section heading",
-    "aboutSubtext": "About section subtext",
-    "skillsHeading": "Skills section heading",
-    "projectsHeading": "Projects section heading",
-    "contactHeading": "Contact section heading",
-    "contactSubtext": "Contact section subtext"
+    "skillsHeading": "Skills heading",
+    "projectsHeading": "Projects heading",
+    "contactHeading": "Contact heading",
+    "contactSubtext": "Contact subtext"
   }
 }
 `;
@@ -118,23 +130,21 @@ Return ONLY this exact JSON structure:
 
 const buildContentPrompt = (userInput, blueprint) => {
   return `
-You are a professional copywriter for developer portfolios.
+You are a professional copywriter for personal portfolios.
 
-Based on this developer's profile:
+User profile:
 Name: ${userInput.name}
 Title: ${userInput.title}
-Skills: ${userInput.skills?.map((s) => s.name).join(", ")}
-Projects: ${userInput.projects?.map((p) => p.title).join(", ")}
+User Type: ${userInput.userType === "nonit" ? "Non-technical / General" : "IT / Developer"}
 Personality: ${blueprint.personality || "creative"}
 
-Write enhanced, professional content. Return JSON:
+Write professional content. Return JSON:
 {
   "tagline": "...",
   "bio": "...",
   "ctaText": "...",
   "ctaSecondaryText": "...",
   "aboutHeading": "...",
-  "aboutSubtext": "...",
   "skillsHeading": "...",
   "projectsHeading": "...",
   "contactHeading": "...",

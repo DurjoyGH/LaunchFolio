@@ -35,7 +35,41 @@ const educationSchema = Joi.object({
   description: Joi.string().allow("", null).optional(),
 });
 
+const serviceSchema = Joi.object({
+  title: Joi.string().required(),
+  description: Joi.string().allow("", null).optional(),
+  price: Joi.string().allow("", null).optional(),
+});
+
+const testimonialSchema = Joi.object({
+  name: Joi.string().required(),
+  role: Joi.string().allow("", null).optional(),
+  text: Joi.string().required(),
+});
+
+const gallerySchema = Joi.object({
+  url: Joi.string().uri().required(),
+  caption: Joi.string().allow("", null).optional(),
+});
+
+const hobbySchema = Joi.object({
+  name: Joi.string().required(),
+  emoji: Joi.string().allow("", null).optional(),
+  description: Joi.string().allow("", null).optional(),
+});
+
+const achievementSchema = Joi.object({
+  title: Joi.string().required(),
+  year: Joi.string().allow("", null).optional(),
+  description: Joi.string().allow("", null).optional(),
+});
+
 const portfolioInputSchema = Joi.object({
+  // User type (IT or Non-IT)
+  userType: Joi.string().valid("it", "nonit").default("it"),
+  selectedSections: Joi.array().items(Joi.string()).default([]),
+
+  // Core personal info
   name: Joi.string().required(),
   title: Joi.string().required(),
   bio: Joi.string().allow("", null).optional(),
@@ -45,20 +79,28 @@ const portfolioInputSchema = Joi.object({
   profileImage: Joi.string().uri().allow("", null).optional(),
   resumeUrl: Joi.string().uri().allow("", null).optional(),
   customDomain: Joi.string().allow("", null).optional(),
+
+  // IT sections
   skills: Joi.array().items(skillSchema).default([]),
   education: Joi.array().items(educationSchema).default([]),
   projects: Joi.array().items(projectSchema).default([]),
-  social: Joi.object({
-    github: Joi.string().uri().allow("", null).optional(),
-    linkedin: Joi.string().uri().allow("", null).optional(),
-    twitter: Joi.string().uri().allow("", null).optional(),
-    website: Joi.string().uri().allow("", null).optional(),
-  }).default({}),
+
+  // Non-IT optional sections
+  services: Joi.array().items(serviceSchema).default([]),
+  testimonials: Joi.array().items(testimonialSchema).default([]),
+  gallery: Joi.array().items(gallerySchema).default([]),
+  hobbies: Joi.array().items(hobbySchema).default([]),
+  achievements: Joi.array().items(achievementSchema).default([]),
+
+  // Social — allow any string keys (Instagram, TikTok, Facebook, etc.)
+  social: Joi.object().pattern(Joi.string(), Joi.string().uri().allow("", null)).default({}),
+
   designPreferences: Joi.object({
     theme: Joi.string().valid("dark", "light", "auto").default("dark"),
     style: Joi.string().valid("minimal", "developer", "creative", "corporate", "glassmorphism", "futuristic", "modern", "bold", "elegant").default("creative"),
     primaryColor: Joi.string().allow("", null).optional(),
     fontPreference: Joi.string().allow("", null).optional(),
+    palette: Joi.string().allow("", null).optional(),
     buttonColor: Joi.string().allow("", null).optional(),
     buttonTextColor: Joi.string().allow("", null).optional(),
     navBgColor: Joi.string().allow("", null).optional(),

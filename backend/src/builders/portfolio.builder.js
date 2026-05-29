@@ -15,6 +15,11 @@ const buildPortfolio = async ({ portfolioId, blueprint, userInput, content }) =>
   const outputPath = path.join(__dirname, "../../generated-sites", portfolioId);
   fs.mkdirSync(outputPath, { recursive: true });
 
+  // BIO PRIORITY: User bio always wins over AI-generated bio
+  if (userInput.bio && userInput.bio.trim()) {
+    content.bio = userInput.bio;
+  }
+
   const ctx = { blueprint, userInput, content };
 
   // Generate section components
@@ -57,6 +62,7 @@ ${sectionJSX}
 
   // /app/layout.tsx
   const googleFontVar = getFontImport(font);
+  const fontClassName = font.replace(/\s+/g, "_").toLowerCase();
   write(outputPath, "app/layout.tsx", `import type { Metadata } from "next";
 import { ${font.replace(" ", "_")} } from "next/font/google";
 import "./globals.css";
@@ -92,16 +98,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const dp = userInput.designPreferences || {};
   
   // Resolve colors based on user preference or theme
+  // LIGHT MODE FIX: Use high-contrast colors for readability
   const isDark = theme === "dark";
-  const textColor = dp.textColor || (isDark ? "#e2e8f0" : "#1a202c");
+  const textColor = dp.textColor || (isDark ? "#e2e8f0" : "#111827");
   const textMuted = isDark ? "#9ca3af" : "#6b7280";
+  const headingColor = isDark ? "#f1f5f9" : "#0f172a";
+  const bodyText = isDark ? "#cbd5e1" : "#374151";
   const btnBg = dp.buttonColor || primaryColor;
-  const btnText = dp.buttonTextColor || "#ffffff";
-  const navBg = dp.navBgColor || (isDark ? "rgba(10,10,15,0.9)" : "rgba(255,255,255,0.9)");
+  const btnText = dp.buttonTextColor || (isDark ? "#ffffff" : "#ffffff");
+  const navBg = dp.navBgColor || (isDark ? "rgba(10,10,15,0.9)" : "rgba(255,255,255,0.95)");
   const navLink = dp.navLinkColor || (isDark ? "#9ca3af" : "#4b5563");
-  const navLinkHover = dp.textColor || (isDark ? "#ffffff" : "#111827");
-  const cardBg = isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)";
-  const borderColor = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
+  const navLinkHover = isDark ? "#ffffff" : "#111827";
+  const cardBg = isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)";
+  const borderColor = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.08)";
 
   write(outputPath, "app/globals.css", `@import "tailwindcss";
 
@@ -127,23 +136,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     --color-nav-hover: ${navLinkHover};
     --color-card-bg: ${cardBg};
     --color-border: ${borderColor};
+    --color-heading: ${headingColor};
+    --color-body: ${bodyText};
   }
 
   html { scroll-behavior: smooth; }
 
   body {
     background: ${isDark ? "#0a0a0f" : "#fafafa"};
-    color: var(--color-text-main);
+    color: var(--color-body);
     font-family: var(--font-body), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  .text-white { color: var(--color-text-main); }
-  .text-gray-300 { color: var(--color-text-main); opacity: 0.9; }
-  .text-gray-400 { color: var(--color-text-muted); }
-  .text-gray-500 { color: var(--color-text-muted); opacity: 0.8; }
+  /* LIGHT MODE FIX: Headings must always be readable */
+  h1, h2, h3, h4, h5, h6 { color: var(--color-heading); }
+  p, li, span { color: inherit; }
+
+  /* Tailwind utility class overrides for theme compatibility */
+  .text-white { color: var(--color-heading) !important; }
+  .text-gray-300 { color: var(--color-body) !important; }
+  .text-gray-400 { color: var(--color-text-muted) !important; }
+  .text-gray-500 { color: ${isDark ? "rgba(156,163,175,0.8)" : "#6b7280"} !important; }
+  .text-gray-600 { color: ${isDark ? "rgba(156,163,175,0.6)" : "#4b5563"} !important; }
+  .text-gray-700 { color: ${isDark ? "rgba(156,163,175,0.4)" : "#374151"} !important; }
   
   .border-white\\/5, .border-white\\/10 { border-color: var(--color-border); }
+  .bg-white\\/5 { background: ${isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.02)"}; }
   
   .nav-link {
     color: var(--color-nav-link);
@@ -262,16 +281,18 @@ const write = (base, relPath, content) => {
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const getFontImport = (font) => {
-  const map = {
-    Inter: "Inter",
-    Poppins: "Poppins",
-    Raleway: "Raleway",
-    Roboto: "Roboto",
-    "Space Grotesk": "Space_Grotesk",
+  const fontConfigs = {
+    Inter: { name: "Inter", weights: '["400", "500", "600", "700"]' },
+    Poppins: { name: "Poppins", weights: '["400", "500", "600", "700"]' },
+    Raleway: { name: "Raleway", weights: '["400", "500", "600", "700"]' },
+    Roboto: { name: "Roboto", weights: '["400", "500", "700"]' },
+    Montserrat: { name: "Montserrat", weights: '["400", "500", "600", "700"]' },
+    Nunito: { name: "Nunito", weights: '["400", "600", "700"]' },
+    "Space Grotesk": { name: "Space_Grotesk", weights: '["400", "500", "600", "700"]' },
+    "Playfair Display": { name: "Playfair_Display", weights: '["400", "600", "700"]' },
   };
-  const importName = map[font] || "Inter";
-  const varName = importName.toLowerCase().replace("_", "");
-  return `const font = ${importName}({ subsets: ["latin"], variable: "--font-body" });`;
+  const config = fontConfigs[font] || fontConfigs.Inter;
+  return `const font = ${config.name}({ subsets: ["latin"], weight: ${config.weights}, variable: "--font-body" });`;
 };
 
 module.exports = { buildPortfolio };
