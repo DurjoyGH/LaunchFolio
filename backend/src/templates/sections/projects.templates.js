@@ -6,8 +6,9 @@ const getProjectsTemplate = ({ blueprint, userInput, content }) => {
   const { variant } = blueprint.sections.find((s) => s.type === "projects") || { variant: "ProjectsGrid" };
   const projects = userInput.projects || [];
   const heading = content.projectsHeading || "Featured Projects";
-
-  const imports = `import { ExternalLink, Github } from "lucide-react";`;
+  const { renderSimpleIcon, getSocialIcon } = require("../../utils/social-icons");
+  const externalIcon = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/><path d=\"M15 3h6v6\"/><path d=\"M10 14L21 3\"/></svg>";
+  const githubIcon = renderSimpleIcon(getSocialIcon("github"), 16);
 
   // ProjectsShowcase — large featured cards
   if (variant === "ProjectsShowcase") {
@@ -31,15 +32,13 @@ const getProjectsTemplate = ({ blueprint, userInput, content }) => {
               ${(p.techStack || []).map(t => `<span className="px-3 py-1 rounded-full text-xs border border-white/10 text-gray-400">${t}</span>`).join("\n              ")}
             </div>
             <div className="flex gap-3 flex-wrap">
-              ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium btn-primary transition-opacity hover:opacity-90"><ExternalLink className="w-4 h-4" /> Live Demo</a>` : ""}
-              ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-400 border border-white/10 hover:border-white/30 transition-colors"><Github className="w-4 h-4" /> Source Code</a>` : ""}
+              ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium btn-primary transition-opacity hover:opacity-90">${externalIcon} Live Demo</a>` : ""}
+              ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-400 border border-white/10 hover:border-white/30 transition-colors">${githubIcon} Source Code</a>` : ""}
             </div>
           </div>
         </div>`).join("\n");
 
     return `
-${imports}
-
 export default function Projects() {
   return (
     <section id="projects" className="py-24 px-6">
@@ -63,12 +62,10 @@ export default function Projects() {
             <h3 className="text-xl font-semibold text-white group-hover:translate-x-2 transition-transform">${p.title}</h3>
             <p className="text-sm text-gray-500 mt-1">${(p.techStack || []).join(" · ")}</p>
           </div>
-          <ExternalLink className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
+          <span className="text-gray-600 group-hover:text-white transition-colors">${externalIcon}</span>
         </a>`).join("\n");
 
     return `
-${imports}
-
 export default function Projects() {
   return (
     <section id="projects" className="py-24 px-6">
@@ -97,14 +94,12 @@ export default function Projects() {
             ${(p.techStack || []).map(t => `<span className="px-2.5 py-0.5 rounded-md text-xs text-gray-400 bg-white/5">${t}</span>`).join("\n            ")}
           </div>
           <div className="flex gap-4 pt-2 border-t border-white/5">
-            ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" className="flex items-center gap-1 text-xs font-medium hover:opacity-80 transition-opacity" style={{ color: "var(--color-primary)" }}><ExternalLink className="w-3 h-3" /> Live</a>` : ""}
-            ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" className="flex items-center gap-1 text-xs text-gray-500 hover:text-white transition-colors"><Github className="w-3 h-3" /> Code</a>` : ""}
+            ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" className="flex items-center gap-1 text-xs font-medium hover:opacity-80 transition-opacity" style={{ color: "var(--color-primary)" }}>${externalIcon} Live</a>` : ""}
+            ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" className="flex items-center gap-1 text-xs text-gray-500 hover:text-white transition-colors">${githubIcon} Code</a>` : ""}
           </div>
         </div>`).join("\n");
 
     return `
-${imports}
-
 export default function Projects() {
   return (
     <section id="projects" className="py-24 px-6">
@@ -138,16 +133,14 @@ export default function Projects() {
             <h3 className="text-xl font-bold text-white mb-1">${p.title}</h3>
             <p className="text-sm text-gray-300 mb-3">${(p.techStack || []).join(" · ")}</p>
             <div className="flex gap-4">
-              ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" className="flex items-center gap-1.5 text-sm font-medium text-white underline"><ExternalLink className="w-4 h-4" /> Live</a>` : ""}
-              ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" className="flex items-center gap-1.5 text-sm text-gray-400 underline"><Github className="w-4 h-4" /> Code</a>` : ""}
+              ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" className="flex items-center gap-1.5 text-sm font-medium text-white underline">${externalIcon} Live</a>` : ""}
+              ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" className="flex items-center gap-1.5 text-sm text-gray-400 underline">${githubIcon} Code</a>` : ""}
             </div>
           </div>
         </div>`;
     }).join("\n");
 
     return `
-${imports}
-
 export default function Projects() {
   return (
     <section id="projects" className="py-24 px-6">
@@ -182,15 +175,13 @@ export default function Projects() {
               ${(p.techStack || []).map(t => `<span className="px-2.5 py-0.5 rounded-full text-xs border border-white/10 text-gray-400">${t}</span>`).join("\n              ")}
             </div>
             <div className="flex gap-4">
-              ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity" style={{ color: "var(--color-primary)" }}><ExternalLink className="w-4 h-4" /> Live Demo</a>` : ""}
-              ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-white transition-colors"><Github className="w-4 h-4" /> GitHub</a>` : ""}
+              ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" className="flex items-center gap-1.5 text-sm font-medium hover:opacity-80 transition-opacity" style={{ color: "var(--color-primary)" }}>${externalIcon} Live Demo</a>` : ""}
+              ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-white transition-colors">${githubIcon} GitHub</a>` : ""}
             </div>
           </div>
         </div>`).join("\n");
 
   return `
-${imports}
-
 export default function Projects() {
   return (
     <section id="projects" className="py-24 px-6">

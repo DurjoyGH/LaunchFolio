@@ -11,11 +11,15 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
-const skillSchema = Joi.object({
+const skillSchemaIT = Joi.object({
   name: Joi.string().required(),
   level: Joi.string().valid("beginner", "intermediate", "advanced", "expert").default("intermediate"),
   icon: Joi.string().allow("", null).optional(),
 });
+
+const skillSchemaNonIT = Joi.object({
+  name: Joi.string().required(),
+}).unknown(false);
 
 const projectSchema = Joi.object({
   title: Joi.string().required(),
@@ -81,7 +85,11 @@ const portfolioInputSchema = Joi.object({
   customDomain: Joi.string().allow("", null).optional(),
 
   // IT sections
-  skills: Joi.array().items(skillSchema).default([]),
+  skills: Joi.when("userType", {
+    is: "it",
+    then: Joi.array().items(skillSchemaIT).default([]),
+    otherwise: Joi.array().items(skillSchemaNonIT).default([]),
+  }),
   education: Joi.array().items(educationSchema).default([]),
   projects: Joi.array().items(projectSchema).default([]),
 

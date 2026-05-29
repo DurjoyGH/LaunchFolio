@@ -9,9 +9,11 @@ const getSkillsTemplate = ({ blueprint, userInput, content }) => {
   const primary = blueprint.primaryColor;
   const secondary = blueprint.secondaryColor;
   const skills = userInput.skills || [];
-  const heading = content.skillsHeading || "Skills & Technologies";
+  const heading = userInput.userType === "nonit"
+    ? "My Skills"
+    : (content.skillsHeading || "Skills & Technologies");
 
-  const { siImports, faImports, lucideImports, iconMap } = resolveSkillIcons(skills);
+  const { siImports, faImports, iconMap } = resolveSkillIcons(skills);
   
   let imports = [];
   if (siImports && siImports.size > 0) {
@@ -19,9 +21,6 @@ const getSkillsTemplate = ({ blueprint, userInput, content }) => {
   }
   if (faImports && faImports.size > 0) {
     imports.push(`import { ${Array.from(faImports).join(", ")} } from "react-icons/fa";`);
-  }
-  if (lucideImports && lucideImports.size > 0) {
-    imports.push(`import { ${Array.from(lucideImports).join(", ")} } from "lucide-react";`);
   }
   const importStr = imports.join("\n");
 
@@ -121,7 +120,6 @@ export default function Skills() {
   return (
     <section id="skills" className="py-24 px-6">
       <div className="max-w-4xl mx-auto text-center">
-        <p className="text-sm font-mono mb-4" style={{ color: "var(--color-primary)" }}>// tech stack</p>
         <h2 className="text-4xl font-bold text-white mb-12">${heading}</h2>
         <div className="flex flex-wrap gap-3 justify-center">
             ${tags}

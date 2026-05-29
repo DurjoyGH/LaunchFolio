@@ -127,7 +127,7 @@ function SkillsInlineSection({ formData, update }: Props) {
       setSkillInput("");
       return;
     }
-    update({ skills: [...formData.skills, { name: val, level: "Intermediate" }] });
+    update({ skills: [...formData.skills, { name: val }] });
     setSkillInput("");
   };
 

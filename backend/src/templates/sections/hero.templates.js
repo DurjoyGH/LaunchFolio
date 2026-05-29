@@ -6,20 +6,7 @@
  * Full bio belongs in the About section only.
  */
 
-// Dynamic social link builder supporting all platform keys
-const SOCIAL_META = {
-  github:    { label: "GitHub",    emoji: "🐙" },
-  linkedin:  { label: "LinkedIn",  emoji: "🔗" },
-  twitter:   { label: "X",         emoji: "𝕏"  },
-  website:   { label: "Website",   emoji: "🌐" },
-  facebook:  { label: "Facebook",  emoji: "📘" },
-  instagram: { label: "Instagram", emoji: "📸" },
-  youtube:   { label: "YouTube",   emoji: "▶️" },
-  tiktok:    { label: "TikTok",    emoji: "🎵" },
-  snapchat:  { label: "Snapchat",  emoji: "👻" },
-  pinterest: { label: "Pinterest", emoji: "📌" },
-  threads:   { label: "Threads",   emoji: "🧵" },
-};
+const { buildSocialLinks } = require("../../utils/social-icons");
 
 const getHeroTemplate = ({ blueprint, userInput, content }) => {
   const sectionDef = blueprint.sections.find((s) => s.type === "hero");
@@ -43,16 +30,7 @@ const getHeroTemplate = ({ blueprint, userInput, content }) => {
   const dp = userInput.designPreferences || {};
   const animClass = dp.heroAnimation && dp.heroAnimation !== "none" ? `anim-${dp.heroAnimation}` : "";
 
-  // Build social links dynamically
-  const buildSocialLinks = (cls) => {
-    const links = [];
-    for (const [key, url] of Object.entries(social)) {
-      if (!url || !url.trim()) continue;
-      const meta = SOCIAL_META[key] || { label: key, emoji: "🔗" };
-      links.push(`<a href="${url}" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 ${cls}"><span>${meta.emoji}</span><span>${meta.label}</span></a>`);
-    }
-    return links.join("\n            ");
-  };
+  const socialLinks = (cls) => buildSocialLinks(social, cls, 18);
 
   // Determine a good CTA anchor from blueprint
   const sectionTypes = blueprint.sections.map((s) => s.type);
@@ -96,7 +74,7 @@ export default function Hero() {
             </a>
           </div>
           ${hasSocial ? `<div className="flex gap-4 mt-8">
-            ${buildSocialLinks("text-sm transition-colors hover:opacity-80")}
+            ${socialLinks("text-sm transition-colors hover:opacity-80")}
           </div>` : ""}
         </div>
         <div className="flex justify-center">
@@ -138,7 +116,7 @@ export default function Hero() {
           </a>
         </div>
         ${hasSocial ? `<div className="flex items-center justify-center gap-6 mt-12 flex-wrap">
-          ${buildSocialLinks("transition-colors hover:opacity-80")}
+          ${socialLinks("transition-colors hover:opacity-80")}
         </div>` : ""}
       </div>
     </section>
@@ -167,7 +145,7 @@ export default function Hero() {
           </a>
         </div>
         ${hasSocial ? `<div className="flex gap-6 mt-10 text-sm flex-wrap">
-          ${buildSocialLinks("font-mono transition-colors hover:opacity-80")}
+          ${socialLinks("font-mono transition-colors hover:opacity-80")}
         </div>` : ""}
       </div>
     </section>
@@ -242,7 +220,7 @@ export default function Hero() {
           </div>
         </div>
         ${hasSocial ? `<div className="flex gap-6 mt-8 flex-wrap">
-          ${buildSocialLinks("text-sm transition-colors hover:opacity-80")}
+          ${socialLinks("text-sm transition-colors hover:opacity-80")}
         </div>` : ""}
       </div>
     </section>
@@ -269,7 +247,7 @@ export default function Hero() {
           </a>
         </div>
         ${hasSocial ? `<div className="flex gap-6 mt-8 justify-center flex-wrap">
-          ${buildSocialLinks("transition-colors hover:opacity-80")}
+          ${socialLinks("transition-colors hover:opacity-80")}
         </div>` : ""}
       </div>
     </section>

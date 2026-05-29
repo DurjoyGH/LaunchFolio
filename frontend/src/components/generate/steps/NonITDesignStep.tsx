@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import * as simpleIcons from "simple-icons";
 import type { FormData } from "@/app/generate/page";
 
 // ===== COLOR PALETTES =====
@@ -30,18 +31,33 @@ const FONTS = [
 ];
 
 // ===== SOCIAL PLATFORMS =====
-const SOCIAL_PLATFORMS = [
-  { key: "facebook",  label: "Facebook",  icon: "📘", placeholder: "https://facebook.com/username" },
-  { key: "linkedin",  label: "LinkedIn",  icon: "🔗", placeholder: "https://linkedin.com/in/username" },
-  { key: "instagram", label: "Instagram", icon: "📸", placeholder: "https://instagram.com/username" },
-  { key: "twitter",   label: "X (Twitter)", icon: "𝕏", placeholder: "https://x.com/username" },
-  { key: "youtube",   label: "YouTube",   icon: "▶️", placeholder: "https://youtube.com/@channel" },
-  { key: "tiktok",    label: "TikTok",    icon: "🎵", placeholder: "https://tiktok.com/@username" },
-  { key: "pinterest", label: "Pinterest", icon: "📌", placeholder: "https://pinterest.com/username" },
-  { key: "threads",   label: "Threads",   icon: "🧵", placeholder: "https://threads.net/@username" },
-  { key: "github",    label: "GitHub",    icon: "🐙", placeholder: "https://github.com/username" },
-  { key: "website",   label: "Website",   icon: "🌐", placeholder: "https://yoursite.com" },
+type SimpleIcon = { path: string; hex: string; title: string };
+
+const LINKEDIN_ICON: SimpleIcon = {
+  title: "LinkedIn",
+  hex: "0A66C2",
+  path: "M20.447 20.452H16.89v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.476-.9 1.636-1.85 3.366-1.85 3.6 0 4.267 2.368 4.267 5.455v6.286zM5.337 7.433A2.065 2.065 0 1 1 5.337 3.3a2.065 2.065 0 0 1 0 4.133zM6.882 20.452H3.79V9h3.092v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.727v20.545C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.273V1.727C24 .774 23.2 0 22.222 0h.003z",
+};
+
+const iconOrFallback = (icon?: SimpleIcon) => icon || (simpleIcons as { siLinktree: SimpleIcon }).siLinktree;
+
+const SOCIAL_PLATFORMS: { key: string; label: string; icon: SimpleIcon; placeholder: string }[] = [
+  { key: "facebook",  label: "Facebook",  icon: iconOrFallback((simpleIcons as { siFacebook?: SimpleIcon }).siFacebook), placeholder: "https://facebook.com/username" },
+  { key: "linkedin",  label: "LinkedIn",  icon: (simpleIcons as { siLinkedin?: SimpleIcon }).siLinkedin || LINKEDIN_ICON, placeholder: "https://linkedin.com/in/username" },
+  { key: "instagram", label: "Instagram", icon: iconOrFallback((simpleIcons as { siInstagram?: SimpleIcon }).siInstagram), placeholder: "https://instagram.com/username" },
+  { key: "twitter",   label: "X (Twitter)", icon: iconOrFallback((simpleIcons as { siX?: SimpleIcon }).siX), placeholder: "https://x.com/username" },
+  { key: "youtube",   label: "YouTube",   icon: iconOrFallback((simpleIcons as { siYoutube?: SimpleIcon }).siYoutube), placeholder: "https://youtube.com/@channel" },
+  { key: "tiktok",    label: "TikTok",    icon: iconOrFallback((simpleIcons as { siTiktok?: SimpleIcon }).siTiktok), placeholder: "https://tiktok.com/@username" },
+  { key: "pinterest", label: "Pinterest", icon: iconOrFallback((simpleIcons as { siPinterest?: SimpleIcon }).siPinterest), placeholder: "https://pinterest.com/username" },
+  { key: "threads",   label: "Threads",   icon: iconOrFallback((simpleIcons as { siThreads?: SimpleIcon }).siThreads), placeholder: "https://threads.net/@username" },
+  { key: "github",    label: "GitHub",    icon: iconOrFallback((simpleIcons as { siGithub?: SimpleIcon }).siGithub), placeholder: "https://github.com/username" },
 ];
+
+const renderSimpleIcon = (icon: SimpleIcon, size = 16) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d={icon.path} />
+  </svg>
+);
 
 interface Props {
   formData: FormData;
@@ -186,7 +202,9 @@ export default function NonITDesignStep({ formData, update }: Props) {
             if (!platform) return null;
             return (
               <div key={key} className="flex items-center gap-3">
-                <span className="text-lg w-8 text-center flex-shrink-0">{platform.icon}</span>
+                <span className="w-8 text-center flex-shrink-0 text-gray-300">
+                  {renderSimpleIcon(platform.icon)}
+                </span>
                 <input
                   type="url"
                   value={formData.social[key] || ""}
@@ -227,17 +245,29 @@ export default function NonITDesignStep({ formData, update }: Props) {
               <div className="max-h-48 overflow-y-auto">
                 {SOCIAL_PLATFORMS
                   .filter((p) => !activeSocials.includes(p.key))
-                  .filter((p) => p.label.toLowerCase().includes(socialSearch.toLowerCase()))
-                  .map((p) => (
+                  .filter((p) => {
+                    const q = socialSearch.toLowerCase();
+                    if (!q) return true;
+                    return (
+                      p.label.toLowerCase().includes(q)
+                      || p.key.toLowerCase().includes(q)
+                      || p.placeholder.toLowerCase().includes(q)
+                    );
+                  })
+                  .map((p) => {
+                    return (
                     <button
                       key={p.key}
                       onClick={() => addSocialPlatform(p.key)}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-left hover:bg-white/5 transition-colors"
                     >
-                      <span className="text-lg">{p.icon}</span>
+                      <span className="text-gray-300">
+                        {renderSimpleIcon(p.icon)}
+                      </span>
                       <span className="text-white">{p.label}</span>
                     </button>
-                  ))}
+                  );
+                  })}
               </div>
             </div>
           )}

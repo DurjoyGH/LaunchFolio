@@ -42,7 +42,7 @@ export default function ReviewStep({ formData }: Props) {
         {bio && <p className="text-sm mt-2 leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>{bio}</p>}
       </Section>
 
-      {userType === "it" || formData.selectedSections.includes("skills") ? (
+      {userType === "it" || (formData.selectedSections.includes("skills") && skills.length > 0) ? (
         <Section label={`Skills (${skills.length})`}>
           <div className="flex flex-wrap gap-2">
             {skills.length > 0 ? skills.map((s, i) => (
@@ -52,8 +52,8 @@ export default function ReviewStep({ formData }: Props) {
         </Section>
       ) : null}
 
-      <Section label={`Education (${education.length})`}>
-        {education.length > 0 ? (
+      {education.length > 0 && (
+        <Section label={`Education (${education.length})`}>
           <div className="space-y-2">
             {education.map((e, i) => (
               <div key={i} className="flex items-center justify-between">
@@ -62,12 +62,10 @@ export default function ReviewStep({ formData }: Props) {
               </div>
             ))}
           </div>
-        ) : (
-          <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>No education added</span>
-        )}
-      </Section>
+        </Section>
+      )}
 
-      {userType === "it" || formData.selectedSections.includes("projects") ? (
+      {userType === "it" || (formData.selectedSections.includes("projects") && projects.length > 0) ? (
         <Section label={`Projects (${projects.length})`}>
           {projects.length > 0 ? (
             <div className="space-y-2">
@@ -89,7 +87,7 @@ export default function ReviewStep({ formData }: Props) {
         </Section>
       ) : null}
 
-      {userType === "nonit" && (
+      {userType === "nonit" && formData.selectedSections.length > 0 && (
         <Section label="Optional Sections">
           <div className="flex flex-wrap gap-2">
             {formData.selectedSections.length > 0 ? formData.selectedSections.map((s, i) => (

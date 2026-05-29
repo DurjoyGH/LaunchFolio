@@ -13,7 +13,7 @@ import SectionPickerStep from "@/components/generate/steps/SectionPickerStep";
 import OptionalSectionsStep from "@/components/generate/steps/OptionalSectionsStep";
 import ReviewStep from "@/components/generate/steps/ReviewStep";
 
-export type Skill = { name: string; level: string };
+export type Skill = { name: string; level?: string };
 export type Education = {
   institution: string; degree: string; field: string;
   startYear: string; endYear: string; description: string;

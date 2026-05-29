@@ -168,7 +168,7 @@ export default function PersonalInfoStep({ formData, update }: Props) {
             <Input label="GitHub URL" placeholder="https://github.com/username" value={formData.social.github} onChange={(e) => updateSocial("github", e.target.value)} />
             <Input label="LinkedIn URL" placeholder="https://linkedin.com/in/username" value={formData.social.linkedin} onChange={(e) => updateSocial("linkedin", e.target.value)} />
             <Input label="Twitter / X URL" placeholder="https://twitter.com/username" value={formData.social.twitter} onChange={(e) => updateSocial("twitter", e.target.value)} />
-            <Input label="Personal Website" placeholder="https://yourwebsite.com" value={formData.social.website} onChange={(e) => updateSocial("website", e.target.value)} />
+            <Input label="Facebook URL" placeholder="https://facebook.com/username" value={formData.social.facebook} onChange={(e) => updateSocial("facebook", e.target.value)} />
           </div>
         </div>
       )}

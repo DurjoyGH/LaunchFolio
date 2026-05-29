@@ -222,8 +222,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       next: "15.5.18",
       react: "19.1.0",
       "react-dom": "19.1.0",
-      "react-icons": "^5.0.1",
-      "lucide-react": "^0.477.0"
+      "react-icons": "^5.0.1"
     },
     devDependencies: {
       "@tailwindcss/postcss": "^4",

@@ -11,15 +11,9 @@ const getAboutTemplate = ({ blueprint, userInput, content }) => {
   const profileImage = userInput.profileImage || "";
   const social = userInput.social || {};
 
-  const socialBtns = (cls = "px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors") => {
-    const links = [];
-    if (social.github) links.push(`<a href="${social.github}" target="_blank" className="flex items-center gap-2 ${cls}"><Github className="w-4 h-4" /><span>GitHub</span></a>`);
-    if (social.linkedin) links.push(`<a href="${social.linkedin}" target="_blank" className="flex items-center gap-2 ${cls}"><Linkedin className="w-4 h-4" /><span>LinkedIn</span></a>`);
-    if (social.twitter) links.push(`<a href="${social.twitter}" target="_blank" className="flex items-center gap-2 ${cls}"><Twitter className="w-4 h-4" /><span>Twitter</span></a>`);
-    return links.join("\n            ");
-  };
-
-  const socialImports = Object.keys(social).length ? `import { Github, Linkedin, Twitter } from "lucide-react";` : "";
+  const { buildSocialLinks } = require("../../utils/social-icons");
+  const socialBtns = (cls = "px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors") => buildSocialLinks(social, cls, 16);
+  const socialImports = "";
 
   // AboutTimeline — experience-style
   if (variant === "AboutTimeline") {

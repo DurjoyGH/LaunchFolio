@@ -268,7 +268,6 @@ const getSkillIcon = (skillName) => {
 const resolveSkillIcons = (skills) => {
   const siImports = new Set();
   const faImports = new Set();
-  const lucideImports = new Set();
   const iconMap = {};
 
   for (const skill of skills) {
@@ -277,13 +276,13 @@ const resolveSkillIcons = (skills) => {
     if (result) {
       if (result.type === "si") siImports.add(result.icon);
       else if (result.type === "fa") faImports.add(result.icon);
-      else lucideImports.add(result.icon);
-      
+      else continue;
+
       iconMap[name] = result;
     }
   }
 
-  return { siImports, faImports, lucideImports, iconMap };
+  return { siImports, faImports, iconMap };
 };
 
 module.exports = { getSkillIcon, resolveSkillIcons, normalize };

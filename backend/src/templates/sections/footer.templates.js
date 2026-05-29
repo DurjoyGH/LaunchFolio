@@ -4,20 +4,7 @@
  * Supports dynamic social links (any platform key).
  */
 
-// Maps social platform keys to display labels and icons (emoji fallback)
-const SOCIAL_META = {
-  github:    { label: "GitHub",    emoji: "🐙" },
-  linkedin:  { label: "LinkedIn",  emoji: "🔗" },
-  twitter:   { label: "X",         emoji: "𝕏"  },
-  website:   { label: "Website",   emoji: "🌐" },
-  facebook:  { label: "Facebook",  emoji: "📘" },
-  instagram: { label: "Instagram", emoji: "📸" },
-  youtube:   { label: "YouTube",   emoji: "▶️" },
-  tiktok:    { label: "TikTok",    emoji: "🎵" },
-  snapchat:  { label: "Snapchat",  emoji: "👻" },
-  pinterest: { label: "Pinterest", emoji: "📌" },
-  threads:   { label: "Threads",   emoji: "🧵" },
-};
+const { buildSocialLinks } = require("../../utils/social-icons");
 
 const getFooterTemplate = ({ blueprint, userInput, content }) => {
   const sectionDef = blueprint.sections.find((s) => s.type === "footer");
@@ -32,18 +19,7 @@ const getFooterTemplate = ({ blueprint, userInput, content }) => {
     (t) => !["navbar", "footer"].includes(t)
   );
 
-  // Generate social link JSX for all platforms the user added
-  const buildSocialLinks = (cls) => {
-    const links = [];
-    for (const [key, url] of Object.entries(social)) {
-      if (!url || !url.trim()) continue;
-      const meta = SOCIAL_META[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), emoji: "🔗" };
-      links.push(`<a href="${url}" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 ${cls}"><span>${meta.emoji}</span><span>${meta.label}</span></a>`);
-    }
-    return links.join("\n            ");
-  };
-
-  const socialLinks = buildSocialLinks("text-sm text-gray-500 hover:text-white transition-colors");
+  const socialLinks = buildSocialLinks(social, "text-sm text-gray-500 hover:text-white transition-colors");
   const hasSocial = Object.values(social).some((v) => v && v.trim());
 
   // Nav links from sections
