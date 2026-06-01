@@ -82,7 +82,7 @@ function getSteps(userType: string, selectedSections: string[]): StepDef[] {
     return [
       { id: 1, label: "Personal Info", icon: "◎", key: "personal" },
       { id: 2, label: "Skills", icon: "⬡", key: "skills" },
-      { id: 3, label: "Education", icon: "◆", key: "education" },
+      { id: 3, label: "Education", icon: "🎓", key: "education" },
       { id: 4, label: "Projects", icon: "◈", key: "projects" },
       { id: 5, label: "Design", icon: "✦", key: "design-it" },
       { id: 6, label: "Review", icon: "→", key: "review" },
@@ -91,7 +91,7 @@ function getSteps(userType: string, selectedSections: string[]): StepDef[] {
   // Non-IT flow
   const steps: StepDef[] = [
     { id: 1, label: "Personal Info", icon: "◎", key: "personal" },
-    { id: 2, label: "Education", icon: "◆", key: "education" },
+    { id: 2, label: "Education", icon: "🎓", key: "education" },
     { id: 3, label: "Design", icon: "✦", key: "design-nonit" },
     { id: 4, label: "Sections", icon: "◈", key: "section-picker" },
   ];
@@ -111,6 +111,7 @@ export default function GeneratePage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [prefilled, setPrefilled] = useState(false);
+  const [showItNotice, setShowItNotice] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -193,6 +194,48 @@ export default function GeneratePage() {
   const currentKey = currentSteps[step - 1]?.key || "";
   const stepProps = { formData, update };
 
+  const hasSocialLink = Object.values(formData.social || {}).some((v) => (v || "").trim());
+
+  const getStepError = () => {
+    if (currentKey === "personal") {
+      const missing = [
+        { key: "name", label: "Full Name" },
+        { key: "title", label: "Professional Title" },
+        { key: "email", label: "Email" },
+        { key: "phone", label: "Phone" },
+        { key: "location", label: "Location" },
+        { key: "bio", label: "Bio" },
+      ].filter((f) => !String((formData as Record<string, string>)[f.key] || "").trim());
+      if (missing.length > 0) return `Please fill: ${missing.map((m) => m.label).join(", ")}.`;
+      if (formData.userType === "it" && !hasSocialLink) return "Please add at least one social link.";
+    }
+
+    if (currentKey === "education") {
+      if (formData.education.length === 0) return "Please add at least one education entry.";
+    }
+
+    if (currentKey === "design-it") {
+      if (!formData.designPreferences.fontPreference) return "Please select a font.";
+    }
+
+    if (currentKey === "design-nonit") {
+      if (!formData.designPreferences.palette) return "Please select a color palette.";
+      if (!formData.designPreferences.fontPreference) return "Please select a font.";
+      if (!hasSocialLink) return "Please add at least one social link.";
+    }
+
+    if (currentKey === "optional-sections") {
+      if (formData.selectedSections.includes("gallery")) {
+        const hasEmptyCaption = formData.gallery.some((g) => !(g.caption || "").trim());
+        if (hasEmptyCaption) return "Please add a description for each gallery photo.";
+      }
+    }
+
+    return "";
+  };
+
+  const stepError = getStepError();
+
   // ===== STEP 0: User Type Selection =====
   if (step === 0) {
     return (
@@ -211,7 +254,7 @@ export default function GeneratePage() {
 
           <div className="grid sm:grid-cols-2 gap-6">
             <button
-              onClick={() => { update({ userType: "it" }); setStep(1); }}
+              onClick={() => setShowItNotice(true)}
               className="group p-8 rounded-2xl border-2 text-left transition-all hover:border-indigo-500/60 hover:bg-indigo-500/5"
               style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}
             >
@@ -246,6 +289,23 @@ export default function GeneratePage() {
           </div>
         </div>
         </div>
+
+        {showItNotice && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ background: "rgba(7, 7, 15, 0.8)" }}>
+            <div className="card w-full max-w-md p-6 text-center">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "var(--color-bg-card)" }}>
+                <span className="text-2xl">💻</span>
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Coming soon</h3>
+              <p className="text-sm mb-6" style={{ color: "var(--color-text-secondary)" }}>
+                The IT/CSE flow is under development. Please use the Non-IT option for now.
+              </p>
+              <Button variant="ghost" onClick={() => setShowItNotice(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -311,7 +371,20 @@ export default function GeneratePage() {
               ← Back
             </Button>
             {step < totalSteps ? (
-              <Button onClick={() => setStep(step + 1)}>Continue →</Button>
+              <Button
+                onClick={() => {
+                  if (stepError) {
+                    setError(stepError);
+                    toast.error(stepError);
+                    return;
+                  }
+                  setError("");
+                  setStep(step + 1);
+                }}
+                disabled={!!stepError}
+              >
+                Continue →
+              </Button>
             ) : (
               <Button onClick={handleSubmit} loading={submitting}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

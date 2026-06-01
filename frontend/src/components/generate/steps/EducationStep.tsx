@@ -21,28 +21,33 @@ interface Props {
 export default function EducationStep({ formData, update }: Props) {
   const [editing, setEditing] = useState<Education | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [isCurrent, setIsCurrent] = useState(false);
 
   const openNew = () => {
     setEditing({ ...EMPTY_EDU });
     setEditingIndex(null);
+    setIsCurrent(false);
   };
 
   const openEdit = (i: number) => {
     setEditing({ ...formData.education[i] });
     setEditingIndex(i);
+    setIsCurrent(!formData.education[i].endYear);
   };
 
   const save = () => {
     if (!editing?.institution || !editing?.degree) return;
+    const nextEditing = { ...editing, endYear: isCurrent ? "" : editing.endYear };
     if (editingIndex !== null) {
       const updated = [...formData.education];
-      updated[editingIndex] = editing;
+      updated[editingIndex] = nextEditing;
       update({ education: updated });
     } else {
-      update({ education: [...formData.education, editing] });
+      update({ education: [...formData.education, nextEditing] });
     }
     setEditing(null);
     setEditingIndex(null);
+    setIsCurrent(false);
   };
 
   const remove = (i: number) => {
@@ -90,8 +95,23 @@ export default function EducationStep({ formData, update }: Props) {
 
             <div className="grid grid-cols-2 gap-4">
               <input className="input" placeholder="Start Year (e.g. 2020)" value={editing.startYear} onChange={(e) => setEditing({ ...editing, startYear: e.target.value })} />
-              <input className="input" placeholder="End Year (or leave blank)" value={editing.endYear} onChange={(e) => setEditing({ ...editing, endYear: e.target.value })} />
+              <input
+                className="input"
+                placeholder="End Year (or leave blank)"
+                value={isCurrent ? "Present" : editing.endYear}
+                onChange={(e) => setEditing({ ...editing, endYear: e.target.value })}
+                disabled={isCurrent}
+              />
             </div>
+
+            <label className="flex items-center gap-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
+              <input
+                type="checkbox"
+                checked={isCurrent}
+                onChange={(e) => setIsCurrent(e.target.checked)}
+              />
+              Currently running
+            </label>
 
             <textarea rows={3} className="input resize-none" placeholder="Description (optional)" value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })} />
 

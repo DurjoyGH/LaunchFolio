@@ -4,6 +4,7 @@ import type { FormData } from "@/app/generate/page";
 import ServicesStep from "./ServicesStep";
 import TestimonialsStep from "./TestimonialsStep";
 import GalleryStep from "./GalleryStep";
+import ProjectsStep from "./ProjectsStep";
 import { useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -73,16 +74,30 @@ function HobbiesSection({ formData, update }: Props) {
 function AchievementsSection({ formData, update }: Props) {
   const [adding, setAdding] = useState(false);
   const [current, setCurrent] = useState({ title: "", year: "", description: "" });
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   const handleAdd = () => {
     if (!current.title.trim()) return;
-    update({ achievements: [...formData.achievements, current] });
+    if (editingIndex !== null) {
+      const updated = [...formData.achievements];
+      updated[editingIndex] = current;
+      update({ achievements: updated });
+      setEditingIndex(null);
+    } else {
+      update({ achievements: [...formData.achievements, current] });
+    }
     setCurrent({ title: "", year: "", description: "" });
     setAdding(false);
   };
 
   const remove = (index: number) => {
     update({ achievements: formData.achievements.filter((_, i) => i !== index) });
+  };
+
+  const openEdit = (index: number) => {
+    setCurrent(formData.achievements[index]);
+    setEditingIndex(index);
+    setAdding(true);
   };
 
   return (
@@ -95,7 +110,10 @@ function AchievementsSection({ formData, update }: Props) {
               <p className="font-semibold text-white text-sm">{a.title} {a.year && <span className="text-xs text-indigo-400 ml-2">{a.year}</span>}</p>
               {a.description && <p className="text-xs text-gray-400 mt-1">{a.description}</p>}
             </div>
-            <button onClick={() => remove(i)} className="text-xs text-red-400 opacity-0 group-hover:opacity-100">Remove</button>
+            <div className="flex gap-2 opacity-0 group-hover:opacity-100">
+              <button onClick={() => openEdit(i)} className="text-xs text-white/70 hover:text-white">Edit</button>
+              <button onClick={() => remove(i)} className="text-xs text-red-400">Remove</button>
+            </div>
           </div>
         ))}
       </div>
@@ -103,10 +121,21 @@ function AchievementsSection({ formData, update }: Props) {
         <div className="p-4 border border-white/10 rounded-lg space-y-3">
           <Input label="Title/Award Name *" placeholder="Employee of the Year" value={current.title} onChange={(e) => setCurrent({ ...current, title: e.target.value })} />
           <Input label="Year (optional)" placeholder="2024" value={current.year} onChange={(e) => setCurrent({ ...current, year: e.target.value })} />
-          <Input label="Description (optional)" placeholder="Awarded for outstanding performance..." value={current.description} onChange={(e) => setCurrent({ ...current, description: e.target.value })} />
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
+              Description (optional)
+            </label>
+            <textarea
+              rows={3}
+              className="input resize-none"
+              placeholder="Awarded for outstanding performance..."
+              value={current.description}
+              onChange={(e) => setCurrent({ ...current, description: e.target.value })}
+            />
+          </div>
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" size="sm" onClick={() => setAdding(false)}>Cancel</Button>
-            <Button size="sm" onClick={handleAdd}>Add Achievement</Button>
+            <Button variant="ghost" size="sm" onClick={() => { setAdding(false); setEditingIndex(null); setCurrent({ title: "", year: "", description: "" }); }}>Cancel</Button>
+            <Button size="sm" onClick={handleAdd}>{editingIndex !== null ? "Save Changes" : "Add Achievement"}</Button>
           </div>
         </div>
       ) : (
@@ -176,6 +205,9 @@ export default function OptionalSectionsStep({ formData, update }: Props) {
       <div className="space-y-12 divide-y divide-white/10">
         {selected.includes("gallery") && (
           <div className="pt-8 first:pt-0"><GalleryStep formData={formData} update={update} /></div>
+        )}
+        {selected.includes("projects") && (
+          <div className="pt-8 first:pt-0"><ProjectsStep formData={formData} update={update} /></div>
         )}
         {selected.includes("services") && (
           <div className="pt-8 first:pt-0"><ServicesStep formData={formData} update={update} /></div>

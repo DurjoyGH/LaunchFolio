@@ -112,37 +112,40 @@ export default function PersonalInfoStep({ formData, update }: Props) {
           required
         />
         <Input
-          label="Email"
+          label="Email *"
           type="email"
           placeholder="alex@example.com"
           value={formData.email}
           onChange={(e) => update({ email: e.target.value })}
+          required
         />
         <Input
-          label="Phone"
+          label="Phone *"
           type="tel"
           placeholder="+880 1234 567890"
           value={formData.phone}
           onChange={(e) => update({ phone: e.target.value })}
+          required
         />
         <Input
-          label="Location"
+          label="Location *"
           placeholder="Dhaka, Bangladesh"
           value={formData.location}
           onChange={(e) => update({ location: e.target.value })}
+          required
         />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Bio</label>
+        <label className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Bio *</label>
         <textarea
           rows={4}
-          placeholder="Write a short bio — or leave blank and AI will generate one..."
+          placeholder="Write a short bio..."
           value={formData.bio}
           onChange={(e) => update({ bio: e.target.value })}
           className="input resize-none"
+          required
         />
-        <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Optional — AI generates a professional bio if left empty.</p>
       </div>
 
       {/* Resume Upload */}

@@ -21,8 +21,8 @@ const getGalleryTemplate = ({ blueprint, userInput, content }) => {
   // GalleryGrid
   if (variant === "GalleryGrid") {
     const gridItems = items.map((g, i) => `
-    <div key={${i}} className="group relative overflow-hidden rounded-2xl aspect-square border border-white/10">
-      <img src="${g.url}" alt="${g.caption || "Gallery"}" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+    <div key={${i}} className="group relative overflow-hidden rounded-2xl border border-white/10">
+      <img src="${g.url}" alt="${g.caption || "Gallery"}" className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" />
       ${g.caption ? `
       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
         <p className="text-white font-medium text-center text-sm">${g.caption}</p>
@@ -38,7 +38,7 @@ export default function Gallery() {
           <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{color:"${primary}"}}>Portfolio</span>
           <h2 className="text-4xl font-bold text-white">${heading}</h2>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 auto-rows-auto">
           ${gridItems}
         </div>
       </div>
@@ -51,8 +51,8 @@ export default function Gallery() {
   if (variant === "GalleryShowcase") {
     const showcaseItems = items.map((g, i) => `
     <div key={${i}} className="group rounded-2xl overflow-hidden border border-white/10">
-      <div className="aspect-video overflow-hidden">
-        <img src="${g.url}" alt="${g.caption || "Gallery"}" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+      <div className="overflow-hidden">
+        <img src="${g.url}" alt="${g.caption || "Gallery"}" className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" />
       </div>
       ${g.caption ? `<div className="p-4"><p className="text-sm text-gray-400">${g.caption}</p></div>` : ""}
     </div>`).join("\n");

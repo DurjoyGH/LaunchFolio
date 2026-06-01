@@ -82,18 +82,20 @@ export default function DesignStep({ formData, update }: Props) {
             placeholder="your-name"
             value={formData.customDomain}
             onChange={(e) => update({ customDomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
-            className="input rounded-r-none flex-1"
-            style={{ borderRight: "none" }}
+            className="input rounded-r-none flex-1 border-r-0"
           />
-          <span
-            className="px-4 py-2.5 text-sm rounded-r-xl border border-l-0 font-mono whitespace-nowrap"
-            style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)", color: "var(--color-text-muted)" }}
+          <div
+            className="input rounded-l-none border-l-0 font-mono whitespace-nowrap"
+            style={{ width: "auto" }}
           >
             .vercel.app
-          </span>
+          </div>
         </div>
         <p className="text-xs mt-1.5" style={{ color: "var(--color-text-muted)" }}>
           Use a unique name (e.g. <strong>tarin-portfolio</strong>). Short/common names may get a suffix from Vercel.
+        </p>
+        <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>
+          If you skip this, we will generate a random domain like <strong>launchfolio-abc123</strong>.
         </p>
       </div>
 

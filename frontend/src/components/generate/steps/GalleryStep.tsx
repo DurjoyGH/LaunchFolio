@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import Input from "@/components/ui/Input";
 import type { FormData } from "@/app/generate/page";
 
 interface Props {
@@ -9,6 +10,8 @@ interface Props {
 export default function GalleryStep({ formData, update }: Props) {
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [draftCaptions, setDraftCaptions] = useState<Record<number, string>>({});
+  const [savedIndex, setSavedIndex] = useState<number | null>(null);
 
   const uploadFile = async (file: File) => {
     const token = localStorage.getItem("token");
@@ -44,32 +47,80 @@ export default function GalleryStep({ formData, update }: Props) {
   };
 
   const updateCaption = (index: number, caption: string) => {
+    setDraftCaptions((prev) => ({ ...prev, [index]: caption }));
+  };
+
+  const saveCaption = (index: number) => {
     const newGallery = [...formData.gallery];
-    newGallery[index].caption = caption;
+    const nextCaption = (draftCaptions[index] ?? newGallery[index].caption).trim();
+    newGallery[index].caption = nextCaption;
     update({ gallery: newGallery });
+    setDraftCaptions((prev) => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
+    setSavedIndex(index);
+    window.setTimeout(() => {
+      setSavedIndex((current) => (current === index ? null : current));
+    }, 1200);
   };
 
   const removeImage = (index: number) => {
     update({ gallery: formData.gallery.filter((_, i) => i !== index) });
+    setDraftCaptions((prev) => {
+      const next: Record<number, string> = {};
+      Object.keys(prev).forEach((key) => {
+        const idx = Number(key);
+        if (idx < index) next[idx] = prev[idx];
+        if (idx > index) next[idx - 1] = prev[idx];
+      });
+      return next;
+    });
   };
 
   return (
     <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-bold text-white">Gallery</h3>
+        <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
+          Add a short description for each photo.
+        </p>
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {formData.gallery.map((g, i) => (
-          <div key={i} className="group relative rounded-xl overflow-hidden aspect-square border" style={{ borderColor: "var(--color-border-subtle)" }}>
-            <img src={g.url} alt="Gallery item" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-between">
-              <button onClick={() => removeImage(i)} className="self-end text-red-400 hover:text-white bg-black/50 rounded-full w-6 h-6 flex items-center justify-center">
+          <div key={i} className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}>
+            <div className="relative aspect-square">
+              <img src={g.url} alt="Gallery item" className="w-full h-full object-cover" />
+              <button
+                onClick={() => removeImage(i)}
+                className="absolute top-2 right-2 text-red-400 hover:text-white bg-black/60 rounded-full w-7 h-7 flex items-center justify-center"
+                aria-label="Remove image"
+              >
                 ✕
               </button>
-              <input
-                type="text"
-                value={g.caption}
+            </div>
+            <div className="p-3 space-y-2">
+              <Input
+                label="Description"
+                placeholder="Short description"
+                value={draftCaptions[i] ?? g.caption}
                 onChange={(e) => updateCaption(i, e.target.value)}
-                placeholder="Add caption..."
-                className="w-full text-xs bg-black/50 text-white border border-white/20 rounded px-2 py-1 outline-none focus:border-white/50"
               />
+              <div className="flex justify-end">
+                {savedIndex === i ? (
+                  <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>Saved</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => saveCaption(i)}
+                    className="text-xs px-3 py-1 rounded-full border transition-colors"
+                    style={{ borderColor: "var(--color-border-subtle)", color: "var(--color-text-secondary)" }}
+                  >
+                    Save
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         ))}

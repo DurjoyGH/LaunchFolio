@@ -61,8 +61,8 @@ export default function Education() {
   return (
     <section id="education" className="py-24 px-6">
       <div className="max-w-3xl mx-auto">
-        <p className="text-sm font-mono mb-4" style={{ color: "var(--color-primary)" }}>// education</p>
-        <h2 className="text-3xl font-bold text-white mb-8">Education</h2>
+        <p className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "var(--color-primary)" }}>Education</p>
+        <h2 className="text-3xl font-bold text-white mb-8">Academic Background</h2>
         <div>
           ${items}
         </div>

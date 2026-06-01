@@ -19,6 +19,16 @@ export default function ReviewStep({ formData }: Props) {
     </div>
   );
 
+  const SECTION_LABELS: Record<string, string> = {
+    gallery: "Gallery",
+    hobbies: "Hobbies",
+    services: "Services",
+    testimonials: "Testimonials",
+    achievements: "Achievements",
+    skills: "Skills",
+    projects: "Projects",
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -91,7 +101,7 @@ export default function ReviewStep({ formData }: Props) {
         <Section label="Optional Sections">
           <div className="flex flex-wrap gap-2">
             {formData.selectedSections.length > 0 ? formData.selectedSections.map((s, i) => (
-              <Badge key={i} variant="default">{s}</Badge>
+              <Badge key={i} variant="default">{SECTION_LABELS[s] || s}</Badge>
             )) : <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>None</span>}
           </div>
         </Section>
