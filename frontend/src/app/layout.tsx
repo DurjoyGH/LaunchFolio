@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   description:
     "Build and deploy a stunning portfolio website in minutes using AI. LaunchFolio analyzes your skills and generates a fully deployed portfolio.",
   keywords: ["portfolio", "AI", "generator", "developer", "Next.js", "Vercel"],
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "LaunchFolio — AI-Powered Portfolio Generator",
     description: "Build and deploy a stunning portfolio website in minutes using AI.",

@@ -44,7 +44,6 @@ export default function Navbar() {
           {[
             { label: "Features", href: "/#features" },
             { label: "How it works", href: "/#how-it-works" },
-            { label: "Pricing", href: "/#pricing" },
             { label: "About Us", href: "/#about-us" },
             { label: "Contact", href: "/#contact" },
           ].map(({ label, href }) => (
@@ -116,7 +115,7 @@ export default function Navbar() {
           style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-primary)" }}
         >
           <div className="flex flex-col gap-4 pt-4">
-            {["Features", "How it works", "Pricing", "About Us", "Contact"].map((label) => (
+            {["Features", "How it works", "About Us", "Contact"].map((label) => (
               <a
                 key={label}
                 href={`/#${label.toLowerCase().replace(" ", "-")}`}

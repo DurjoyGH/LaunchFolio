@@ -1,44 +1,96 @@
+"use client";
+
+import { useState } from "react";
+import toast from "react-hot-toast";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+
 export default function ContactSection() {
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error("CONTACT_FAILED");
+      toast.success("Thanks for your feedback. We'll review it soon.");
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch {
+      toast.error("Failed to submit. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section id="contact" className="py-24 px-6">
-      <div className="max-w-5xl mx-auto text-center mb-12">
+      <div className="max-w-4xl mx-auto text-center mb-12">
         <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-brand-accent)" }}>
           Contact
         </p>
-        <h2 className="text-4xl font-bold text-white mb-4">Questions? We are here to help.</h2>
+        <h2 className="text-4xl font-bold text-white mb-4">Send us your feedback</h2>
         <p className="text-lg" style={{ color: "var(--color-text-secondary)" }}>
-          Reach out for support, partnerships, or feedback. We reply quickly.
+          Share feedback or questions. Our team will review and respond soon.
+        </p>
+        <p className="text-sm mt-4" style={{ color: "var(--color-text-muted)" }}>
+          For any suggestion or feedback, email us at {" "}
+          <a href="mailto:durjoy.dev.ai@gmail.com" className="font-medium" style={{ color: "var(--color-brand-primary)" }}>
+            durjoy.dev.ai@gmail.com
+          </a>
         </p>
       </div>
 
-      <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
-          <p className="text-sm mb-4" style={{ color: "var(--color-text-secondary)" }}>
-            Best for detailed questions and support.
-          </p>
-          <a href="mailto:support@launchfolio.com" className="text-sm font-medium" style={{ color: "var(--color-brand-primary)" }}>
-            support@launchfolio.com
-          </a>
-        </div>
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-white mb-2">Partnerships</h3>
-          <p className="text-sm mb-4" style={{ color: "var(--color-text-secondary)" }}>
-            Want to integrate or collaborate with LaunchFolio?
-          </p>
-          <a href="mailto:partners@launchfolio.com" className="text-sm font-medium" style={{ color: "var(--color-brand-primary)" }}>
-            partners@launchfolio.com
-          </a>
-        </div>
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-white mb-2">Community</h3>
-          <p className="text-sm mb-4" style={{ color: "var(--color-text-secondary)" }}>
-            Share ideas or request new features.
-          </p>
-          <a href="mailto:community@launchfolio.com" className="text-sm font-medium" style={{ color: "var(--color-brand-primary)" }}>
-            community@launchfolio.com
-          </a>
-        </div>
+      <div className="max-w-3xl mx-auto">
+        <form onSubmit={handleSubmit} className="card p-8 space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input
+              label="Full Name *"
+              placeholder="Your name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+            />
+            <Input
+              label="Email *"
+              type="email"
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+            />
+          </div>
+          <Input
+            label="Subject"
+            placeholder="Feedback or question"
+            value={form.subject}
+            onChange={(e) => setForm({ ...form, subject: e.target.value })}
+          />
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
+              Message *
+            </label>
+            <textarea
+              rows={5}
+              className="input resize-none"
+              placeholder="Write your feedback or query..."
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              required
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit" loading={loading}>
+              Send Message
+            </Button>
+          </div>
+        </form>
       </div>
     </section>
   );

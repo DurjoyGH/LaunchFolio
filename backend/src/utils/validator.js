@@ -68,6 +68,13 @@ const achievementSchema = Joi.object({
   description: Joi.string().allow("", null).optional(),
 });
 
+const contactSchema = Joi.object({
+  name: Joi.string().min(2).max(100).required(),
+  email: Joi.string().email().required(),
+  subject: Joi.string().max(150).allow("", null).optional(),
+  message: Joi.string().min(5).max(2000).required(),
+});
+
 const portfolioInputSchema = Joi.object({
   // User type (IT or Non-IT)
   userType: Joi.string().valid("it", "nonit").default("it"),
@@ -133,5 +140,6 @@ module.exports = {
   validate,
   registerSchema,
   loginSchema,
+  contactSchema,
   portfolioInputSchema,
 };

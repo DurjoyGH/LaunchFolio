@@ -3,9 +3,22 @@ import Image from "next/image";
 
 export default function Footer() {
   const links = {
-    Product: ["Features", "How it works", "Pricing"],
-    Company: ["About", "Blog", "Careers"],
-    Legal: ["Privacy", "Terms", "Cookies"],
+    Platform: [
+      { label: "Features", href: "/#features" },
+      { label: "How it works", href: "/#how-it-works" },
+      { label: "Builder Engine", href: "/generate" },
+      { label: "Dashboard", href: "/dashboard" },
+    ],
+    Company: [
+      { label: "About", href: "/#about" },
+      { label: "Contact", href: "/#contact" },
+      { label: "Sign In", href: "/auth/login" },
+      { label: "Sign Up", href: "/auth/register" },
+    ],
+    Legal: [
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" },
+    ],
   };
 
   return (
@@ -28,14 +41,14 @@ export default function Footer() {
               <h4 className="text-sm font-semibold text-white mb-4">{section}</h4>
               <ul className="flex flex-col gap-2.5">
                 {items.map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
+                  <li key={item.label}>
+                    <Link
+                      href={item.href}
                       className="text-sm transition-colors hover:text-white"
                       style={{ color: "var(--color-text-muted)" }}
                     >
-                      {item}
-                    </a>
+                      {item.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -51,7 +64,7 @@ export default function Footer() {
             © {new Date().getFullYear()} LaunchFolio. All rights reserved.
           </p>
           <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-            Built with ❤️ using Next.js & Gemini AI
+            Built with <Link href="https://www.tarinprosadghosh.me/" target="_blank" className="underline hover:text-white">Durjoy</Link>
           </p>
         </div>
       </div>
