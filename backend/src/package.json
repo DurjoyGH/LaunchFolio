@@ -33,6 +33,6 @@
     "nodemailer": "^8.0.9",
     "openai": "^6.39.0",
     "simple-git": "^3.36.0",
-    "simple-icons": "^13.23.0"
+    "simple-icons": "^16.21.0"
   }
 }
