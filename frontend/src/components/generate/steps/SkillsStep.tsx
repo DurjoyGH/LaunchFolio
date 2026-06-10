@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
-import type { FormData, Skill } from "@/app/generate/page";
+import type { FormData } from "@/app/generate/page";
 
 const SKILL_LEVELS = ["beginner", "intermediate", "advanced", "expert"];
 
@@ -49,7 +49,7 @@ export default function SkillsStep({ formData, update }: Props) {
           className="input w-44"
         >
           {SKILL_LEVELS.map((l) => (
-            <option key={l} value={l} style={{ background: "#111121" }}>
+            <option key={l} value={l} style={{ background: "#111111" }}>
               {l.charAt(0).toUpperCase() + l.slice(1)}
             </option>
           ))}
@@ -68,13 +68,13 @@ export default function SkillsStep({ formData, update }: Props) {
             <div
               key={i}
               className="flex items-center gap-2 px-4 py-2 rounded-full border text-sm group"
-              style={{ borderColor: "rgba(99,102,241,0.3)", backgroundColor: "rgba(99,102,241,0.08)" }}
+              style={{ borderColor: "rgba(255,255,255,0.24)", backgroundColor: "rgba(255,255,255,0.08)" }}
             >
               <span className="text-white font-medium">{skill.name}</span>
               <span style={{ color: "var(--color-text-muted)" }}>· {skill.level}</span>
               <button
                 onClick={() => removeSkill(i)}
-                className="text-gray-600 hover:text-red-400 transition-colors ml-1"
+                className="text-white/50 hover:text-white transition-colors ml-1"
               >
                 ×
               </button>
@@ -83,7 +83,7 @@ export default function SkillsStep({ formData, update }: Props) {
         </div>
       )}
 
-      <div className="p-4 rounded-xl border" style={{ borderColor: "rgba(6,182,212,0.2)", backgroundColor: "rgba(6,182,212,0.05)" }}>
+      <div className="p-4 rounded-xl border" style={{ borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.05)" }}>
         <p className="text-xs" style={{ color: "var(--color-brand-accent)" }}>
           💡 <strong>Tip:</strong> Add both technical skills (React, Node.js) and soft skills (Leadership, Communication) for a well-rounded profile.
         </p>

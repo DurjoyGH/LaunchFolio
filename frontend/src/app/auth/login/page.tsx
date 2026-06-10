@@ -69,7 +69,7 @@ export default function LoginPage() {
           </p>
 
           {error && (
-            <div className="mb-4 px-4 py-3 rounded-xl text-sm text-red-400 border border-red-500/20 bg-red-500/10">
+            <div className="mb-4 px-4 py-3 rounded-xl text-sm text-white border border-white/20 bg-white/10">
               {error}
             </div>
           )}
@@ -95,7 +95,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="text-xs text-gray-400 hover:text-white transition-colors"
+                  className="text-xs text-white/60 hover:text-white transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (

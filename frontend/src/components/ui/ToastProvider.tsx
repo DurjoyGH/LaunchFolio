@@ -17,13 +17,13 @@ export default function ToastProvider() {
         },
         success: {
           iconTheme: {
-            primary: "#10b981",
+            primary: "#ffffff",
             secondary: "var(--color-bg-card)",
           },
         },
         error: {
           iconTheme: {
-            primary: "#ef4444",
+            primary: "#ffffff",
             secondary: "var(--color-bg-card)",
           },
         },

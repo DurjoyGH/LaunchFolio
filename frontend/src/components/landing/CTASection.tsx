@@ -16,17 +16,12 @@ export default function CTASection() {
     <section className="py-24 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <div
-          className="rounded-3xl p-16 relative overflow-hidden border"
+          className="mono-panel p-16 relative overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08))",
-            borderColor: "rgba(99,102,241,0.2)",
+            background: "linear-gradient(135deg, rgba(255,255,255,0.14), rgba(0,0,0,0.78))",
           }}
         >
-          {/* Glow blobs */}
-          <div className="absolute top-0 left-1/4 w-72 h-72 rounded-full opacity-20 blur-3xl"
-            style={{ background: "var(--color-brand-primary)" }} />
-          <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full opacity-15 blur-2xl"
-            style={{ background: "var(--color-brand-secondary)" }} />
+          <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] bg-[size:40px_40px]" />
 
           <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">

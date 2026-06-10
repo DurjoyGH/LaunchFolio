@@ -105,7 +105,7 @@ export default function ProjectsStep({ formData, update }: Props) {
             </div>
             <div className="flex gap-2">
               <button onClick={() => openEdit(i)} className="text-xs px-3 py-1 rounded-lg border hover:border-white/20 transition-colors" style={{ borderColor: "var(--color-border-subtle)", color: "var(--color-text-secondary)" }}>Edit</button>
-              <button onClick={() => remove(i)} className="text-xs px-3 py-1 rounded-lg text-red-400 border border-red-500/20 hover:bg-red-500/10 transition-colors">Remove</button>
+              <button onClick={() => remove(i)} className="text-xs px-3 py-1 rounded-lg text-white/70 border border-white/20 hover:bg-white/10 transition-colors">Remove</button>
             </div>
           </div>
         ))}
@@ -151,7 +151,7 @@ export default function ProjectsStep({ formData, update }: Props) {
               {editing.techStack.map((t, i) => (
                 <span key={i} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs border" style={{ borderColor: "var(--color-border-subtle)", color: "var(--color-text-secondary)" }}>
                   {t}
-                  <button onClick={() => setEditing({ ...editing, techStack: editing.techStack.filter((_, j) => j !== i) })} className="hover:text-red-400">×</button>
+                  <button onClick={() => setEditing({ ...editing, techStack: editing.techStack.filter((_, j) => j !== i) })} className="hover:text-white">×</button>
                 </span>
               ))}
             </div>

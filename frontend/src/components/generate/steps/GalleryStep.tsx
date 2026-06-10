@@ -94,7 +94,7 @@ export default function GalleryStep({ formData, update }: Props) {
               <img src={g.url} alt="Gallery item" className="w-full h-full object-cover" />
               <button
                 onClick={() => removeImage(i)}
-                className="absolute top-2 right-2 text-red-400 hover:text-white bg-black/60 rounded-full w-7 h-7 flex items-center justify-center"
+                className="absolute top-2 right-2 text-white/70 hover:text-white bg-black/60 rounded-full w-7 h-7 flex items-center justify-center"
                 aria-label="Remove image"
               >
                 ✕

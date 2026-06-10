@@ -46,7 +46,7 @@ export default function SectionPickerStep({ formData, update }: Props) {
         <span style={{ color: "var(--color-brand-primary)" }}>{selected.length}</span>
         <span style={{ color: "var(--color-text-muted)" }}>/ {MAX_SECTIONS} selected</span>
         {selected.length === MAX_SECTIONS && (
-          <span className="text-amber-400 text-xs ml-auto">Maximum reached</span>
+          <span className="text-white text-xs ml-auto">Maximum reached</span>
         )}
       </div>
 
@@ -62,7 +62,7 @@ export default function SectionPickerStep({ formData, update }: Props) {
               disabled={isDisabled}
               className={`p-4 rounded-xl border-2 text-left transition-all ${
                 isSelected
-                  ? "border-indigo-500/60 bg-indigo-500/5"
+                  ? "border-white/60 bg-white/10"
                   : isDisabled
                   ? "border-white/5 opacity-40 cursor-not-allowed"
                   : "border-white/5 hover:border-white/15"
@@ -74,7 +74,7 @@ export default function SectionPickerStep({ formData, update }: Props) {
                   <div className="flex items-center justify-between">
                     <p className="font-semibold text-white text-sm">{section.label}</p>
                     {isSelected && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400">✓ Added</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white">✓ Added</span>
                     )}
                   </div>
                   <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>{section.desc}</p>
@@ -87,7 +87,7 @@ export default function SectionPickerStep({ formData, update }: Props) {
 
       {selected.length === 0 && (
         <p className="text-center text-sm py-4" style={{ color: "var(--color-text-muted)" }}>
-          You can skip this step if you don't want extra sections.
+          You can skip this step if you don&apos;t want extra sections.
         </p>
       )}
     </div>

@@ -8,19 +8,19 @@ interface BadgeProps {
 }
 
 const variants: Record<BadgeVariant, string> = {
-  default: "bg-white/5 text-gray-400 border-white/10",
-  success: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  warning: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  error: "bg-red-500/10 text-red-400 border-red-500/20",
-  info: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+  default: "bg-white/5 text-white/60 border-white/10",
+  success: "bg-white/10 text-white border-white/30",
+  warning: "bg-white/10 text-white border-white/30",
+  error: "bg-white/10 text-white border-white/30",
+  info: "bg-white/10 text-white border-white/30",
 };
 
 const dotColors: Record<BadgeVariant, string> = {
-  default: "bg-gray-400",
-  success: "bg-emerald-400",
-  warning: "bg-amber-400",
-  error: "bg-red-400",
-  info: "bg-indigo-400",
+  default: "bg-white/50",
+  success: "bg-white",
+  warning: "bg-white",
+  error: "bg-white",
+  info: "bg-white",
 };
 
 export default function Badge({ children, variant = "default", dot = false, className = "" }: BadgeProps) {

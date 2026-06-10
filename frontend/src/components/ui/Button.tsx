@@ -22,9 +22,9 @@ export default function Button({
     "inline-flex items-center justify-center gap-2 font-semibold rounded-full transition-all duration-200 select-none disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variants = {
-    primary: "btn-primary text-white",
+    primary: "btn-primary",
     ghost: "btn-ghost",
-    danger: "bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 cursor-pointer",
+    danger: "bg-white/5 border border-white/30 text-white hover:bg-white/10 cursor-pointer",
   };
 
   const sizes = {

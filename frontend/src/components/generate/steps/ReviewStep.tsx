@@ -1,33 +1,36 @@
 import type { FormData } from "@/app/generate/page";
+import type { ReactNode } from "react";
 import Badge from "@/components/ui/Badge";
 
 interface Props {
   formData: FormData;
 }
 
-export default function ReviewStep({ formData }: Props) {
-  const { 
-    userType, name, title, bio, email, phone, 
-    skills, education, projects, services, testimonials, gallery, hobbies, achievements,
-    social, designPreferences: dp, profileImage, resumeUrl, customDomain 
-  } = formData;
+const SECTION_LABELS: Record<string, string> = {
+  gallery: "Gallery",
+  hobbies: "Hobbies",
+  services: "Services",
+  testimonials: "Testimonials",
+  achievements: "Achievements",
+  skills: "Skills",
+  projects: "Projects",
+};
 
-  const Section = ({ label, children }: { label: string; children: React.ReactNode }) => (
+function Section({ label, children }: { label: string; children: ReactNode }) {
+  return (
     <div className="p-5 rounded-xl border" style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-secondary)" }}>
       <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: "var(--color-brand-primary)" }}>{label}</p>
       {children}
     </div>
   );
+}
 
-  const SECTION_LABELS: Record<string, string> = {
-    gallery: "Gallery",
-    hobbies: "Hobbies",
-    services: "Services",
-    testimonials: "Testimonials",
-    achievements: "Achievements",
-    skills: "Skills",
-    projects: "Projects",
-  };
+export default function ReviewStep({ formData }: Props) {
+  const { 
+    userType, name, title, bio, email, phone, 
+    skills, education, projects,
+    designPreferences: dp, profileImage, resumeUrl, customDomain 
+  } = formData;
 
   return (
     <div className="space-y-4">
@@ -42,13 +45,13 @@ export default function ReviewStep({ formData }: Props) {
         <div className="flex items-center gap-3 mb-2">
           {profileImage && <img src={profileImage} alt="Profile" className="w-12 h-12 rounded-full object-cover" />}
           <div>
-            <p className="font-semibold text-white">{name || <span className="text-red-400">Missing!</span>}</p>
+            <p className="font-semibold text-white">{name || <span className="text-white/70">Missing!</span>}</p>
             <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>{title}</p>
           </div>
         </div>
         {email && <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>📧 {email}</p>}
         {phone && <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>📞 {phone}</p>}
-        {resumeUrl && <p className="text-sm mt-1 text-green-400">📄 Resume uploaded</p>}
+        {resumeUrl && <p className="text-sm mt-1 text-white/70">📄 Resume uploaded</p>}
         {bio && <p className="text-sm mt-2 leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>{bio}</p>}
       </Section>
 
@@ -120,7 +123,7 @@ export default function ReviewStep({ formData }: Props) {
         </div>
       </Section>
 
-      <div className="p-4 rounded-xl border" style={{ borderColor: "rgba(99,102,241,0.25)", backgroundColor: "rgba(99,102,241,0.06)" }}>
+      <div className="p-4 rounded-xl border" style={{ borderColor: "rgba(255,255,255,0.25)", backgroundColor: "rgba(255,255,255,0.06)" }}>
         <p className="text-sm" style={{ color: "var(--color-brand-primary)" }}>
           ✦ <strong>What happens next:</strong> AI will plan your portfolio blueprint, our builder will assemble the components, and your site will be deployed to Vercel automatically. This takes 2–5 minutes.
         </p>

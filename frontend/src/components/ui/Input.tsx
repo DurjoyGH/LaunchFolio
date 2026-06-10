@@ -19,7 +19,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative">
           <input
             ref={ref}
-            className={`input ${error ? "border-red-500/50 focus:border-red-500" : ""} ${rightElement ? "pr-12" : ""} ${className}`}
+            className={`input ${error ? "border-white/50 focus:border-white" : ""} ${rightElement ? "pr-12" : ""} ${className}`}
             {...props}
           />
           {rightElement && (
@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-        {error && <p className="text-xs text-red-400">{error}</p>}
+        {error && <p className="text-xs text-white">{error}</p>}
         {hint && !error && <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>{hint}</p>}
       </div>
     );

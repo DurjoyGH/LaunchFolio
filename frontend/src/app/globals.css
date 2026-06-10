@@ -2,26 +2,29 @@
 
 /* ─── Design Tokens ────────────────────────────────────── */
 @theme inline {
-  --color-bg-primary: #07070f;
-  --color-bg-secondary: #0e0e1a;
-  --color-bg-card: #111121;
-  --color-bg-card-hover: #161628;
-  --color-border-subtle: rgba(255, 255, 255, 0.06);
-  --color-border-hover: rgba(255, 255, 255, 0.12);
+  --color-bg-primary: #030303;
+  --color-bg-secondary: #0b0b0b;
+  --color-bg-card: #111111;
+  --color-bg-card-hover: #181818;
+  --color-border-subtle: rgba(255, 255, 255, 0.12);
+  --color-border-hover: rgba(255, 255, 255, 0.28);
 
-  --color-text-primary: #f1f1f5;
-  --color-text-secondary: #8b8fa8;
-  --color-text-muted: #4a4d65;
+  --color-text-primary: rgba(255, 255, 255, 0.9);
+  --color-text-secondary: rgba(255, 255, 255, 0.68);
+  --color-text-muted: rgba(255, 255, 255, 0.42);
 
-  --color-brand-primary: #6366f1;
-  --color-brand-secondary: #8b5cf6;
-  --color-brand-accent: #06b6d4;
+  --color-brand-primary: rgba(255, 255, 255, 0.88);
+  --color-brand-secondary: #c7c7c7;
+  --color-brand-accent: #e8e8e8;
 }
 
 :root {
-  --gradient-brand: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --gradient-hero: radial-gradient(ellipse at 60% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
-    radial-gradient(ellipse at 0% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+  --gradient-brand: linear-gradient(135deg, #ffffff 0%, #bdbdbd 48%, #000000 100%);
+  --gradient-hero:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 42%),
+    linear-gradient(315deg, rgba(255, 255, 255, 0.08), transparent 38%),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.16), transparent 42%);
+  --gradient-page: linear-gradient(145deg, #000000 0%, #151515 52%, #ffffff 180%);
 }
 
 /* ─── Base (inside @layer so Tailwind utilities can override) ─── */
@@ -31,9 +34,11 @@
   }
 
   body {
-    background: var(--color-bg-primary);
+    background: var(--gradient-page);
+    min-height: 100vh;
     color: var(--color-text-primary);
-    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    font-family: "Black Ops One", system-ui, -apple-system, sans-serif;
+    font-synthesis-weight: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.6;
@@ -63,10 +68,11 @@
   }
 
   .card {
-    background: var(--color-bg-card);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.72));
     border: 1px solid var(--color-border-subtle);
-    border-radius: 16px;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 80px rgba(0, 0, 0, 0.36);
+    transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
   }
 
   .card:hover {
@@ -74,9 +80,9 @@
   }
 
   .btn-primary {
-    background: var(--gradient-brand);
-    color: white;
-    border: none;
+    background: linear-gradient(135deg, #ffffff, #d8d8d8);
+    color: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.72);
     cursor: pointer;
     font-weight: 600;
     transition: opacity 0.2s ease, transform 0.2s ease;
@@ -85,11 +91,12 @@
   .btn-primary:hover {
     opacity: 0.9;
     transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(255, 255, 255, 0.18);
   }
 
   .btn-ghost {
-    background: transparent;
-    color: var(--color-text-secondary);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-text-primary);
     border: 1px solid var(--color-border-subtle);
     cursor: pointer;
     font-weight: 500;
@@ -102,7 +109,7 @@
   }
 
   .input {
-    background: var(--color-bg-card);
+    background: rgba(0, 0, 0, 0.62);
     border: 1px solid var(--color-border-subtle);
     border-radius: 12px;
     color: var(--color-text-primary);
@@ -118,13 +125,21 @@
   }
 
   .input:focus {
-    border-color: var(--color-brand-primary);
+    border-color: rgba(255, 255, 255, 0.72);
   }
 
   /* Step form indicator */
-  .step-active { background: var(--gradient-brand); color: white; }
-  .step-done   { background: var(--color-brand-primary); color: white; opacity: 0.6; }
+  .step-active { background: linear-gradient(135deg, #ffffff, #bdbdbd); color: #000000; }
+  .step-done   { background: rgba(255, 255, 255, 0.82); color: #000000; opacity: 0.85; }
   .step-idle   { background: var(--color-bg-card); color: var(--color-text-muted); border: 1px solid var(--color-border-subtle); }
+
+  .mono-panel {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+      linear-gradient(315deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.78));
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+  }
 }
 
 /* ─── Animations ──────────────────────────────────────── */
@@ -171,6 +186,18 @@
 }
 
 @layer utilities {
+  .text-white {
+    color: rgba(255, 255, 255, 0.88) !important;
+  }
+
+  .font-medium,
+  .font-semibold,
+  .font-bold,
+  .font-extrabold,
+  .font-black {
+    font-weight: 400 !important;
+  }
+
   .anim-typewriter {
     overflow: hidden;
     white-space: nowrap;

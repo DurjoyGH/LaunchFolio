@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
@@ -15,16 +14,8 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-20">
-      {/* Background gradients */}
       <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full opacity-5 blur-3xl"
-        style={{ background: "var(--gradient-brand)" }} />
-
-      {/* Floating orbs */}
-      <div className="absolute top-32 right-20 w-64 h-64 rounded-full opacity-10 blur-2xl anim-float"
-        style={{ background: "var(--color-brand-primary)" }} />
-      <div className="absolute bottom-32 left-20 w-48 h-48 rounded-full opacity-8 blur-2xl anim-float"
-        style={{ background: "var(--color-brand-secondary)", animationDelay: "2s" }} />
+      <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] bg-[size:56px_56px]" />
 
       <div className="relative z-10 max-w-6xl mx-auto w-full">
         <div className="grid md:grid-cols-2 gap-10 items-center">
@@ -51,7 +42,7 @@ export default function HeroSection() {
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight tracking-tight anim-fade-up"
               style={{ animationDelay: "0.15s" }}>
               Build Your Portfolio
-              <span className="gradient-text"> With AI Magic</span>
+              <span className="gradient-text"> With AI</span>
             </h1>
 
             <p className="text-lg md:text-xl mb-8 leading-relaxed anim-fade-up"

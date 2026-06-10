@@ -69,7 +69,7 @@ const INITIAL_FORM: FormData = {
   selectedSections: [],
   social: {},
   designPreferences: {
-    theme: "dark", style: "creative", primaryColor: "#6366f1", fontPreference: "Inter",
+    theme: "dark", style: "creative", primaryColor: "#ffffff", fontPreference: "Black Ops One",
     buttonColor: "", buttonTextColor: "", navBgColor: "", navLinkColor: "",
     textColor: "", heroAnimation: "fadeUp", logoStyle: "initial", palette: "",
   },
@@ -205,8 +205,9 @@ export default function GeneratePage() {
         { key: "phone", label: "Phone" },
         { key: "location", label: "Location" },
         { key: "bio", label: "Bio" },
-      ].filter((f) => !String((formData as Record<string, string>)[f.key] || "").trim());
-      if (missing.length > 0) return `Please fill: ${missing.map((m) => m.label).join(", ")}.`;
+      ] as const;
+      const emptyFields = missing.filter((f) => !String(formData[f.key] || "").trim());
+      if (emptyFields.length > 0) return `Please fill: ${emptyFields.map((m) => m.label).join(", ")}.`;
       if (formData.userType === "it" && !hasSocialLink) return "Please add at least one social link.";
     }
 
@@ -255,7 +256,7 @@ export default function GeneratePage() {
           <div className="grid sm:grid-cols-2 gap-6">
             <button
               onClick={() => setShowItNotice(true)}
-              className="group p-8 rounded-2xl border-2 text-left transition-all hover:border-indigo-500/60 hover:bg-indigo-500/5"
+              className="group p-8 rounded-2xl border-2 text-left transition-all hover:border-white/40 hover:bg-white/5"
               style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}
             >
               <span className="text-4xl mb-4 block">💻</span>
@@ -264,15 +265,15 @@ export default function GeneratePage() {
                 CSE, Software Engineering, Developer, Designer, or any tech-related field.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="px-2 py-0.5 rounded text-xs bg-indigo-500/10 text-indigo-400">Skills</span>
-                <span className="px-2 py-0.5 rounded text-xs bg-indigo-500/10 text-indigo-400">Projects</span>
-                <span className="px-2 py-0.5 rounded text-xs bg-indigo-500/10 text-indigo-400">GitHub</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">Skills</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">Projects</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">GitHub</span>
               </div>
             </button>
 
             <button
               onClick={() => { update({ userType: "nonit" }); setStep(1); }}
-              className="group p-8 rounded-2xl border-2 text-left transition-all hover:border-emerald-500/60 hover:bg-emerald-500/5"
+              className="group p-8 rounded-2xl border-2 text-left transition-all hover:border-white/40 hover:bg-white/5"
               style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}
             >
               <span className="text-4xl mb-4 block">🎨</span>
@@ -281,9 +282,9 @@ export default function GeneratePage() {
                 Student, Doctor, Teacher, Artist, Freelancer, Business — anyone.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="px-2 py-0.5 rounded text-xs bg-emerald-500/10 text-emerald-400">Simple</span>
-                <span className="px-2 py-0.5 rounded text-xs bg-emerald-500/10 text-emerald-400">Beautiful</span>
-                <span className="px-2 py-0.5 rounded text-xs bg-emerald-500/10 text-emerald-400">No Code</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">Simple</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">Beautiful</span>
+                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">No Code</span>
               </div>
             </button>
           </div>
@@ -323,7 +324,7 @@ export default function GeneratePage() {
           <h1 className="text-4xl font-bold text-white mb-2">Generate Your Portfolio</h1>
           <p style={{ color: "var(--color-text-secondary)" }}>Fill in your details — AI does the rest.</p>
           {prefilled && (
-            <p className="text-xs mt-2 px-3 py-1 inline-block rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+            <p className="text-xs mt-2 px-3 py-1 inline-block rounded-full bg-white/10 text-white border border-white/20">
               ✓ Pre-filled from your last portfolio
             </p>
           )}
@@ -351,7 +352,7 @@ export default function GeneratePage() {
 
         <div className="card p-8">
           {error && (
-            <div className="mb-6 px-4 py-3 rounded-xl text-sm text-red-400 border border-red-500/20 bg-red-500/10">
+            <div className="mb-6 px-4 py-3 rounded-xl text-sm text-white border border-white/20 bg-white/10">
               {error}
             </div>
           )}

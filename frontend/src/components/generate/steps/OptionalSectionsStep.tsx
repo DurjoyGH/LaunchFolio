@@ -43,7 +43,7 @@ function HobbiesSection({ formData, update }: Props) {
                 {h.description && <p className="text-xs text-gray-400">{h.description}</p>}
               </div>
             </div>
-            <button onClick={() => remove(i)} className="text-xs text-red-400 opacity-0 group-hover:opacity-100">Remove</button>
+            <button onClick={() => remove(i)} className="text-xs text-white/70 opacity-0 group-hover:opacity-100">Remove</button>
           </div>
         ))}
       </div>
@@ -107,12 +107,12 @@ function AchievementsSection({ formData, update }: Props) {
         {formData.achievements.map((a, i) => (
           <div key={i} className="flex items-start justify-between p-3 rounded-lg border border-white/10 bg-white/5 group">
             <div>
-              <p className="font-semibold text-white text-sm">{a.title} {a.year && <span className="text-xs text-indigo-400 ml-2">{a.year}</span>}</p>
+              <p className="font-semibold text-white text-sm">{a.title} {a.year && <span className="text-xs text-white/70 ml-2">{a.year}</span>}</p>
               {a.description && <p className="text-xs text-gray-400 mt-1">{a.description}</p>}
             </div>
             <div className="flex gap-2 opacity-0 group-hover:opacity-100">
               <button onClick={() => openEdit(i)} className="text-xs text-white/70 hover:text-white">Edit</button>
-              <button onClick={() => remove(i)} className="text-xs text-red-400">Remove</button>
+              <button onClick={() => remove(i)} className="text-xs text-white/70">Remove</button>
             </div>
           </div>
         ))}
@@ -167,12 +167,12 @@ function SkillsInlineSection({ formData, update }: Props) {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-bold text-white">Skills</h3>
-      <p className="text-sm text-gray-400">Add your core competencies and skills.</p>
+      <p className="text-sm text-white/60">Add your core competencies and skills.</p>
       <div className="flex flex-wrap gap-2 mb-4">
         {formData.skills.map((s, i) => (
           <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-sm text-white flex items-center gap-2">
             {s.name}
-            <button onClick={() => removeSkill(i)} className="text-red-400 hover:text-red-300 ml-1">✕</button>
+            <button onClick={() => removeSkill(i)} className="text-white/70 hover:text-white ml-1">✕</button>
           </span>
         ))}
       </div>

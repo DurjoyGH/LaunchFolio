@@ -150,7 +150,7 @@ export default function DashboardPage() {
                 <Link href={`/portfolio/${p._id}`}>
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="font-semibold text-white group-hover:text-indigo-400 transition-colors">
+                      <h3 className="font-semibold text-white transition-colors">
                         {p.input.name}
                       </h3>
                       <p className="text-sm mt-0.5" style={{ color: "var(--color-text-muted)" }}>{p.input.title}</p>
@@ -175,7 +175,7 @@ export default function DashboardPage() {
                     e.stopPropagation();
                     setDeleteTarget(p);
                   }}
-                  className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-1 rounded-lg text-red-400 hover:bg-red-500/10 border border-red-500/20"
+                  className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-1 rounded-lg text-white hover:bg-white/10 border border-white/20"
                 >
                   ✕
                 </button>

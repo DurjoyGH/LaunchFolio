@@ -53,7 +53,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex">
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12"
-        style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08))" }}>
+        style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.14), rgba(0,0,0,0.82))" }}>
         <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-hero)" }} />
         <div className="relative z-10">
           <Link href="/" className="flex items-center gap-2.5 mb-16">
@@ -71,7 +71,7 @@ export default function RegisterPage() {
           {["AI layout & content generation", "Automatic GitHub + Vercel deploy", "Custom themes & color palettes"].map((text) => (
             <div key={text} className="flex items-center gap-3">
               <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs"
-                style={{ background: "var(--gradient-brand)" }}>✓</div>
+                style={{ background: "linear-gradient(135deg, #ffffff, #bdbdbd)", color: "#000000" }}>✓</div>
               <span className="text-sm text-white">{text}</span>
             </div>
           ))}
@@ -101,7 +101,7 @@ export default function RegisterPage() {
           </p>
 
           {error && (
-            <div className="mb-4 px-4 py-3 rounded-xl text-sm text-red-400 border border-red-500/20 bg-red-500/10">
+            <div className="mb-4 px-4 py-3 rounded-xl text-sm text-white border border-white/20 bg-white/10">
               {error}
             </div>
           )}
@@ -135,7 +135,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="text-xs text-gray-400 hover:text-white transition-colors"
+                  className="text-xs text-white/60 hover:text-white transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (

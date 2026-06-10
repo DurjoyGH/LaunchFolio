@@ -15,8 +15,14 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
-    setLoggedIn(!!localStorage.getItem("token"));
-    return () => window.removeEventListener("scroll", onScroll);
+    onScroll();
+    const authTimer = window.setTimeout(() => {
+      setLoggedIn(!!localStorage.getItem("token"));
+    }, 0);
+    return () => {
+      window.clearTimeout(authTimer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   const handleLogout = () => {

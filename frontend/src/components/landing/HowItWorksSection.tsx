@@ -46,7 +46,7 @@ export default function HowItWorksSection() {
         <div className="relative">
           {/* Connecting line */}
           <div className="hidden md:block absolute left-8 top-12 bottom-12 w-px"
-            style={{ background: "linear-gradient(to bottom, var(--color-brand-primary), transparent)" }} />
+            style={{ background: "linear-gradient(to bottom, #ffffff, transparent)" }} />
 
           <div className="flex flex-col gap-8">
             {steps.map((step, i) => (
@@ -55,23 +55,23 @@ export default function HowItWorksSection() {
                 <div
                   className="flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center text-lg font-bold border relative z-10 transition-all duration-300 group-hover:scale-110"
                   style={{
-                    background: "var(--gradient-brand)",
-                    borderColor: "rgba(99,102,241,0.3)",
-                    color: "white",
+                    background: "linear-gradient(135deg, #ffffff, #bdbdbd)",
+                    borderColor: "rgba(255,255,255,0.4)",
+                    color: "black",
                   }}
                 >
                   {step.number}
                 </div>
 
                 {/* Content */}
-                <div className="card flex-1 p-6 group-hover:border-[rgba(99,102,241,0.2)] transition-colors">
+                <div className="card flex-1 p-6 transition-colors">
                   <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
                   <p className="leading-relaxed mb-3" style={{ color: "var(--color-text-secondary)" }}>
                     {step.description}
                   </p>
                   <span
                     className="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full border"
-                    style={{ borderColor: "rgba(99,102,241,0.2)", color: "var(--color-brand-primary)", backgroundColor: "rgba(99,102,241,0.05)" }}
+                    style={{ borderColor: "rgba(255,255,255,0.22)", color: "var(--color-text-primary)", backgroundColor: "rgba(255,255,255,0.06)" }}
                   >
                     <span className="text-[10px] leading-none">◉</span>
                     <span>{step.detail}</span>

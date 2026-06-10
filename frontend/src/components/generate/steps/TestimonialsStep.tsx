@@ -29,10 +29,10 @@ export default function TestimonialsStep({ formData, update }: Props) {
         {formData.testimonials.map((t, i) => (
           <div key={i} className="p-4 rounded-xl border flex items-start justify-between gap-4 group" style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}>
             <div>
-              <h3 className="font-bold text-white">{t.name} <span className="text-sm font-normal text-gray-500">({t.role})</span></h3>
-              <p className="text-sm mt-2 italic" style={{ color: "var(--color-text-secondary)" }}>"{t.text}"</p>
+              <h3 className="font-bold text-white">{t.name} <span className="text-sm font-normal text-white/50">({t.role})</span></h3>
+              <p className="text-sm mt-2 italic" style={{ color: "var(--color-text-secondary)" }}>&quot;{t.text}&quot;</p>
             </div>
-            <button onClick={() => removeTestimonial(i)} className="text-red-400 hover:text-red-300 transition-colors opacity-0 group-hover:opacity-100">
+            <button onClick={() => removeTestimonial(i)} className="text-white/70 hover:text-white transition-colors opacity-0 group-hover:opacity-100">
               Remove
             </button>
           </div>
@@ -44,7 +44,7 @@ export default function TestimonialsStep({ formData, update }: Props) {
           <Input label="Client Name *" value={current.name} onChange={(e) => setCurrent({ ...current, name: e.target.value })} placeholder="e.g., Jane Doe" />
           <Input label="Role / Company (Optional)" value={current.role} onChange={(e) => setCurrent({ ...current, role: e.target.value })} placeholder="e.g., CEO at Startup" />
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Testimonial Text *</label>
+            <label className="block text-sm font-medium text-white/70 mb-1">Testimonial Text *</label>
             <textarea
               className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none focus:border-white/30"
               rows={4}

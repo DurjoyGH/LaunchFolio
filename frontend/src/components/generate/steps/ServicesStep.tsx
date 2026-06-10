@@ -31,9 +31,9 @@ export default function ServicesStep({ formData, update }: Props) {
             <div>
               <h3 className="font-bold text-white">{s.title}</h3>
               <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>{s.description}</p>
-              {s.price && <p className="text-xs font-mono mt-2" style={{ color: "var(--color-primary)" }}>{s.price}</p>}
+              {s.price && <p className="text-xs font-mono mt-2" style={{ color: "var(--color-text-primary)" }}>{s.price}</p>}
             </div>
-            <button onClick={() => removeService(i)} className="text-red-400 hover:text-red-300 transition-colors opacity-0 group-hover:opacity-100">
+            <button onClick={() => removeService(i)} className="text-white/70 hover:text-white transition-colors opacity-0 group-hover:opacity-100">
               Remove
             </button>
           </div>
@@ -44,7 +44,7 @@ export default function ServicesStep({ formData, update }: Props) {
         <div className="p-4 rounded-xl border space-y-4" style={{ borderColor: "var(--color-border-subtle)" }}>
           <Input label="Service Title *" value={current.title} onChange={(e) => setCurrent({ ...current, title: e.target.value })} placeholder="e.g., Portrait Photography" />
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+            <label className="block text-sm font-medium text-white/70 mb-1">Description</label>
             <textarea
               className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none focus:border-white/30"
               rows={3}

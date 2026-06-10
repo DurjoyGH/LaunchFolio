@@ -73,12 +73,9 @@ export default function PortfolioStatusPage() {
           {/* Animated icon */}
           <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl ${isDone ? "" : isFailed ? "" : "animate-pulse"}`}
             style={{
-              background: isDone
-                ? "linear-gradient(135deg, #10b981, #06b6d4)"
-                : isFailed
-                  ? "rgba(239,68,68,0.15)"
-                  : "var(--gradient-brand)",
-              border: isFailed ? "1px solid rgba(239,68,68,0.3)" : "none",
+              background: isFailed ? "rgba(255,255,255,0.08)" : "linear-gradient(135deg, #ffffff, #bdbdbd)",
+              color: "#000000",
+              border: isFailed ? "1px solid rgba(255,255,255,0.3)" : "none",
             }}>
             {isDone ? "🚀" : isFailed ? "✕" : "✦"}
           </div>
@@ -116,7 +113,7 @@ export default function PortfolioStatusPage() {
           {/* Actions */}
           {isDone && deployUrl && (
             <div className="space-y-3">
-              <div className="p-3 rounded-xl border text-sm font-mono break-all" style={{ borderColor: "rgba(16,185,129,0.3)", color: "#10b981", background: "rgba(16,185,129,0.05)" }}>
+              <div className="p-3 rounded-xl border text-sm font-mono break-all" style={{ borderColor: "rgba(255,255,255,0.3)", color: "#ffffff", background: "rgba(255,255,255,0.06)" }}>
                 {deployUrl}
               </div>
               <a href={deployUrl} target="_blank" rel="noopener noreferrer">
@@ -133,7 +130,7 @@ export default function PortfolioStatusPage() {
           {isFailed && (
             <div className="space-y-3">
               {errorMsg && (
-                <div className="p-3 rounded-xl text-sm text-red-400 border border-red-500/20 bg-red-500/5">
+                <div className="p-3 rounded-xl text-sm text-white border border-white/20 bg-white/5">
                   {errorMsg}
                 </div>
               )}

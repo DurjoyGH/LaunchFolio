@@ -23,11 +23,12 @@ const PALETTES = [
 
 // ===== FONTS =====
 const FONTS = [
-  { name: "Inter",             preview: "Clean, modern, and highly readable" },
-  { name: "Poppins",           preview: "Geometric, friendly, and versatile" },
-  { name: "Montserrat",        preview: "Bold, contemporary, and elegant" },
-  { name: "Playfair Display",  preview: "Serif, sophisticated, and editorial" },
-  { name: "Nunito",            preview: "Rounded, soft, and approachable" },
+  { name: "Black Ops One",      preview: "Bold, tactical, and high-impact" },
+  { name: "Inter",              preview: "Clean, modern, and highly readable" },
+  { name: "Poppins",            preview: "Geometric, friendly, and versatile" },
+  { name: "Montserrat",         preview: "Bold, contemporary, and elegant" },
+  { name: "Playfair Display",   preview: "Serif, sophisticated, and editorial" },
+  { name: "Nunito",             preview: "Rounded, soft, and approachable" },
 ];
 
 // ===== SOCIAL PLATFORMS =====
@@ -108,7 +109,7 @@ export default function NonITDesignStep({ formData, update }: Props) {
       <div>
         <h2 className="text-xl font-bold text-white mb-1">Design Your Portfolio</h2>
         <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-          Choose a color palette and font — we'll handle the rest.
+          Choose a color palette and font — we&apos;ll handle the rest.
         </p>
       </div>
 
@@ -150,7 +151,7 @@ export default function NonITDesignStep({ formData, update }: Props) {
               onClick={() => setDP("fontPreference", f.name)}
               className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
                 dp.fontPreference === f.name
-                  ? "border-indigo-500/60 bg-indigo-500/5"
+                  ? "border-white/60 bg-white/10"
                   : "border-white/5 hover:border-white/15"
               }`}
             >
@@ -219,7 +220,7 @@ export default function NonITDesignStep({ formData, update }: Props) {
                 />
                 <button
                   onClick={() => removeSocial(key)}
-                  className="text-xs text-red-400 hover:text-red-300 px-2 py-1"
+                  className="text-xs text-white/70 hover:text-white px-2 py-1"
                 >✕</button>
               </div>
             );

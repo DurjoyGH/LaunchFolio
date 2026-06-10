@@ -14,10 +14,10 @@ const STYLES = [
   { value: "futuristic", label: "Futuristic", desc: "Neon accents, glowing" },
 ];
 
-const FONTS = ["Inter", "Poppins", "Raleway", "Roboto", "Space Grotesk"];
+const FONTS = ["Black Ops One", "Inter", "Poppins", "Raleway", "Roboto", "Space Grotesk"];
 
 const COLORS = [
-  "#6366f1", "#8b5cf6", "#06b6d4", "#10b981", "#f59e0b",
+  "#ffffff", "#000000", "#6366f1", "#8b5cf6", "#06b6d4", "#10b981", "#f59e0b",
   "#ef4444", "#ec4899", "#3b82f6", "#84cc16", "#f97316",
 ];
 
@@ -54,7 +54,7 @@ const ColorPicker = ({ label, value, onChange, placeholder }: { label: string; v
       <p className="text-xs font-mono" style={{ color: "var(--color-text-muted)" }}>{value || "auto"}</p>
     </div>
     {value && (
-      <button onClick={() => onChange("")} className="text-xs text-gray-600 hover:text-white">Reset</button>
+      <button onClick={() => onChange("")} className="text-xs text-white/50 hover:text-white">Reset</button>
     )}
   </div>
 );
@@ -107,7 +107,7 @@ export default function DesignStep({ formData, update }: Props) {
             <button
               key={t.value}
               onClick={() => set("theme", t.value)}
-              className={`p-4 rounded-xl border text-left transition-all ${dp.theme === t.value ? "border-indigo-500/60 bg-indigo-500/10" : "border-white/5 hover:border-white/10"}`}
+              className={`p-4 rounded-xl border text-left transition-all ${dp.theme === t.value ? "border-white/60 bg-white/10" : "border-white/5 hover:border-white/10"}`}
             >
               <div className={`w-full h-8 rounded-lg mb-2 ${t.preview}`} />
               <p className="text-sm font-medium text-white">{t.label}</p>
@@ -125,7 +125,7 @@ export default function DesignStep({ formData, update }: Props) {
             <button
               key={s.value}
               onClick={() => set("style", s.value)}
-              className={`p-4 rounded-xl border text-left transition-all ${dp.style === s.value ? "border-indigo-500/60 bg-indigo-500/10" : "border-white/5 hover:border-white/10"}`}
+              className={`p-4 rounded-xl border text-left transition-all ${dp.style === s.value ? "border-white/60 bg-white/10" : "border-white/5 hover:border-white/10"}`}
             >
               <p className="text-sm font-medium text-white mb-0.5">{s.label}</p>
               <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>{s.desc}</p>
@@ -146,7 +146,7 @@ export default function DesignStep({ formData, update }: Props) {
               style={{
                 backgroundColor: c,
                 borderColor: dp.primaryColor === c ? "white" : "transparent",
-                boxShadow: dp.primaryColor === c ? `0 0 0 2px ${c}` : "none",
+                boxShadow: dp.primaryColor === c ? "0 0 0 2px rgba(255,255,255,0.35)" : "none",
               }}
             />
           ))}
@@ -167,9 +167,9 @@ export default function DesignStep({ formData, update }: Props) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl border" style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}>
           <ColorPicker label="Button Background" value={dp.buttonColor} onChange={(v) => set("buttonColor", v)} placeholder={dp.primaryColor} />
           <ColorPicker label="Button Text" value={dp.buttonTextColor} onChange={(v) => set("buttonTextColor", v)} placeholder="#ffffff" />
-          <ColorPicker label="Navbar Background" value={dp.navBgColor} onChange={(v) => set("navBgColor", v)} placeholder="#0a0a0f" />
-          <ColorPicker label="Navbar Links" value={dp.navLinkColor} onChange={(v) => set("navLinkColor", v)} placeholder="#9ca3af" />
-          <ColorPicker label="Body Text" value={dp.textColor} onChange={(v) => set("textColor", v)} placeholder="#e2e8f0" />
+          <ColorPicker label="Navbar Background" value={dp.navBgColor} onChange={(v) => set("navBgColor", v)} placeholder="#000000" />
+          <ColorPicker label="Navbar Links" value={dp.navLinkColor} onChange={(v) => set("navLinkColor", v)} placeholder="#ffffff" />
+          <ColorPicker label="Body Text" value={dp.textColor} onChange={(v) => set("textColor", v)} placeholder="#ffffff" />
         </div>
       </div>
 
@@ -181,7 +181,7 @@ export default function DesignStep({ formData, update }: Props) {
             <button
               key={a.value}
               onClick={() => set("heroAnimation", a.value)}
-              className={`px-4 py-2 rounded-full text-sm border transition-all ${dp.heroAnimation === a.value ? "border-indigo-500/60 bg-indigo-500/10 text-white" : "border-white/5 hover:border-white/10 text-gray-400"}`}
+              className={`px-4 py-2 rounded-full text-sm border transition-all ${dp.heroAnimation === a.value ? "border-white/60 bg-white/10 text-white" : "border-white/5 hover:border-white/10 text-white/50"}`}
             >
               {a.label}
             </button>
@@ -197,7 +197,7 @@ export default function DesignStep({ formData, update }: Props) {
             <button
               key={l.value}
               onClick={() => set("logoStyle", l.value)}
-              className={`p-3 rounded-xl border text-left transition-all ${dp.logoStyle === l.value ? "border-indigo-500/60 bg-indigo-500/10" : "border-white/5 hover:border-white/10"}`}
+              className={`p-3 rounded-xl border text-left transition-all ${dp.logoStyle === l.value ? "border-white/60 bg-white/10" : "border-white/5 hover:border-white/10"}`}
             >
               <p className="text-sm font-medium text-white">{l.label}</p>
               <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>{l.desc}</p>
@@ -214,7 +214,7 @@ export default function DesignStep({ formData, update }: Props) {
             <button
               key={f}
               onClick={() => set("fontPreference", f)}
-              className={`px-4 py-2 rounded-full text-sm border transition-all ${dp.fontPreference === f ? "border-indigo-500/60 bg-indigo-500/10 text-white" : "border-white/5 hover:border-white/10 text-gray-400"}`}
+              className={`px-4 py-2 rounded-full text-sm border transition-all ${dp.fontPreference === f ? "border-white/60 bg-white/10 text-white" : "border-white/5 hover:border-white/10 text-white/50"}`}
             >
               {f}
             </button>
