@@ -17,7 +17,7 @@ app.use(
     crossOriginOpenerPolicy: false,
   })
 );
-const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:3000,http://localhost:3001,http://localhost:3002").split(",");
+const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:3000,http://localhost:3001,http://localhost:3002, https://launch-folio-sigma.vercel.app, https://launch-folio-backend.vercel.app").split(",");
 app.use(
   cors({
     origin: function (origin, callback) {
