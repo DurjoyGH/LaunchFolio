@@ -12,7 +12,10 @@ const { SECTION_GENERATORS } = require("../templates/registry");
  * @returns {string} outputPath
  */
 const buildPortfolio = async ({ portfolioId, blueprint, userInput, content }) => {
-  const outputPath = path.join(__dirname, "../../generated-sites", portfolioId);
+  const os = require("os");
+  const isProd = process.env.NODE_ENV === "production" || process.env.VERCEL;
+  const baseDir = isProd ? os.tmpdir() : path.join(__dirname, "../..");
+  const outputPath = path.join(baseDir, "generated-sites", portfolioId);
   fs.mkdirSync(outputPath, { recursive: true });
 
   // BIO PRIORITY: User bio always wins over AI-generated bio
