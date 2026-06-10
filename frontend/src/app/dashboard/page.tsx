@@ -86,10 +86,9 @@ export default function DashboardPage() {
     <div className="min-h-screen" style={{ background: "var(--color-bg-primary)" }}>
       {/* Header */}
       <header className="border-b" style={{ borderColor: "var(--color-border-subtle)" }}>
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-2 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="LaunchFolio" width={28} height={28} className="rounded-md" />
-            <span className="font-bold text-white">LaunchFolio</span>
+            <Image src="/logo.png" alt="LaunchFolio" width={400} height={100} className="h-14 w-auto object-contain scale-125 origin-left -translate-y-1.4" />
           </Link>
           <div className="flex items-center gap-4">
             <span className="text-sm hidden sm:block" style={{ color: "var(--color-text-secondary)" }}>
@@ -155,7 +154,7 @@ export default function DashboardPage() {
                       </h3>
                       <p className="text-sm mt-0.5" style={{ color: "var(--color-text-muted)" }}>{p.input.title}</p>
                     </div>
-                    <Badge variant={statusVariant[p.status]} dot>{p.status}</Badge>
+                    <Badge variant={statusVariant[p.status]}>{p.status}</Badge>
                   </div>
 
                   {p.status === "deployed" && p.deployment?.deployUrl && (

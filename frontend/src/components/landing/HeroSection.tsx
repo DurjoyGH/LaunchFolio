@@ -24,16 +24,18 @@ export default function HeroSection() {
             <Image
               src="/logo.png"
               alt="LaunchFolio"
-              width={180}
-              height={180}
-              className="anim-fade-up rounded-3xl"
+              width={600}
+              height={150}
+              className="anim-fade-up w-auto h-24 md:h-32 object-contain"
               priority
             />
-            <h2 className="mt-6 text-3xl md:text-4xl font-bold text-white anim-fade-up" style={{ animationDelay: "0.1s" }}>
-              LaunchFolio
-            </h2>
-            <div className="mt-4 anim-fade-up" style={{ animationDelay: "0.2s" }}>
-              <strong className="text-white text-sm md:text-base anim-typewriter inline-block">No code. No design skills. Minutes — not days.</strong>
+            <div className="mt-2 md:ml-4 anim-fade-up w-full flex justify-center md:justify-start" style={{ animationDelay: "0.2s" }}>
+              <div className="relative inline-block">
+                {/* Invisible text to prop open the exact width */}
+                <strong className="text-white text-sm md:text-base invisible pointer-events-none">No code. No design skills. Minutes — not days.&nbsp;</strong>
+                {/* Absolute text that animates from 0 to 100% width */}
+                <strong className="absolute top-0 left-0 text-white text-sm md:text-base anim-typewriter block h-full overflow-hidden whitespace-nowrap">No code. No design skills. Minutes — not days.&nbsp;</strong>
+              </div>
             </div>
           </div>
 
@@ -52,8 +54,8 @@ export default function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start anim-fade-up"
               style={{ animationDelay: "0.3s" }}>
-              <Button size="lg" onClick={handleGenerate}>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <Button size="lg" onClick={handleGenerate} className="gap-1.5">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 Generate My Portfolio
@@ -63,9 +65,13 @@ export default function HeroSection() {
               </a>
             </div>
 
-            <p className="text-sm mt-8 anim-fade-up" style={{ color: "var(--color-text-muted)", animationDelay: "0.35s" }}>
-              ✓ Free to start &nbsp;·&nbsp; ✓ Deployed to Vercel &nbsp;·&nbsp; ✓ Custom domain ready
-            </p>
+            <div className="flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-2 sm:gap-3 text-sm mt-8 anim-fade-up" style={{ color: "var(--color-text-muted)", animationDelay: "0.35s" }}>
+              <span>✓ Free to start</span>
+              <span className="hidden sm:inline">·</span>
+              <span>✓ Deployed to Vercel</span>
+              <span className="hidden sm:inline">·</span>
+              <span>✓ Custom domain ready</span>
+            </div>
           </div>
         </div>
       </div>

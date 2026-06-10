@@ -33,16 +33,14 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass border-b" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass border-b" : "bg-transparent"
+        }`}
       style={{ borderColor: scrolled ? "var(--color-border-subtle)" : "transparent" }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.png" alt="LaunchFolio" width={32} height={32} className="rounded-lg" />
-          <span className="text-lg font-bold text-white">LaunchFolio</span>
+          <Image src="/logo.png" alt="LaunchFolio" width={400} height={100} className="h-14 w-auto object-contain scale-125 origin-left -translate-y-1.4" />
         </Link>
 
         {/* Desktop links */}

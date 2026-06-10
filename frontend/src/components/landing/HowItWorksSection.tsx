@@ -45,7 +45,7 @@ export default function HowItWorksSection() {
 
         <div className="relative">
           {/* Connecting line */}
-          <div className="hidden md:block absolute left-8 top-12 bottom-12 w-px"
+          <div className="absolute left-8 top-12 bottom-12 w-px"
             style={{ background: "linear-gradient(to bottom, #ffffff, transparent)" }} />
 
           <div className="flex flex-col gap-8">
@@ -70,10 +70,9 @@ export default function HowItWorksSection() {
                     {step.description}
                   </p>
                   <span
-                    className="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full border"
+                    className="inline-flex items-center gap-2 text-xs font-medium px-3 py-1 rounded-full border whitespace-nowrap"
                     style={{ borderColor: "rgba(255,255,255,0.22)", color: "var(--color-text-primary)", backgroundColor: "rgba(255,255,255,0.06)" }}
                   >
-                    <span className="text-[10px] leading-none">◉</span>
                     <span>{step.detail}</span>
                   </span>
                 </div>

@@ -57,8 +57,7 @@ export default function RegisterPage() {
         <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-hero)" }} />
         <div className="relative z-10">
           <Link href="/" className="flex items-center gap-2.5 mb-16">
-            <Image src="/logo.png" alt="LaunchFolio" width={32} height={32} className="rounded-lg" />
-            <span className="text-lg font-bold text-white">LaunchFolio</span>
+            <Image src="/logo.png" alt="LaunchFolio" width={280} height={70} className="h-14 w-auto object-contain scale-[1.75] origin-left" />
           </Link>
           <h2 className="text-4xl font-bold text-white mb-4 leading-tight">
             Your portfolio,<br /><span className="gradient-text">live in minutes.</span>
@@ -88,8 +87,7 @@ export default function RegisterPage() {
           </div>
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2.5 mb-8">
-            <Image src="/logo.png" alt="LaunchFolio" width={28} height={28} className="rounded-md" />
-            <span className="font-bold text-white">LaunchFolio</span>
+            <Image src="/logo.png" alt="LaunchFolio" width={200} height={48} className="h-10 w-auto object-contain scale-[1.75] origin-left" />
           </div>
 
           <h1 className="text-3xl font-bold text-white mb-2">Create your account</h1>

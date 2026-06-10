@@ -27,9 +27,8 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <Image src="/logo.png" alt="LaunchFolio" width={28} height={28} className="rounded-md" />
-              <span className="font-bold text-white">LaunchFolio</span>
+            <Link href="/" className="flex items-center gap-2.5 mb-8">
+              <Image src="/logo.png" alt="LaunchFolio" width={320} height={80} className="h-12 w-auto object-contain scale-150 origin-left" />
             </Link>
             <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
               Build stunning AI-powered portfolios and deploy them in minutes.

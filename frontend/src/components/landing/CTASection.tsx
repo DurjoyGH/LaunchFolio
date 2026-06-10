@@ -31,11 +31,14 @@ export default function CTASection() {
               Join developers who use LaunchFolio to build stunning portfolios — deployed live in minutes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" onClick={handleGenerate}>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <Button size="lg" onClick={handleGenerate} className="gap-1.5">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Generate My Portfolio — Free
+                <span className="flex items-center gap-1">
+                  <span className="whitespace-nowrap">Generate My Portfolio</span>
+                  <span className="hidden sm:inline whitespace-nowrap">— Free</span>
+                </span>
               </Button>
               <Link href="/auth/login">
                 <Button variant="ghost" size="lg">Sign In</Button>

@@ -54,8 +54,7 @@ export default function LoginPage() {
         </div>
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="LaunchFolio" width={36} height={36} className="rounded-lg" />
-            <span className="text-xl font-bold text-white">LaunchFolio</span>
+            <Image src="/logo.png" alt="LaunchFolio" width={280} height={70} className="h-14 w-auto object-contain scale-[1.75]" />
           </Link>
         </div>
 

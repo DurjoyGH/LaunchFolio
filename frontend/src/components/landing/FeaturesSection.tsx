@@ -2,7 +2,7 @@ const features = [
   {
     icon: "✦",
     title: "AI Portfolio Planner",
-    description: "Gemini analyzes your profile and selects the perfect layout, sections, and color palette for your field.",
+    description: "AI analyzes your profile and selects the perfect layout, sections, and color palette for your field.",
   },
   {
     icon: "⬡",

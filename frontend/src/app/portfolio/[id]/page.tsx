@@ -80,7 +80,7 @@ export default function PortfolioStatusPage() {
             {isDone ? "🚀" : isFailed ? "✕" : "✦"}
           </div>
 
-          <Badge variant={config.badge} dot className="mb-4">{config.label}</Badge>
+          <Badge variant={config.badge} className="mb-4">{config.label}</Badge>
           <h1 className="text-2xl font-bold text-white mb-3">
             {isDone ? "Your portfolio is live!" : isFailed ? "Generation failed" : "Building your portfolio..."}
           </h1>
