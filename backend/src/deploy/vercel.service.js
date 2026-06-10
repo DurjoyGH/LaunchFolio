@@ -2,7 +2,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
-const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
+const VERCEL_TOKEN = process.env.DEPLOY_TOKEN;
 const VERCEL_API = "https://api.vercel.com";
 
 const getHeaders = () => ({ Authorization: `Bearer ${VERCEL_TOKEN}` });
