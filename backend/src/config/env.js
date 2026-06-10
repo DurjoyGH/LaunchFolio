@@ -13,11 +13,18 @@ const required = [
   "CLOUDINARY_CLOUD_NAME",
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
-  "REDIS_HOST",
-  "REDIS_PORT",
 ];
 
 const missing = required.filter((key) => !process.env[key]);
+const hasRedisConfig =
+  process.env.REDIS_URL
+  || process.env.UPSTASH_REDIS_URL
+  || (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+  || (process.env.REDIS_HOST && process.env.REDIS_PORT);
+
+if (!hasRedisConfig) {
+  missing.push("REDIS_URL or UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN or REDIS_HOST/REDIS_PORT");
+}
 
 if (missing.length > 0) {
   console.error(`❌ Missing environment variables: ${missing.join(", ")}`);
@@ -62,6 +69,9 @@ module.exports = {
   },
 
   redis: {
+    url: process.env.REDIS_URL || process.env.UPSTASH_REDIS_URL,
+    upstashRestUrl: process.env.UPSTASH_REDIS_REST_URL,
+    upstashRestToken: process.env.UPSTASH_REDIS_REST_TOKEN,
     host: process.env.REDIS_HOST || "127.0.0.1",
     port: parseInt(process.env.REDIS_PORT, 10) || 6379,
   },
