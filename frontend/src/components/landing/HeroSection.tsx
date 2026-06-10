@@ -20,7 +20,7 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-6xl mx-auto w-full">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           {/* Left: Logo + animated title */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start text-center md:text-left -translate-y-4 md:-translate-y-8">
             <Image
               src="/logo.png"
               alt="LaunchFolio"
