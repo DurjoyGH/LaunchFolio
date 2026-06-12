@@ -114,7 +114,7 @@ Return ONLY this JSON:
   ],
   "content": {
     "tagline": "Short tagline (max 10 words)",
-    "heroSummary": "A powerful 2-3 sentence professional summary for the hero section based on the user's role",
+    "heroSummary": "A powerful, highly detailed professional summary for the hero section. MUST be AT LEAST 3 full sentences. Elaborate on their skills, passion, and expertise.",
     "bio": "Professional bio (2-3 sentences) — ONLY if user did not provide one",
     "ctaText": "CTA button text",
     "ctaSecondaryText": "Secondary CTA text",

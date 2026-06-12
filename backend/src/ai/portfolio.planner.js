@@ -42,19 +42,22 @@ const validateBlueprint = (blueprint) => {
     for (const s of blueprint.sections) {
       if (s && s.type && COMPONENT_REGISTRY[s.type]) {
         const variants = COMPONENT_REGISTRY[s.type];
-        const variant = variants.includes(s.variant) ? s.variant : variants[0];
+        // Enforce true randomization for every section
+        const variant = variants[Math.floor(Math.random() * variants.length)];
         validatedSections.push({ type: s.type, variant });
       }
     }
   }
 
   // Ensure minimum sections exist
+  // Ensure minimum sections exist with random variants
+  const getRandom = (type) => COMPONENT_REGISTRY[type][Math.floor(Math.random() * COMPONENT_REGISTRY[type].length)];
   const types = validatedSections.map((s) => s.type);
-  if (!types.includes("navbar")) validatedSections.unshift({ type: "navbar", variant: "NavbarCentered" });
-  if (!types.includes("hero")) validatedSections.splice(1, 0, { type: "hero", variant: "HeroCentered" });
-  if (!types.includes("about")) validatedSections.splice(2, 0, { type: "about", variant: "AboutCard" });
-  if (!types.includes("contact")) validatedSections.push({ type: "contact", variant: "ContactModern" });
-  if (!types.includes("footer")) validatedSections.push({ type: "footer", variant: "FooterSimple" });
+  if (!types.includes("navbar")) validatedSections.unshift({ type: "navbar", variant: getRandom("navbar") });
+  if (!types.includes("hero")) validatedSections.splice(1, 0, { type: "hero", variant: getRandom("hero") });
+  if (!types.includes("about")) validatedSections.splice(2, 0, { type: "about", variant: getRandom("about") });
+  if (!types.includes("contact")) validatedSections.push({ type: "contact", variant: getRandom("contact") });
+  if (!types.includes("footer")) validatedSections.push({ type: "footer", variant: getRandom("footer") });
 
   // Validate design tokens
   const designTokens = {
