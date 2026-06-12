@@ -1,105 +1,73 @@
 /**
  * Navbar section templates.
  * 5 variants: NavbarCentered, NavbarGlass, NavbarMinimal, NavbarBold, NavbarFloating
- * Nav links are built DYNAMICALLY from the actual blueprint sections.
  */
-
-// Human-readable label map for section types
-const SECTION_LABELS = {
-  hero: null,       // Never shown in nav
-  navbar: null,     // Never shown in nav
-  footer: null,     // Never shown in nav
-  about: "About",
-  skills: "Skills",
-  projects: "Projects",
-  education: "Education",
-  gallery: "Gallery",
-  services: "Services",
-  testimonials: "Testimonials",
-  hobbies: "Hobbies",
-  achievements: "Achievements",
-  contact: "Contact",
-};
-
 const getNavbarTemplate = ({ blueprint, userInput }) => {
   const sectionDef = blueprint.sections.find((s) => s.type === "navbar");
   const variant = sectionDef?.variant || "NavbarCentered";
-  const primary = blueprint.primaryColor;
-  const name = userInput.name;
-  const firstName = name.split(" ")[0];
-  const profileImage = userInput.profileImage || "";
-  const dp = userInput.designPreferences || {};
-  const logoStyle = dp.logoStyle || "initial";
+  const name = userInput.name || "Portfolio";
+  const primary = blueprint.primaryColor || "#6366f1";
 
-  // Build nav links DYNAMICALLY from blueprint sections (skip navbar/hero/footer)
-  const linkableSections = blueprint.sections.filter(
-    (s) => SECTION_LABELS[s.type] !== null && SECTION_LABELS[s.type] !== undefined
+  // Build nav links based on active sections
+  const sectionTypes = blueprint.sections.map((s) => s.type).filter(
+    (t) => !["navbar", "hero", "footer"].includes(t)
   );
+  
+  const links = sectionTypes.map((t) => {
+    const label = t.charAt(0).toUpperCase() + t.slice(1);
+    return `<a href="#${t}" className="nav-link font-medium text-sm transition-colors hover:opacity-80 block md:inline-block py-2 md:py-0">${label}</a>`;
+  });
 
-  const navLinksJSX = linkableSections
-    .map((s) => `<a href="#${s.type}" className="nav-link">${SECTION_LABELS[s.type]}</a>`)
-    .join("\n            ");
+  const linksJSX = links.join("\n            ");
 
-  // Floating variant builds vertical links slightly differently
-  const floatingLinksJSX = linkableSections
-    .map((s) => `<a href="#${s.type}" className="nav-link text-xs">${SECTION_LABELS[s.type]}</a>`)
-    .join("\n        ");
+  // Reusable script for mobile menu toggling (simple inline state alternative)
+  const mobileMenuToggle = `
+  const [isOpen, setIsOpen] = useState(false);
+  `;
 
-  // Logo JSX
-  let logoJSX = "";
-  if (logoStyle === "photo" && profileImage) {
-    logoJSX = `<img src="${profileImage}" alt="${name}" className="w-8 h-8 rounded-full object-cover" />`;
-  } else if (logoStyle === "photoName" && profileImage) {
-    logoJSX = `
-      <img src="${profileImage}" alt="${name}" className="w-8 h-8 rounded-full object-cover" />
-      <span className="font-semibold text-white">${firstName}</span>
-    `;
-  } else if (logoStyle === "name") {
-    logoJSX = `<span className="font-semibold text-white text-lg">${firstName}</span>`;
-  } else {
-    logoJSX = `
-      <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white text-sm" style={{background:"${primary}"}}>${firstName.charAt(0)}</div>
-      <span className="font-semibold text-white">${firstName}</span>
-    `;
-  }
+  // Base imports
+  const imports = `"use client";
+import { useState, useEffect } from "react";
+import { FiMenu, FiX } from "react-icons/fi";`;
 
-  // Determine CTA href: prefer contact section, else first linkable section
-  const hasContact = linkableSections.some((s) => s.type === "contact");
-  const ctaHref = hasContact ? "#contact" : `#${linkableSections[0]?.type || "contact"}`;
-  const ctaLabel = hasContact ? "Contact" : (SECTION_LABELS[linkableSections[0]?.type] || "Connect");
-
+  // NavbarGlass
   if (variant === "NavbarGlass") {
     return `
-import { useState } from "react";
+${imports}
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  ${mobileMenuToggle}
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-8 py-3 rounded-2xl border border-white/10 backdrop-blur-xl" style={{background:"var(--color-nav-bg)"}}>
-      <div className="flex items-center gap-8">
-        <a href="#" className="flex items-center gap-2">
-          ${logoJSX}
+    <nav className={\`fixed top-0 left-0 right-0 z-50 transition-all duration-300 \${scrolled ? "py-3" : "py-5"}\`}>
+      <div className={\`max-w-6xl mx-auto px-6 flex items-center justify-between transition-all duration-300 \${scrolled ? "bg-[var(--color-nav-bg)] backdrop-blur-md rounded-2xl border shadow-lg border-[var(--color-border)] py-3 px-6" : ""}\`}>
+        <a href="#hero" className="text-xl font-bold tracking-tight" style={{color:"var(--color-heading)"}}>
+          ${name.split(" ")[0]}<span style={{color:"${primary}"}}>.</span>
         </a>
-        <div className="hidden md:flex items-center gap-6 text-sm">
-          ${navLinksJSX}
+        
+        <div className="hidden md:flex items-center gap-8">
+          ${linksJSX}
+          <a href="#contact" className="px-5 py-2 rounded-full text-sm font-semibold btn-primary shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5">Let's Talk</a>
         </div>
-        <a href="${ctaHref}" className="hidden md:inline-flex px-4 py-1.5 rounded-full text-sm font-medium btn-primary transition-colors">
-          Let's Talk
-        </a>
-        <button className="md:hidden text-white" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-          <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            {open ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
+
+        <button className="md:hidden text-2xl" onClick={() => setIsOpen(!isOpen)} style={{color:"var(--color-heading)"}}>
+          {isOpen ? <FiX /> : <FiMenu />}
         </button>
       </div>
-      {open && (
-        <div className="md:hidden mt-4 pt-4 border-t border-white/10 flex flex-col gap-4">
-          ${navLinksJSX}
-          <a href="${ctaHref}" className="inline-flex px-4 py-2 rounded-full text-sm font-medium btn-primary">${ctaLabel}</a>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 w-full p-4 md:hidden">
+          <div className="p-6 rounded-2xl backdrop-blur-xl border shadow-xl flex flex-col gap-4" style={{background:"var(--color-nav-bg)", borderColor:"var(--color-border)"}}>
+            ${linksJSX}
+            <a href="#contact" className="mt-4 px-5 py-3 text-center rounded-xl font-bold btn-primary">Let's Talk</a>
+          </div>
         </div>
       )}
     </nav>
@@ -107,34 +75,33 @@ export default function Navbar() {
 }`;
   }
 
+  // NavbarMinimal
   if (variant === "NavbarMinimal") {
     return `
-import { useState } from "react";
+${imports}
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  ${mobileMenuToggle}
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-md" style={{background:"var(--color-nav-bg)"}}>
-      <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2">
-          ${logoJSX}
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-nav-bg)] backdrop-blur-md border-b" style={{borderColor:"var(--color-border)"}}>
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="#hero" className="text-lg font-mono tracking-widest uppercase" style={{color:"var(--color-heading)"}}>
+          [${name.split(" ")[0]}]
         </a>
-        <div className="hidden md:flex items-center gap-8 text-sm">
-          ${navLinksJSX}
+        
+        <div className="hidden md:flex items-center gap-8 text-sm uppercase tracking-widest font-semibold">
+          ${linksJSX}
         </div>
-        <button className="md:hidden text-white" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-          <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            {open ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
+
+        <button className="md:hidden text-xl" onClick={() => setIsOpen(!isOpen)} style={{color:"var(--color-heading)"}}>
+          {isOpen ? <FiX /> : <FiMenu />}
         </button>
       </div>
-      {open && (
-        <div className="md:hidden px-6 pb-6 border-t border-white/10 flex flex-col gap-4">
-          ${navLinksJSX}
+
+      {isOpen && (
+        <div className="border-b md:hidden bg-[var(--color-nav-bg)] px-6 py-4 flex flex-col gap-4" style={{borderColor:"var(--color-border)"}}>
+          ${linksJSX}
         </div>
       )}
     </nav>
@@ -142,38 +109,37 @@ export default function Navbar() {
 }`;
   }
 
+  // NavbarBold
   if (variant === "NavbarBold") {
     return `
-import { useState } from "react";
+${imports}
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  ${mobileMenuToggle}
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50" style={{background:"linear-gradient(180deg, var(--color-nav-bg) 0%, transparent 100%)"}}>
-      <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2">
-          ${logoJSX}
+    <nav className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6 transition-all">
+      <div className="max-w-7xl mx-auto w-full bg-[var(--color-heading)] text-[var(--color-card-bg)] rounded-3xl px-6 py-4 flex items-center justify-between shadow-2xl">
+        <a href="#hero" className="text-2xl font-black italic tracking-tighter">
+          ${name.toUpperCase()}
         </a>
-        <div className="hidden md:flex items-center gap-10 text-sm font-medium uppercase tracking-widest">
-          ${navLinksJSX}
+        
+        <div className="hidden md:flex items-center gap-8 font-bold">
+          ${sectionTypes.map((t) => `<a href="#${t}" className="hover:opacity-70 transition-opacity">${t.charAt(0).toUpperCase() + t.slice(1)}</a>`).join("\n          ")}
+          <a href="#contact" className="px-6 py-2 rounded-full bg-[var(--color-card-bg)] text-[var(--color-heading)] hover:bg-[var(--color-border)] transition-colors">Contact</a>
         </div>
-        <a href="${ctaHref}" className="hidden md:inline-flex px-6 py-2.5 rounded-lg text-sm font-bold btn-primary transition-all hover:scale-105">
-          ${ctaLabel}
-        </a>
-        <button className="md:hidden text-white" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-          <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            {open ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
+
+        <button className="md:hidden text-2xl" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <FiX /> : <FiMenu />}
         </button>
       </div>
-      {open && (
-        <div className="md:hidden px-8 pb-6 border-t border-white/10 flex flex-col gap-4" style={{background:"var(--color-nav-bg)"}}>
-          ${navLinksJSX}
-          <a href="${ctaHref}" className="inline-flex px-5 py-2 rounded-lg text-sm font-bold btn-primary">${ctaLabel}</a>
+
+      {isOpen && (
+        <div className="absolute top-[80px] left-4 right-4 md:hidden">
+          <div className="p-6 rounded-3xl bg-[var(--color-heading)] text-[var(--color-card-bg)] shadow-2xl flex flex-col gap-4 font-bold text-lg text-center">
+            ${sectionTypes.map((t) => `<a href="#${t}" className="py-2 hover:opacity-70 transition-opacity">${t.charAt(0).toUpperCase() + t.slice(1)}</a>`).join("\n            ")}
+            <a href="#contact" className="mt-2 py-3 rounded-full bg-[var(--color-card-bg)] text-[var(--color-heading)]">Contact</a>
+          </div>
         </div>
       )}
     </nav>
@@ -181,38 +147,38 @@ export default function Navbar() {
 }`;
   }
 
+  // NavbarFloating
   if (variant === "NavbarFloating") {
     return `
-import { useState } from "react";
+${imports}
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  ${mobileMenuToggle}
+
   return (
-    <nav className="fixed top-6 right-6 z-50">
-      <div className="flex flex-col items-end gap-3 px-5 py-4 rounded-2xl border border-white/10 backdrop-blur-xl" style={{background:"var(--color-nav-bg)"}}>
-        <div className="flex items-center gap-2">
-          <a href="#" className="flex items-center gap-2">
-            ${logoJSX}
-          </a>
-          <button className="md:hidden text-white" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-            <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              {open ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+    <nav className="fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+      <div className="pointer-events-auto bg-[var(--color-nav-bg)] backdrop-blur-xl border rounded-full px-6 py-3 flex items-center gap-6 shadow-2xl" style={{borderColor:"var(--color-border)"}}>
+        <div className="hidden md:flex items-center gap-6 font-medium text-sm">
+          ${linksJSX}
+          <a href="#contact" className="ml-2 px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider" style={{background:"${primary}", color:"#fff"}}>Contact</a>
+        </div>
+        
+        <div className="md:hidden flex items-center gap-4 text-sm font-medium">
+          <a href="#hero" className="nav-link">Home</a>
+          <a href="#contact" className="nav-link">Contact</a>
+          <button className="text-xl ml-2" onClick={() => setIsOpen(!isOpen)} style={{color:"var(--color-heading)"}}>
+            {isOpen ? <FiX /> : <FiMenu />}
           </button>
         </div>
-        <div className="hidden md:flex flex-col items-end gap-3">
-          ${floatingLinksJSX}
-        </div>
-        {open && (
-          <div className="md:hidden flex flex-col items-end gap-3 pt-2 border-t border-white/10 w-full">
-            ${floatingLinksJSX}
-          </div>
-        )}
       </div>
+
+      {isOpen && (
+        <div className="absolute bottom-20 left-4 right-4 pointer-events-auto md:hidden flex justify-center">
+          <div className="w-full max-w-sm p-6 rounded-3xl backdrop-blur-xl border shadow-2xl flex flex-col gap-4 text-center font-medium" style={{background:"var(--color-nav-bg)", borderColor:"var(--color-border)"}}>
+            ${linksJSX}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }`;
@@ -220,36 +186,33 @@ export default function Navbar() {
 
   // NavbarCentered — default
   return `
-import { useState } from "react";
+${imports}
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  ${mobileMenuToggle}
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-md" style={{background:"var(--color-nav-bg)"}}>
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2">
-          ${logoJSX}
+    <nav className="absolute top-0 left-0 right-0 z-50 py-6 px-6">
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <a href="#hero" className="text-2xl font-bold" style={{color:"var(--color-heading)"}}>
+          ${name}
         </a>
-        <div className="hidden md:flex items-center gap-8 text-sm">
-          ${navLinksJSX}
+        
+        <div className="hidden md:flex items-center gap-8 border rounded-full px-8 py-3 bg-[var(--color-nav-bg)] backdrop-blur-sm" style={{borderColor:"var(--color-border)"}}>
+          ${linksJSX}
         </div>
-        <a href="${ctaHref}" className="hidden md:inline-flex px-5 py-2 rounded-xl text-sm font-medium btn-primary transition-all hover:opacity-90">
-          ${ctaLabel}
-        </a>
-        <button className="md:hidden text-white" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-          <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            {open ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
+
+        <button className="md:hidden absolute top-6 right-6 text-2xl" onClick={() => setIsOpen(!isOpen)} style={{color:"var(--color-heading)"}}>
+          {isOpen ? <FiX /> : <FiMenu />}
         </button>
       </div>
-      {open && (
-        <div className="md:hidden px-6 pb-6 border-t border-white/10 flex flex-col gap-4" style={{background:"var(--color-nav-bg)"}}>
-          ${navLinksJSX}
-          <a href="${ctaHref}" className="inline-flex px-5 py-2 rounded-xl text-sm font-medium btn-primary">${ctaLabel}</a>
+
+      {isOpen && (
+        <div className="fixed inset-0 z-40 bg-[var(--color-nav-bg)] backdrop-blur-xl pt-24 px-6 md:hidden">
+          <div className="flex flex-col gap-6 text-2xl font-bold text-center">
+            ${linksJSX}
+            <a href="#contact" className="nav-link mt-8">Contact</a>
+          </div>
         </div>
       )}
     </nav>

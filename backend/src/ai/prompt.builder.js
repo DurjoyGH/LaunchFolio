@@ -3,7 +3,7 @@
  * Keeps prompt engineering centralized and testable.
  */
 
-const buildBlueprintPrompt = (userInput) => {
+const buildBlueprintPrompt = (userInput, registry) => {
   const {
     name,
     title,
@@ -42,6 +42,17 @@ Include these sections: navbar, hero, about, skills, education, projects, contac
 If user has no projects, you may skip "projects".`;
   }
 
+  // Shuffle variants to force the AI to choose different combinations each time
+  const shuffle = (arr) => arr.slice().sort(() => Math.random() - 0.5);
+  let availableVariants = "";
+  if (registry) {
+    for (const [section, variants] of Object.entries(registry)) {
+      availableVariants += `- ${section}: ${shuffle(variants).join(", ")}\n`;
+    }
+  } else {
+    availableVariants = "- navbar: NavbarCentered, NavbarGlass, NavbarMinimal, NavbarBold, NavbarFloating\n- hero: HeroCentered, HeroSplit, HeroGradient, HeroMinimal, HeroCreative\n";
+  }
+
   return `
 You are a professional portfolio design AI for LaunchFolio.
 
@@ -69,19 +80,7 @@ Font: ${fontPreference || "Auto"}
 == SECTION RULES ==${sectionGuide}
 
 == AVAILABLE COMPONENT VARIANTS ==
-- navbar: NavbarCentered, NavbarGlass, NavbarMinimal, NavbarBold, NavbarFloating
-- hero: HeroCentered, HeroSplit, HeroGradient, HeroMinimal, HeroCreative, HeroGrid
-- about: AboutCard, AboutTimeline, AboutSplit, AboutMinimal
-- skills: SkillsGrid, SkillsProgress, SkillsCards, SkillsTags
-- education: EducationTimeline, EducationCards, EducationMinimal
-- projects: ProjectsGrid, ProjectsShowcase, ProjectsMinimal, ProjectsCards, ProjectsMasonry
-- gallery: GalleryMasonry, GalleryGrid, GalleryShowcase
-- services: ServicesGrid, ServicesCards, ServicesMinimal
-- testimonials: TestimonialsCards, TestimonialsGrid, TestimonialsQuote
-- hobbies: HobbiesGrid, HobbiesCards, HobbiesList
-- achievements: AchievementsCards, AchievementsTimeline, AchievementsTrophy
-- contact: ContactModern, ContactSplit, ContactGlass, ContactMinimal
-- footer: FooterSimple, FooterCentered, FooterColumns
+${availableVariants.trim()}
 
 == STYLE PERSONALITIES ==
 Choose ONE: "minimal", "developer", "creative", "corporate", "glassmorphism", "futuristic"
@@ -115,6 +114,7 @@ Return ONLY this JSON:
   ],
   "content": {
     "tagline": "Short tagline (max 10 words)",
+    "heroSummary": "A powerful 2-3 sentence professional summary for the hero section based on the user's role",
     "bio": "Professional bio (2-3 sentences) — ONLY if user did not provide one",
     "ctaText": "CTA button text",
     "ctaSecondaryText": "Secondary CTA text",
@@ -141,6 +141,7 @@ Personality: ${blueprint.personality || "creative"}
 Write professional content. Return JSON:
 {
   "tagline": "...",
+  "heroSummary": "...",
   "bio": "...",
   "ctaText": "...",
   "ctaSecondaryText": "...",

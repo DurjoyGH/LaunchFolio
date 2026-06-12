@@ -6,10 +6,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Button from "@/components/ui/Button";
 import PersonalInfoStep from "@/components/generate/steps/PersonalInfoStep";
-import SkillsStep from "@/components/generate/steps/SkillsStep";
-import ProjectsStep from "@/components/generate/steps/ProjectsStep";
 import EducationStep from "@/components/generate/steps/EducationStep";
-import DesignStep from "@/components/generate/steps/DesignStep";
 import NonITDesignStep from "@/components/generate/steps/NonITDesignStep";
 import SectionPickerStep from "@/components/generate/steps/SectionPickerStep";
 import OptionalSectionsStep from "@/components/generate/steps/OptionalSectionsStep";
@@ -31,7 +28,7 @@ export type Hobby = { name: string; emoji: string; description: string };
 export type Achievement = { title: string; year: string; description: string };
 
 export type FormData = {
-  userType: "it" | "nonit" | "";
+  userType: "nonit";
   name: string;
   title: string;
   bio: string;
@@ -61,7 +58,7 @@ export type FormData = {
 };
 
 const INITIAL_FORM: FormData = {
-  userType: "",
+  userType: "nonit",
   name: "", title: "", bio: "", email: "", location: "", phone: "",
   profileImage: "", resumeUrl: "", customDomain: "",
   skills: [], education: [], projects: [],
@@ -77,18 +74,7 @@ const INITIAL_FORM: FormData = {
 
 type StepDef = { id: number; label: string; icon: string; key: string };
 
-function getSteps(userType: string, selectedSections: string[]): StepDef[] {
-  if (userType === "it") {
-    return [
-      { id: 1, label: "Personal Info", icon: "◎", key: "personal" },
-      { id: 2, label: "Skills", icon: "⬡", key: "skills" },
-      { id: 3, label: "Education", icon: "🎓", key: "education" },
-      { id: 4, label: "Projects", icon: "◈", key: "projects" },
-      { id: 5, label: "Design", icon: "✦", key: "design-it" },
-      { id: 6, label: "Review", icon: "→", key: "review" },
-    ];
-  }
-  // Non-IT flow
+function getSteps(selectedSections: string[]): StepDef[] {
   const steps: StepDef[] = [
     { id: 1, label: "Personal Info", icon: "◎", key: "personal" },
     { id: 2, label: "Education", icon: "🎓", key: "education" },
@@ -96,7 +82,7 @@ function getSteps(userType: string, selectedSections: string[]): StepDef[] {
     { id: 4, label: "Sections", icon: "◈", key: "section-picker" },
   ];
   if (selectedSections.length > 0) {
-    steps.push({ id: 5, label: "Section Details", icon: "⬡", key: "optional-sections" });
+    steps.push({ id: 5, label: "Details", icon: "⬡", key: "optional-sections" });
     steps.push({ id: 6, label: "Review", icon: "→", key: "review" });
   } else {
     steps.push({ id: 5, label: "Review", icon: "→", key: "review" });
@@ -106,12 +92,11 @@ function getSteps(userType: string, selectedSections: string[]): StepDef[] {
 
 export default function GeneratePage() {
   const router = useRouter();
-  const [step, setStep] = useState(0); // 0 = user type selection
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [prefilled, setPrefilled] = useState(false);
-  const [showItNotice, setShowItNotice] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -126,7 +111,6 @@ export default function GeneratePage() {
           const prev = data.data.input;
           setFormData((f) => ({
             ...f,
-            // Core info
             name: prev.name || f.name,
             title: prev.title || f.title,
             bio: prev.bio || f.bio,
@@ -136,18 +120,15 @@ export default function GeneratePage() {
             profileImage: prev.profileImage || f.profileImage,
             resumeUrl: prev.resumeUrl || f.resumeUrl,
             customDomain: prev.customDomain || f.customDomain,
-            // IT sections
             skills: prev.skills?.length ? prev.skills : f.skills,
             education: prev.education?.length ? prev.education : f.education,
             projects: prev.projects?.length ? prev.projects : f.projects,
-            // Non-IT sections
             services: prev.services?.length ? prev.services : f.services,
             testimonials: prev.testimonials?.length ? prev.testimonials : f.testimonials,
             gallery: prev.gallery?.length ? prev.gallery : f.gallery,
             hobbies: prev.hobbies?.length ? prev.hobbies : f.hobbies,
             achievements: prev.achievements?.length ? prev.achievements : f.achievements,
             selectedSections: prev.selectedSections?.length ? prev.selectedSections : f.selectedSections,
-            // Social (dynamic keys)
             social: { ...f.social, ...prev.social },
             designPreferences: { ...f.designPreferences, ...prev.designPreferences },
           }));
@@ -176,12 +157,10 @@ export default function GeneratePage() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if (!data.success) {
-        throw new Error("GENERATION_FAILED");
-      }
+      if (!data.success) throw new Error("GENERATION_FAILED");
       toast.success("Generation started. Your live link is on the way.");
       router.push(`/portfolio/${data.data.portfolioId}`);
-    } catch (err: unknown) {
+    } catch {
       const message = "Failed to start generation. Please try again.";
       setError(message);
       toast.error(message);
@@ -189,7 +168,7 @@ export default function GeneratePage() {
     }
   };
 
-  const currentSteps = formData.userType ? getSteps(formData.userType, formData.selectedSections) : [];
+  const currentSteps = getSteps(formData.selectedSections);
   const totalSteps = currentSteps.length;
   const currentKey = currentSteps[step - 1]?.key || "";
   const stepProps = { formData, update };
@@ -208,15 +187,10 @@ export default function GeneratePage() {
       ] as const;
       const emptyFields = missing.filter((f) => !String(formData[f.key] || "").trim());
       if (emptyFields.length > 0) return `Please fill: ${emptyFields.map((m) => m.label).join(", ")}.`;
-      if (formData.userType === "it" && !hasSocialLink) return "Please add at least one social link.";
     }
 
     if (currentKey === "education") {
       if (formData.education.length === 0) return "Please add at least one education entry.";
-    }
-
-    if (currentKey === "design-it") {
-      if (!formData.designPreferences.fontPreference) return "Please select a font.";
     }
 
     if (currentKey === "design-nonit") {
@@ -237,81 +211,6 @@ export default function GeneratePage() {
 
   const stepError = getStepError();
 
-  // ===== STEP 0: User Type Selection =====
-  if (step === 0) {
-    return (
-      <div className="min-h-screen px-4 sm:px-6 py-10 sm:py-12" style={{ background: "var(--color-bg-primary)" }}>
-        <div className="max-w-6xl mx-auto">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm">← Back to Dashboard</Button>
-          </Link>
-        </div>
-        <div className="flex items-center justify-center mt-6 px-2">
-        <div className="max-w-2xl w-full text-center">
-          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-3">Create Your Portfolio</h1>
-          <p className="text-base sm:text-lg mb-8 sm:mb-12" style={{ color: "var(--color-text-secondary)" }}>
-            Tell us about yourself so we can tailor the experience.
-          </p>
-
-          <div className="grid sm:grid-cols-2 gap-6">
-            <button
-              onClick={() => setShowItNotice(true)}
-              className="group p-8 rounded-2xl border-2 text-left transition-all hover:border-white/40 hover:bg-white/5"
-              style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}
-            >
-              <span className="text-4xl mb-4 block">💻</span>
-              <h3 className="text-xl font-bold text-white mb-2">IT / Software</h3>
-              <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-                CSE, Software Engineering, Developer, Designer, or any tech-related field.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">Skills</span>
-                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">Projects</span>
-                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">GitHub</span>
-              </div>
-            </button>
-
-            <button
-              onClick={() => { update({ userType: "nonit" }); setStep(1); }}
-              className="group p-8 rounded-2xl border-2 text-left transition-all hover:border-white/40 hover:bg-white/5"
-              style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}
-            >
-              <span className="text-4xl mb-4 block">🎨</span>
-              <h3 className="text-xl font-bold text-white mb-2">Non-IT / General</h3>
-              <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-                Student, Doctor, Teacher, Artist, Freelancer, Business — anyone.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">Simple</span>
-                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">Beautiful</span>
-                <span className="px-2 py-0.5 rounded text-xs bg-white/10 text-white">No Code</span>
-              </div>
-            </button>
-          </div>
-        </div>
-        </div>
-
-        {showItNotice && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ background: "rgba(7, 7, 15, 0.8)" }}>
-            <div className="card w-full max-w-md p-6 text-center">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "var(--color-bg-card)" }}>
-                <span className="text-2xl">💻</span>
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Coming soon</h3>
-              <p className="text-sm mb-6" style={{ color: "var(--color-text-secondary)" }}>
-                The IT/CSE flow is under development. Please use the Non-IT option for now.
-              </p>
-              <Button variant="ghost" onClick={() => setShowItNotice(false)}>
-                Close
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // ===== MAIN WIZARD =====
   return (
     <div className="min-h-screen px-4 sm:px-6 py-10 sm:py-12" style={{ background: "var(--color-bg-primary)" }}>
       <div className="max-w-3xl mx-auto">
@@ -358,17 +257,14 @@ export default function GeneratePage() {
           )}
 
           {currentKey === "personal" && <PersonalInfoStep {...stepProps} />}
-          {currentKey === "skills" && <SkillsStep {...stepProps} />}
           {currentKey === "education" && <EducationStep {...stepProps} />}
-          {currentKey === "projects" && <ProjectsStep {...stepProps} />}
-          {currentKey === "design-it" && <DesignStep {...stepProps} />}
           {currentKey === "design-nonit" && <NonITDesignStep {...stepProps} />}
           {currentKey === "section-picker" && <SectionPickerStep {...stepProps} />}
           {currentKey === "optional-sections" && <OptionalSectionsStep {...stepProps} />}
           {currentKey === "review" && <ReviewStep formData={formData} />}
 
           <div className="flex justify-between gap-3 mt-8 pt-6 border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
-            <Button variant="ghost" size="sm" onClick={() => { if (step === 1) { setStep(0); update({ userType: "" }); } else setStep(step - 1); }}>
+            <Button variant="ghost" size="sm" onClick={() => step > 1 && setStep(step - 1)} disabled={step === 1}>
               ← Back
             </Button>
             {step < totalSteps ? (
@@ -392,8 +288,7 @@ export default function GeneratePage() {
                 <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                <span className="hidden xs:inline">Generate Portfolio</span>
-                <span className="xs:hidden">Generate</span>
+                Generate Portfolio
               </Button>
             )}
           </div>

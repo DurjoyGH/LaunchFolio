@@ -1,126 +1,114 @@
 /**
  * Contact section templates.
- * 4 variants: ContactModern, ContactSplit, ContactGlass, ContactMinimal
+ * 5 variants: ContactModern, ContactSplit, ContactGlass, ContactMinimal, ContactCentered
  */
+const { buildSocialLinks } = require("../../utils/social-icons");
+
 const getContactTemplate = ({ blueprint, userInput, content }) => {
-  const { variant } = blueprint.sections.find((s) => s.type === "contact") || { variant: "ContactModern" };
-  const primary = blueprint.primaryColor;
-  const secondary = blueprint.secondaryColor;
+  const sectionDef = blueprint.sections.find((s) => s.type === "contact");
+  const variant = sectionDef?.variant || "ContactModern";
+  const primary = blueprint.primaryColor || "#6366f1";
+  
   const heading = content.contactHeading || "Get In Touch";
-  const subtext = content.contactSubtext || "I'd love to hear from you.";
+  const text = content.contactText || "Have a question or want to work together? Send me a message.";
   const email = userInput.email || "";
+  const location = userInput.location || "";
   const phone = userInput.phone || "";
-  const resumeUrl = userInput.resumeUrl || "";
   const social = userInput.social || {};
 
-  const { buildSocialLinks } = require("../../utils/social-icons");
-  const socialImports = "";
+  // We add a dummy form submit handler in client components so the form doesn't just refresh the page.
+  const formComponent = `
+    <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert('Form submission is a mockup on generated sites.'); }}>
+      <div className="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{color:"var(--color-heading)"}}>Name</label>
+          <input type="text" required className="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 bg-transparent transition-all" style={{borderColor:"var(--color-border)", color:"var(--color-body)"}} placeholder="John Doe" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{color:"var(--color-heading)"}}>Email</label>
+          <input type="email" required className="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 bg-transparent transition-all" style={{borderColor:"var(--color-border)", color:"var(--color-body)"}} placeholder="john@example.com" />
+        </div>
+      </div>
+      <div>
+        <label className="block text-sm font-medium mb-2" style={{color:"var(--color-heading)"}}>Message</label>
+        <textarea required rows={5} className="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 bg-transparent transition-all resize-y" style={{borderColor:"var(--color-border)", color:"var(--color-body)"}} placeholder="Your message..."></textarea>
+      </div>
+      <button type="submit" className="w-full py-4 rounded-xl font-bold btn-primary transition-transform hover:scale-[1.02]">
+        Send Message
+      </button>
+    </form>
+  `;
 
-  const mailIcon = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 4h16v16H4z\"/><path d=\"M22 6L12 13 2 6\"/></svg>";
-  const phoneIcon = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 16.92V21a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 1 4.18 2 2 0 0 1 3 2h4.09a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z\"/></svg>";
-  const fileIcon = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><path d=\"M14 2v6h6\"/></svg>";
-  const arrowIcon = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14\"/><path d=\"M13 5l7 7-7 7\"/></svg>";
-
-  // ContactSplit — two columns with form
+  // ContactSplit
   if (variant === "ContactSplit") {
     return `
-${socialImports}
-
+"use client";
 export default function Contact() {
   return (
     <section id="contact" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16">
         <div>
-          <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "var(--color-primary)" }}>Contact</span>
-          <h2 className="text-4xl font-bold text-white mb-4">${heading}</h2>
-          <p className="text-gray-400 mb-8">${subtext}</p>
-          <div className="space-y-4">
-            ${email ? `<a href="mailto:${email}" className="flex items-center gap-3 text-lg font-medium hover:opacity-80 transition-opacity" style={{ color: "var(--color-primary)" }}>
-              ${mailIcon} ${email}
-            </a>` : ""}
-            ${phone ? `<p className="flex items-center gap-3 text-gray-400">
-              ${phoneIcon} ${phone}
-            </p>` : ""}
-            ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium btn-primary mt-4 transition-opacity hover:opacity-90">
-              ${fileIcon} Resume
-            </a>` : ""}
-          </div>
-          <div className="flex gap-4 mt-8 flex-wrap">
-            ${buildSocialLinks(social, "px-4 py-2 rounded-lg text-sm border border-white/10 text-gray-300 hover:border-white/30 transition-colors")}
+          <h2 className="text-5xl font-black mb-8" style={{color:"var(--color-heading)"}}>${heading}</h2>
+          <p className="text-xl mb-12 leading-relaxed" style={{color:"var(--color-body)"}}>${text}</p>
+          <div className="space-y-8">
+            ${email ? `<div>
+              <p className="text-sm font-bold uppercase tracking-wider mb-2" style={{color:"var(--color-text-muted)"}}>Email</p>
+              <a href="mailto:${email}" className="text-2xl font-medium hover:underline" style={{color:"var(--color-heading)"}}>${email}</a>
+            </div>` : ""}
+            ${phone ? `<div>
+              <p className="text-sm font-bold uppercase tracking-wider mb-2" style={{color:"var(--color-text-muted)"}}>Phone</p>
+              <p className="text-2xl font-medium" style={{color:"var(--color-heading)"}}>${phone}</p>
+            </div>` : ""}
+            ${location ? `<div>
+              <p className="text-sm font-bold uppercase tracking-wider mb-2" style={{color:"var(--color-text-muted)"}}>Location</p>
+              <p className="text-2xl font-medium" style={{color:"var(--color-heading)"}}>${location}</p>
+            </div>` : ""}
           </div>
         </div>
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-          <input type="text" placeholder="Your Name" className="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-gray-500 focus:outline-none transition-colors" style={{ background: "var(--color-card-bg)" }} />
-          <input type="email" placeholder="Your Email" className="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-gray-500 focus:outline-none transition-colors" style={{ background: "var(--color-card-bg)" }} />
-          <textarea rows={5} placeholder="Your Message" className="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-gray-500 focus:outline-none transition-colors resize-none" style={{ background: "var(--color-card-bg)" }} />
-          <button type="submit" className="w-full py-3 rounded-xl font-semibold btn-primary transition-opacity hover:opacity-90">
-            Send Message
-          </button>
-        </form>
+        <div className="p-10 rounded-3xl border shadow-xl" style={{borderColor:"var(--color-border)", background:"var(--color-card-bg)"}}>
+          ${formComponent}
+        </div>
       </div>
     </section>
   );
 }`;
   }
 
-  // ContactGlass — glassmorphism centered card
+  // ContactGlass
   if (variant === "ContactGlass") {
     return `
-${socialImports}
-
+"use client";
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 px-6">
-      <div className="max-w-2xl mx-auto">
-        <div className="p-8 md:p-12 rounded-3xl border border-white/10 text-center backdrop-blur-xl" style={{ background: "var(--color-card-bg)" }}>
-          <h2 className="text-3xl font-bold text-white mb-4">${heading}</h2>
-          <p className="text-gray-400 mb-8">${subtext}</p>
-          <div className="flex flex-col items-center gap-4">
-            ${email ? `<a href="mailto:${email}" className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-semibold btn-primary transition-all hover:scale-105">
-              ${mailIcon} ${email}
-            </a>` : ""}
-            ${phone ? `<p className="flex items-center gap-2 text-gray-400">
-              ${phoneIcon} ${phone}
-            </p>` : ""}
-            ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-white border border-white/20 hover:border-white/40 transition-colors mt-2">
-              ${fileIcon} Download Resume
-            </a>` : ""}
-          </div>
-          <div className="flex gap-4 justify-center mt-8 flex-wrap">
-            ${buildSocialLinks(social, "px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5")}
-          </div>
+    <section id="contact" className="py-32 px-6 relative overflow-hidden">
+      <div className="absolute inset-0 opacity-10" style={{background:"radial-gradient(circle at 50% 50%, ${primary}, transparent 70%)"}} />
+      <div className="max-w-4xl mx-auto relative z-10 p-12 md:p-16 rounded-[3rem] border backdrop-blur-xl shadow-2xl" style={{borderColor:"var(--color-border)", background:"var(--color-card-bg)"}}>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{color:"var(--color-heading)"}}>${heading}</h2>
+          <p className="text-lg" style={{color:"var(--color-body)"}}>${text}</p>
         </div>
+        ${formComponent}
       </div>
     </section>
   );
 }`;
   }
 
-  // ContactMinimal — simple and clean
+  // ContactMinimal
   if (variant === "ContactMinimal") {
     return `
-${socialImports}
-
+"use client";
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 px-6">
-      <div className="max-w-2xl mx-auto">
-        <p className="text-sm font-mono mb-4" style={{ color: "var(--color-primary)" }}>// contact</p>
-        <h2 className="text-3xl font-bold text-white mb-4">${heading}</h2>
-        <p className="text-gray-400 mb-8 text-lg">${subtext}</p>
-        <div className="space-y-4">
-          ${email ? `<a href="mailto:${email}" className="flex items-center gap-3 text-lg font-medium hover:opacity-80 transition-opacity" style={{ color: "var(--color-primary)" }}>
-            ${arrowIcon} ${email}
-          </a>` : ""}
-          ${phone ? `<p className="flex items-center gap-3 text-gray-400">
-            ${arrowIcon} ${phone}
-          </p>` : ""}
-          ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors">
-            ${arrowIcon} Download Resume
-          </a>` : ""}
-        </div>
-        <div className="flex gap-6 mt-10 pt-8 border-t border-white/5 flex-wrap">
-          ${buildSocialLinks(social, "text-sm text-gray-600 hover:text-white font-mono transition-colors")}
+    <section id="contact" className="py-24 px-6 border-t" style={{borderColor:"var(--color-border)"}}>
+      <div className="max-w-3xl mx-auto text-center">
+        <h2 className="text-3xl font-mono mb-8 uppercase tracking-widest" style={{ color: "${primary}" }}>[ Contact ]</h2>
+        <p className="text-2xl md:text-3xl leading-relaxed font-medium mb-16" style={{color:"var(--color-heading)"}}>
+          ${text}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-6 justify-center text-lg">
+          ${email ? `<a href="mailto:${email}" className="hover:underline" style={{color:"var(--color-heading)"}}>${email}</a>` : ""}
+          ${phone ? `<span className="hidden sm:inline" style={{color:"var(--color-border)"}}>|</span><span style={{color:"var(--color-heading)"}}>${phone}</span>` : ""}
         </div>
       </div>
     </section>
@@ -128,30 +116,52 @@ export default function Contact() {
 }`;
   }
 
-  // ContactModern — default, centered CTA
-  return `
-${socialImports}
-
+  // ContactCentered
+  if (variant === "ContactCentered") {
+    return `
+"use client";
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 px-6 text-center">
-      <div className="max-w-2xl mx-auto">
-        <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "var(--color-primary)" }}>Contact</span>
-        <h2 className="text-4xl font-bold text-white mb-4">${heading}</h2>
-        <p className="text-gray-400 mb-10">${subtext}</p>
-        <div className="flex flex-col items-center gap-4">
-          ${email ? `<a href="mailto:${email}" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold btn-primary transition-opacity hover:opacity-90">
-            ${mailIcon} ${email}
-          </a>` : ""}
-          ${phone ? `<p className="flex items-center gap-2 text-gray-400">
-            ${phoneIcon} ${phone}
-          </p>` : ""}
-          ${resumeUrl ? `<a href="${resumeUrl}" target="_blank" download className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white border border-white/20 hover:border-white/40 transition-colors mt-2">
-            ${fileIcon} Download Resume
-          </a>` : ""}
+    <section id="contact" className="py-24 px-6 bg-opacity-5" style={{backgroundColor:"${primary}10"}}>
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-5xl font-bold mb-6" style={{color:"var(--color-heading)"}}>${heading}</h2>
+        <p className="text-xl mb-16 max-w-2xl mx-auto" style={{color:"var(--color-body)"}}>${text}</p>
+        
+        <div className="grid md:grid-cols-3 gap-6 mb-16">
+          ${email ? `<div className="p-8 rounded-2xl border bg-white/5" style={{borderColor:"var(--color-border)"}}><p className="font-bold mb-2" style={{color:"var(--color-heading)"}}>Email</p><p className="text-sm truncate" style={{color:"var(--color-text-muted)"}}>${email}</p></div>` : "<div/>"}
+          ${phone ? `<div className="p-8 rounded-2xl border bg-white/5" style={{borderColor:"var(--color-border)"}}><p className="font-bold mb-2" style={{color:"var(--color-heading)"}}>Phone</p><p className="text-sm truncate" style={{color:"var(--color-text-muted)"}}>${phone}</p></div>` : "<div/>"}
+          ${location ? `<div className="p-8 rounded-2xl border bg-white/5" style={{borderColor:"var(--color-border)"}}><p className="font-bold mb-2" style={{color:"var(--color-heading)"}}>Location</p><p className="text-sm truncate" style={{color:"var(--color-text-muted)"}}>${location}</p></div>` : "<div/>"}
         </div>
-        <div className="flex gap-4 justify-center mt-8 flex-wrap">
-          ${buildSocialLinks(social, "px-5 py-2.5 rounded-full border border-white/10 text-gray-300 hover:border-white/30 transition-all hover:-translate-y-0.5")}
+
+        <div className="max-w-2xl mx-auto text-left">
+          ${formComponent}
+        </div>
+      </div>
+    </section>
+  );
+}`;
+  }
+
+  // ContactModern — default
+  return `
+"use client";
+export default function Contact() {
+  return (
+    <section id="contact" className="py-24 px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-5 gap-12 items-start">
+          <div className="md:col-span-2">
+            <span className="text-sm font-bold tracking-widest uppercase mb-4 block" style={{ color: "${primary}" }}>Contact</span>
+            <h2 className="text-4xl font-bold mb-6" style={{color:"var(--color-heading)"}}>${heading}</h2>
+            <p className="text-lg leading-relaxed mb-10" style={{color:"var(--color-body)"}}>${text}</p>
+            <div className="flex flex-col gap-6">
+              ${email ? `<div className="flex items-center gap-4"><div className="w-12 h-12 rounded-full flex items-center justify-center border" style={{borderColor:"var(--color-border)", background:"var(--color-card-bg)", color:"${primary}"}}>✉</div><div><p className="text-sm font-medium" style={{color:"var(--color-text-muted)"}}>Email</p><a href="mailto:${email}" className="font-bold hover:underline" style={{color:"var(--color-heading)"}}>${email}</a></div></div>` : ""}
+              ${location ? `<div className="flex items-center gap-4"><div className="w-12 h-12 rounded-full flex items-center justify-center border" style={{borderColor:"var(--color-border)", background:"var(--color-card-bg)", color:"${primary}"}}>📍</div><div><p className="text-sm font-medium" style={{color:"var(--color-text-muted)"}}>Location</p><p className="font-bold" style={{color:"var(--color-heading)"}}>${location}</p></div></div>` : ""}
+            </div>
+          </div>
+          <div className="md:col-span-3 p-8 md:p-10 rounded-3xl border shadow-lg" style={{borderColor:"var(--color-border)", background:"var(--color-card-bg)"}}>
+            ${formComponent}
+          </div>
         </div>
       </div>
     </section>

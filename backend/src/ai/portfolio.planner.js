@@ -1,21 +1,21 @@
 const { generateJSON } = require("./gemini.client");
 const { buildBlueprintPrompt } = require("./prompt.builder");
 
-// Component registry — all available variants per section
+// Component registry — exactly 5 variants per section
 const COMPONENT_REGISTRY = {
   navbar: ["NavbarCentered", "NavbarGlass", "NavbarMinimal", "NavbarBold", "NavbarFloating"],
-  hero: ["HeroCentered", "HeroSplit", "HeroGradient", "HeroMinimal", "HeroCreative", "HeroGrid"],
-  about: ["AboutCard", "AboutTimeline", "AboutSplit", "AboutMinimal"],
-  skills: ["SkillsGrid", "SkillsProgress", "SkillsCards", "SkillsTags"],
-  education: ["EducationTimeline", "EducationCards", "EducationMinimal"],
+  hero: ["HeroCentered", "HeroSplit", "HeroGradient", "HeroMinimal", "HeroCreative"],
+  about: ["AboutCard", "AboutTimeline", "AboutSplit", "AboutMinimal", "AboutGrid"],
+  skills: ["SkillsGrid", "SkillsProgress", "SkillsCards", "SkillsTags", "SkillsMasonry"],
+  education: ["EducationTimeline", "EducationCards", "EducationMinimal", "EducationSplit", "EducationGrid"],
   projects: ["ProjectsGrid", "ProjectsShowcase", "ProjectsMinimal", "ProjectsCards", "ProjectsMasonry"],
-  gallery: ["GalleryMasonry", "GalleryGrid", "GalleryShowcase"],
-  services: ["ServicesGrid", "ServicesCards", "ServicesMinimal"],
-  testimonials: ["TestimonialsCards", "TestimonialsGrid", "TestimonialsQuote"],
-  hobbies: ["HobbiesGrid", "HobbiesCards", "HobbiesList"],
-  achievements: ["AchievementsCards", "AchievementsTimeline", "AchievementsTrophy"],
-  contact: ["ContactModern", "ContactSplit", "ContactGlass", "ContactMinimal"],
-  footer: ["FooterSimple", "FooterCentered", "FooterColumns"],
+  gallery: ["GalleryMasonry", "GalleryGrid", "GalleryShowcase", "GalleryCarousel", "GalleryPolaroid"],
+  services: ["ServicesGrid", "ServicesCards", "ServicesMinimal", "ServicesList", "ServicesSplit"],
+  testimonials: ["TestimonialsCards", "TestimonialsGrid", "TestimonialsQuote", "TestimonialsMasonry", "TestimonialsSlider"],
+  hobbies: ["HobbiesGrid", "HobbiesCards", "HobbiesList", "HobbiesPills", "HobbiesTimeline"],
+  achievements: ["AchievementsCards", "AchievementsTimeline", "AchievementsTrophy", "AchievementsGrid", "AchievementsList"],
+  contact: ["ContactModern", "ContactSplit", "ContactGlass", "ContactMinimal", "ContactCentered"],
+  footer: ["FooterSimple", "FooterCentered", "FooterColumns", "FooterGlass", "FooterMinimal"],
 };
 
 /**
@@ -81,7 +81,7 @@ const validateBlueprint = (blueprint) => {
  * Main portfolio planner — calls AI and returns a validated blueprint.
  */
 const planPortfolio = async (userInput) => {
-  const prompt = buildBlueprintPrompt(userInput);
+  const prompt = buildBlueprintPrompt(userInput, COMPONENT_REGISTRY);
   const raw = await generateJSON(prompt);
   return validateBlueprint(raw);
 };

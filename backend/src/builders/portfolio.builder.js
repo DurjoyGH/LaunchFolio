@@ -64,10 +64,10 @@ ${sectionJSX}
 `);
 
   // /app/layout.tsx
-  const googleFontVar = getFontImport(font);
-  const fontClassName = font.replace(/\s+/g, "_").toLowerCase();
+  const fontImportName = font.replace(/\s+/g, "_");
+  const googleFontVar = getFontImport(font, fontImportName);
   write(outputPath, "app/layout.tsx", `import type { Metadata } from "next";
-import { ${font.replace(" ", "_")} } from "next/font/google";
+import { ${fontImportName} } from "next/font/google";
 import "./globals.css";
 
 ${googleFontVar}
@@ -282,19 +282,19 @@ const write = (base, relPath, content) => {
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-const getFontImport = (font) => {
+const getFontImport = (font, fontImportName) => {
   const fontConfigs = {
-    Inter: { name: "Inter", weights: '["400", "500", "600", "700"]' },
-    Poppins: { name: "Poppins", weights: '["400", "500", "600", "700"]' },
-    Raleway: { name: "Raleway", weights: '["400", "500", "600", "700"]' },
-    Roboto: { name: "Roboto", weights: '["400", "500", "700"]' },
-    Montserrat: { name: "Montserrat", weights: '["400", "500", "600", "700"]' },
-    Nunito: { name: "Nunito", weights: '["400", "600", "700"]' },
-    "Space Grotesk": { name: "Space_Grotesk", weights: '["400", "500", "600", "700"]' },
-    "Playfair Display": { name: "Playfair_Display", weights: '["400", "600", "700"]' },
+    Inter: { weights: '["400", "500", "600", "700"]' },
+    Poppins: { weights: '["400", "500", "600", "700"]' },
+    Raleway: { weights: '["400", "500", "600", "700"]' },
+    Roboto: { weights: '["400", "500", "700"]' },
+    Montserrat: { weights: '["400", "500", "600", "700"]' },
+    Nunito: { weights: '["400", "600", "700"]' },
+    "Space Grotesk": { weights: '["400", "500", "600", "700"]' },
+    "Playfair Display": { weights: '["400", "600", "700"]' },
   };
-  const config = fontConfigs[font] || fontConfigs.Inter;
-  return `const font = ${config.name}({ subsets: ["latin"], weight: ${config.weights}, variable: "--font-body" });`;
+  const config = fontConfigs[font] || { weights: '["400"]' };
+  return `const font = ${fontImportName}({ subsets: ["latin"], weight: ${config.weights}, variable: "--font-body" });`;
 };
 
 module.exports = { buildPortfolio };

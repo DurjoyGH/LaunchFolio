@@ -26,10 +26,10 @@ function Section({ label, children }: { label: string; children: ReactNode }) {
 }
 
 export default function ReviewStep({ formData }: Props) {
-  const { 
-    userType, name, title, bio, email, phone, 
-    skills, education, projects,
-    designPreferences: dp, profileImage, resumeUrl, customDomain 
+  const {
+    name, title, bio, email, phone,
+    education, projects, skills,
+    designPreferences: dp, profileImage, resumeUrl, customDomain
   } = formData;
 
   return (
@@ -55,21 +55,11 @@ export default function ReviewStep({ formData }: Props) {
         {bio && <p className="text-sm mt-2 leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>{bio}</p>}
       </Section>
 
-      {userType === "it" || (formData.selectedSections.includes("skills") && skills.length > 0) ? (
-        <Section label={`Skills (${skills.length})`}>
-          <div className="flex flex-wrap gap-2">
-            {skills.length > 0 ? skills.map((s, i) => (
-              <Badge key={i} variant="info">{s.name}</Badge>
-            )) : <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>No skills added</span>}
-          </div>
-        </Section>
-      ) : null}
-
       {education.length > 0 && (
         <Section label={`Education (${education.length})`}>
           <div className="space-y-2">
             {education.map((e, i) => (
-              <div key={i} className="flex items-center justify-between">
+              <div key={i} className="flex items-center justify-between gap-2 flex-wrap">
                 <p className="text-sm text-white font-medium">{e.degree}{e.field ? ` in ${e.field}` : ""}</p>
                 <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>{e.institution}</span>
               </div>
@@ -78,34 +68,38 @@ export default function ReviewStep({ formData }: Props) {
         </Section>
       )}
 
-      {userType === "it" || (formData.selectedSections.includes("projects") && projects.length > 0) ? (
-        <Section label={`Projects (${projects.length})`}>
-          {projects.length > 0 ? (
-            <div className="space-y-2">
-              {projects.map((p, i) => (
-                <div key={i} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {p.image && <img src={p.image} alt={p.title} className="w-8 h-8 rounded object-cover" />}
-                    <p className="text-sm text-white font-medium">{p.title}</p>
-                  </div>
-                  <div className="flex gap-1">
-                    {p.techStack.slice(0,2).map((t, j) => <Badge key={j} variant="default">{t}</Badge>)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>No projects added</span>
-          )}
-        </Section>
-      ) : null}
-
-      {userType === "nonit" && formData.selectedSections.length > 0 && (
+      {formData.selectedSections.length > 0 && (
         <Section label="Optional Sections">
           <div className="flex flex-wrap gap-2">
-            {formData.selectedSections.length > 0 ? formData.selectedSections.map((s, i) => (
+            {formData.selectedSections.map((s, i) => (
               <Badge key={i} variant="default">{SECTION_LABELS[s] || s}</Badge>
-            )) : <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>None</span>}
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {formData.selectedSections.includes("skills") && skills.length > 0 && (
+        <Section label={`Skills (${skills.length})`}>
+          <div className="flex flex-wrap gap-2">
+            {skills.map((s, i) => <Badge key={i} variant="info">{s.name}</Badge>)}
+          </div>
+        </Section>
+      )}
+
+      {formData.selectedSections.includes("projects") && projects.length > 0 && (
+        <Section label={`Projects (${projects.length})`}>
+          <div className="space-y-2">
+            {projects.map((p, i) => (
+              <div key={i} className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  {p.image && <img src={p.image} alt={p.title} className="w-8 h-8 rounded object-cover" />}
+                  <p className="text-sm text-white font-medium">{p.title}</p>
+                </div>
+                <div className="flex gap-1">
+                  {p.techStack.slice(0, 2).map((t, j) => <Badge key={j} variant="default">{t}</Badge>)}
+                </div>
+              </div>
+            ))}
           </div>
         </Section>
       )}
@@ -117,7 +111,6 @@ export default function ReviewStep({ formData }: Props) {
             <span className="text-sm text-white font-mono">{dp.primaryColor || dp.palette || 'auto'}</span>
           </div>
           <Badge variant="info">{dp.theme} theme</Badge>
-          {dp.style && <Badge variant="info">{dp.style} style</Badge>}
           {dp.fontPreference && <Badge variant="info">{dp.fontPreference}</Badge>}
           {customDomain && <Badge variant="success">{customDomain}.vercel.app</Badge>}
         </div>
