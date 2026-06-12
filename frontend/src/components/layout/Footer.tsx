@@ -22,12 +22,12 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t mt-24" style={{ borderColor: "var(--color-border-subtle)" }}>
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+    <footer className="border-t mt-16 sm:mt-24" style={{ borderColor: "var(--color-border-subtle)" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10 sm:mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 mb-8">
+            <Link href="/" className="flex items-center gap-2.5 mb-6 sm:mb-8">
               <Image src="/logo.png" alt="LaunchFolio" width={320} height={80} className="h-12 w-auto object-contain scale-150 origin-left" />
             </Link>
             <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>

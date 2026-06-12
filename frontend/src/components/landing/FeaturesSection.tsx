@@ -33,17 +33,17 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section id="features" className="py-24 px-6">
+    <section id="features" className="py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 sm:mb-16">
           <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "var(--color-brand-primary)" }}>
             Why LaunchFolio
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
             Everything you need to{" "}
             <span className="gradient-text">launch fast</span>
           </h2>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--color-text-secondary)" }}>
+          <p className="text-base sm:text-lg max-w-2xl mx-auto" style={{ color: "var(--color-text-secondary)" }}>
             A full-stack AI pipeline that handles design, content, code, and deployment — so you can focus on your work.
           </p>
         </div>

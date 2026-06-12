@@ -31,13 +31,13 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="py-24 px-6">
+    <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 sm:mb-16">
           <span className="text-sm font-semibold tracking-widest uppercase mb-4 block" style={{ color: "var(--color-brand-primary)" }}>
             The Process
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
             From form to live{" "}
             <span className="gradient-text">in minutes</span>
           </h2>
@@ -45,15 +45,15 @@ export default function HowItWorksSection() {
 
         <div className="relative">
           {/* Connecting line */}
-          <div className="absolute left-8 top-12 bottom-12 w-px"
+          <div className="absolute left-6 sm:left-8 top-10 sm:top-12 bottom-10 sm:bottom-12 w-px"
             style={{ background: "linear-gradient(to bottom, #ffffff, transparent)" }} />
 
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6 sm:gap-8">
             {steps.map((step, i) => (
-              <div key={i} className="flex gap-8 items-start group">
+              <div key={i} className="flex gap-4 sm:gap-8 items-start group">
                 {/* Number badge */}
                 <div
-                  className="flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center text-lg font-bold border relative z-10 transition-all duration-300 group-hover:scale-110"
+                  className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-sm sm:text-lg font-bold border relative z-10 transition-all duration-300 group-hover:scale-110"
                   style={{
                     background: "linear-gradient(135deg, #ffffff, #bdbdbd)",
                     borderColor: "rgba(255,255,255,0.4)",

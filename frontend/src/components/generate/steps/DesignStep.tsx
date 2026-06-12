@@ -82,10 +82,10 @@ export default function DesignStep({ formData, update }: Props) {
             placeholder="your-name"
             value={formData.customDomain}
             onChange={(e) => update({ customDomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
-            className="input rounded-r-none flex-1 border-r-0"
+            className="input rounded-r-none flex-1 border-r-0 min-w-0"
           />
           <div
-            className="input rounded-l-none border-l-0 font-mono whitespace-nowrap"
+            className="input rounded-l-none border-l-0 font-mono text-xs sm:text-sm whitespace-nowrap flex-shrink-0"
             style={{ width: "auto" }}
           >
             .vercel.app

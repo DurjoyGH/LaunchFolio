@@ -1,15 +1,15 @@
 export default function AboutSection() {
   return (
-    <section id="about-us" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <section id="about-us" className="py-16 sm:py-24 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 sm:gap-12 items-center">
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-brand-accent)" }}>
             About Us
           </p>
-          <h2 className="text-4xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
             LaunchFolio turns your details into a live portfolio.
           </h2>
-          <p className="text-lg leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
+          <p className="text-base sm:text-lg leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
             We blend smart AI planning with beautiful, production-ready templates so anyone can ship a
             polished portfolio in minutes. No design skills required.
           </p>

@@ -86,30 +86,30 @@ export default function DashboardPage() {
     <div className="min-h-screen" style={{ background: "var(--color-bg-primary)" }}>
       {/* Header */}
       <header className="border-b" style={{ borderColor: "var(--color-border-subtle)" }}>
-        <div className="max-w-6xl mx-auto px-6 py-2 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-3">
+          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
             <Image src="/logo.png" alt="LaunchFolio" width={400} height={100} className="h-14 w-auto object-contain scale-125 origin-left -translate-y-1.4" />
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end">
             <span className="text-sm hidden sm:block" style={{ color: "var(--color-text-secondary)" }}>
               {userName && `Hello, ${userName.split(" ")[0]} 👋`}
             </span>
               <Link href="/">
-                <Button variant="ghost" size="sm">Back to Home</Button>
+                <Button variant="ghost" size="sm">Home</Button>
               </Link>
             <Button variant="ghost" size="sm" onClick={handleLogout}>Sign Out</Button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-12">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Page header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-10">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-1">My Portfolios</h1>
-            <p style={{ color: "var(--color-text-secondary)" }}>All your AI-generated portfolios in one place.</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">My Portfolios</h1>
+            <p className="text-sm sm:text-base" style={{ color: "var(--color-text-secondary)" }}>All your AI-generated portfolios in one place.</p>
           </div>
-          <Link href="/generate">
+          <Link href="/generate" className="flex-shrink-0">
             <Button>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

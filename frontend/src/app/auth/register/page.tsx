@@ -78,7 +78,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Right panel */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
         <div className="w-full max-w-md">
           <div className="mb-6">
             <Link href="/" className="text-sm" style={{ color: "var(--color-text-secondary)" }}>

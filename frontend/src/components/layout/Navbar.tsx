@@ -35,11 +35,15 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass border-b" : "bg-transparent"
         }`}
-      style={{ borderColor: scrolled ? "var(--color-border-subtle)" : "transparent" }}
+      style={{
+        borderColor: scrolled ? "var(--color-border-subtle)" : "transparent",
+        willChange: "transform",
+        transform: "translateZ(0)",
+      }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
           <Image src="/logo.png" alt="LaunchFolio" width={400} height={100} className="h-14 w-auto object-contain scale-125 origin-left -translate-y-1.4" />
         </Link>
 
@@ -119,10 +123,15 @@ export default function Navbar() {
           style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-primary)" }}
         >
           <div className="flex flex-col gap-4 pt-4">
-            {["Features", "How it works", "About Us", "Contact"].map((label) => (
+            {[
+              { label: "Features", href: "/#features" },
+              { label: "How it works", href: "/#how-it-works" },
+              { label: "About Us", href: "/#about-us" },
+              { label: "Contact", href: "/#contact" },
+            ].map(({ label, href }) => (
               <a
                 key={label}
-                href={`/#${label.toLowerCase().replace(" ", "-")}`}
+                href={href}
                 onClick={() => setMobileOpen(false)}
                 className="text-sm"
                 style={{ color: "var(--color-text-secondary)" }}

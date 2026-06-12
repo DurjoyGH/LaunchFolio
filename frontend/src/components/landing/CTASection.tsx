@@ -13,10 +13,10 @@ export default function CTASection() {
   };
 
   return (
-    <section className="py-24 px-6">
+    <section className="py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto text-center">
         <div
-          className="mono-panel p-16 relative overflow-hidden"
+          className="mono-panel p-8 sm:p-16 relative overflow-hidden"
           style={{
             background: "linear-gradient(135deg, rgba(255,255,255,0.14), rgba(0,0,0,0.78))",
           }}
@@ -24,10 +24,10 @@ export default function CTASection() {
           <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] bg-[size:40px_40px]" />
 
           <div className="relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
               Ready to launch your <span className="gradient-text">portfolio?</span>
             </h2>
-            <p className="text-lg mb-10" style={{ color: "var(--color-text-secondary)" }}>
+            <p className="text-base sm:text-lg mb-8 sm:mb-10" style={{ color: "var(--color-text-secondary)" }}>
               Join developers who use LaunchFolio to build stunning portfolios — deployed live in minutes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

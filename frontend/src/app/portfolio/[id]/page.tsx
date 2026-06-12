@@ -65,13 +65,13 @@ export default function PortfolioStatusPage() {
   const isFailed = status === "failed";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
       <div className="absolute inset-0 opacity-20" style={{ background: "var(--gradient-hero)" }} />
 
       <div className="relative z-10 w-full max-w-xl">
-        <div className="card p-10 text-center">
+        <div className="card p-6 sm:p-10 text-center">
           {/* Animated icon */}
-          <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl ${isDone ? "" : isFailed ? "" : "animate-pulse"}`}
+          <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl sm:text-3xl ${isDone ? "" : isFailed ? "" : "animate-pulse"}`}
             style={{
               background: isFailed ? "rgba(255,255,255,0.08)" : "linear-gradient(135deg, #ffffff, #bdbdbd)",
               color: "#000000",
@@ -81,10 +81,10 @@ export default function PortfolioStatusPage() {
           </div>
 
           <Badge variant={config.badge} className="mb-4">{config.label}</Badge>
-          <h1 className="text-2xl font-bold text-white mb-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-3">
             {isDone ? "Your portfolio is live!" : isFailed ? "Generation failed" : "Building your portfolio..."}
           </h1>
-          <p className="leading-relaxed mb-8" style={{ color: "var(--color-text-secondary)" }}>
+          <p className="text-sm sm:text-base leading-relaxed mb-8" style={{ color: "var(--color-text-secondary)" }}>
             {config.description}
           </p>
 
@@ -141,8 +141,8 @@ export default function PortfolioStatusPage() {
           )}
 
           {!isDone && !isFailed && (
-            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-              Checking status every 8 seconds • Usually completes in 2–5 minutes
+            <p className="text-xs text-center" style={{ color: "var(--color-text-muted)" }}>
+              Checking every 8s &bull; Usually 2–5 minutes
             </p>
           )}
         </div>

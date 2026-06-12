@@ -24,17 +24,19 @@
     linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 42%),
     linear-gradient(315deg, rgba(255, 255, 255, 0.08), transparent 38%),
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.16), transparent 42%);
-  --gradient-page: linear-gradient(145deg, #000000 0%, #151515 52%, #ffffff 180%);
+  --gradient-page: linear-gradient(145deg, #000000 0%, #151515 52%, #1a1a1a 100%);
 }
 
 /* ─── Base (inside @layer so Tailwind utilities can override) ─── */
 @layer base {
   html {
     scroll-behavior: smooth;
+    background-color: #030303;
   }
 
   body {
     background: var(--gradient-page);
+    background-attachment: scroll;
     min-height: 100vh;
     color: var(--color-text-primary);
     font-family: "Black Ops One", system-ui, -apple-system, sans-serif;
@@ -42,6 +44,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.6;
+    /* Prevent white flash on overscroll/bounce */
+    overscroll-behavior: none;
   }
 
   /* Custom scrollbar */

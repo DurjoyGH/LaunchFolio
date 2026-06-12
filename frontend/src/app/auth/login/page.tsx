@@ -43,7 +43,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
       <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-hero)" }} />
 
       <div className="relative z-10 w-full max-w-md">
@@ -58,7 +58,7 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <div className="card p-8">
+        <div className="card p-5 sm:p-8">
           <h1 className="text-2xl font-bold text-white mb-1 text-center">Welcome back</h1>
           <p className="text-sm text-center mb-8" style={{ color: "var(--color-text-secondary)" }}>
             Don&apos;t have an account?{" "}

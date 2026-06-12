@@ -30,13 +30,13 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-24 px-6">
-      <div className="max-w-4xl mx-auto text-center mb-12">
+    <section id="contact" className="py-16 sm:py-24 px-4 sm:px-6">
+      <div className="max-w-4xl mx-auto text-center mb-10 sm:mb-12">
         <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-brand-accent)" }}>
           Contact
         </p>
-        <h2 className="text-4xl font-bold text-white mb-4">Send us your feedback</h2>
-        <p className="text-lg" style={{ color: "var(--color-text-secondary)" }}>
+        <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">Send us your feedback</h2>
+        <p className="text-base sm:text-lg" style={{ color: "var(--color-text-secondary)" }}>
           Share feedback or questions. Our team will review and respond soon.
         </p>
         <p className="text-sm mt-4" style={{ color: "var(--color-text-muted)" }}>
@@ -48,7 +48,7 @@ export default function ContactSection() {
       </div>
 
       <div className="max-w-3xl mx-auto">
-        <form onSubmit={handleSubmit} className="card p-8 space-y-4">
+        <form onSubmit={handleSubmit} className="card p-5 sm:p-8 space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <Input
               label="Full Name *"

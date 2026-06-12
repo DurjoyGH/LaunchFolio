@@ -240,16 +240,16 @@ export default function GeneratePage() {
   // ===== STEP 0: User Type Selection =====
   if (step === 0) {
     return (
-      <div className="min-h-screen px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
+      <div className="min-h-screen px-4 sm:px-6 py-10 sm:py-12" style={{ background: "var(--color-bg-primary)" }}>
         <div className="max-w-6xl mx-auto">
           <Link href="/dashboard">
             <Button variant="ghost" size="sm">← Back to Dashboard</Button>
           </Link>
         </div>
-        <div className="flex items-center justify-center mt-6">
+        <div className="flex items-center justify-center mt-6 px-2">
         <div className="max-w-2xl w-full text-center">
-          <h1 className="text-4xl font-bold text-white mb-3">Create Your Portfolio</h1>
-          <p className="text-lg mb-12" style={{ color: "var(--color-text-secondary)" }}>
+          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-3">Create Your Portfolio</h1>
+          <p className="text-base sm:text-lg mb-8 sm:mb-12" style={{ color: "var(--color-text-secondary)" }}>
             Tell us about yourself so we can tailor the experience.
           </p>
 
@@ -313,16 +313,16 @@ export default function GeneratePage() {
 
   // ===== MAIN WIZARD =====
   return (
-    <div className="min-h-screen px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
+    <div className="min-h-screen px-4 sm:px-6 py-10 sm:py-12" style={{ background: "var(--color-bg-primary)" }}>
       <div className="max-w-3xl mx-auto">
         <div className="mb-6">
           <Link href="/dashboard">
             <Button variant="ghost" size="sm">← Back to Dashboard</Button>
           </Link>
         </div>
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Generate Your Portfolio</h1>
-          <p style={{ color: "var(--color-text-secondary)" }}>Fill in your details — AI does the rest.</p>
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">Generate Your Portfolio</h1>
+          <p className="text-sm sm:text-base" style={{ color: "var(--color-text-secondary)" }}>Fill in your details — AI does the rest.</p>
           {prefilled && (
             <p className="text-xs mt-2 px-3 py-1 inline-block rounded-full bg-white/10 text-white border border-white/20">
               ✓ Pre-filled from your last portfolio
@@ -331,13 +331,13 @@ export default function GeneratePage() {
         </div>
 
         {/* Step indicator */}
-        <div className="flex items-center justify-between mb-12 relative">
-          <div className="absolute top-5 left-0 right-0 h-px" style={{ background: "var(--color-border-subtle)" }} />
+        <div className="flex items-center justify-between mb-8 sm:mb-12 relative">
+          <div className="absolute top-4 sm:top-5 left-0 right-0 h-px" style={{ background: "var(--color-border-subtle)" }} />
           {currentSteps.map((s) => (
-            <div key={s.id} className="relative flex flex-col items-center gap-2">
+            <div key={s.id} className="relative flex flex-col items-center gap-1 sm:gap-2">
               <button
                 onClick={() => s.id < step && setStep(s.id)}
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all z-10 ${
+                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all z-10 ${
                   s.id === step ? "step-active scale-110" : s.id < step ? "step-done" : "step-idle"
                 }`}
               >
@@ -350,7 +350,7 @@ export default function GeneratePage() {
           ))}
         </div>
 
-        <div className="card p-8">
+        <div className="card p-4 sm:p-8">
           {error && (
             <div className="mb-6 px-4 py-3 rounded-xl text-sm text-white border border-white/20 bg-white/10">
               {error}
@@ -367,12 +367,13 @@ export default function GeneratePage() {
           {currentKey === "optional-sections" && <OptionalSectionsStep {...stepProps} />}
           {currentKey === "review" && <ReviewStep formData={formData} />}
 
-          <div className="flex justify-between mt-8 pt-6 border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
-            <Button variant="ghost" onClick={() => { if (step === 1) { setStep(0); update({ userType: "" }); } else setStep(step - 1); }}>
+          <div className="flex justify-between gap-3 mt-8 pt-6 border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
+            <Button variant="ghost" size="sm" onClick={() => { if (step === 1) { setStep(0); update({ userType: "" }); } else setStep(step - 1); }}>
               ← Back
             </Button>
             {step < totalSteps ? (
               <Button
+                size="sm"
                 onClick={() => {
                   if (stepError) {
                     setError(stepError);
@@ -387,11 +388,12 @@ export default function GeneratePage() {
                 Continue →
               </Button>
             ) : (
-              <Button onClick={handleSubmit} loading={submitting}>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <Button size="sm" onClick={handleSubmit} loading={submitting}>
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Generate Portfolio
+                <span className="hidden xs:inline">Generate Portfolio</span>
+                <span className="xs:hidden">Generate</span>
               </Button>
             )}
           </div>
