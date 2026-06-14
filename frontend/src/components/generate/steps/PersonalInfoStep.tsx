@@ -3,31 +3,19 @@
 import { useState, useRef } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import type { FormData } from "@/app/generate/page";
+import type { FormData } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
+import { uploadApi } from "@/api/upload-api";
 
-interface Props {
-  formData: FormData;
-  update: (partial: Partial<FormData>) => void;
-}
-
-export default function PersonalInfoStep({ formData, update }: Props) {
+export default function PersonalInfoStep() {
+  const { formData, update } = useGenerateStore();
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
   const photoRef = useRef<HTMLInputElement>(null);
   const resumeRef = useRef<HTMLInputElement>(null);
 
-  const uploadFile = async (file: File, endpoint: string, fieldName: string) => {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-    const fd = new window.FormData();
-    fd.append(fieldName, file);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/${endpoint}`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: fd,
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.message || "Upload failed");
+  const uploadFile = async (file: File, endpoint: "profile" | "resume" | "project", fieldName: string) => {
+    const data = await uploadApi.uploadFile(file, endpoint, fieldName);
     return data.data.url;
   };
 

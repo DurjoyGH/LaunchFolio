@@ -12,65 +12,8 @@ import SectionPickerStep from "@/components/generate/steps/SectionPickerStep";
 import OptionalSectionsStep from "@/components/generate/steps/OptionalSectionsStep";
 import ReviewStep from "@/components/generate/steps/ReviewStep";
 
-export type Skill = { name: string; level?: string };
-export type Education = {
-  institution: string; degree: string; field: string;
-  startYear: string; endYear: string; description: string;
-};
-export type Project = {
-  title: string; description: string; techStack: string[];
-  liveUrl: string; githubUrl: string; image: string;
-};
-export type Service = { title: string; description: string; price: string };
-export type Testimonial = { name: string; role: string; text: string };
-export type GalleryItem = { url: string; caption: string };
-export type Hobby = { name: string; emoji: string; description: string };
-export type Achievement = { title: string; year: string; description: string };
-
-export type FormData = {
-  userType: "nonit";
-  name: string;
-  title: string;
-  bio: string;
-  email: string;
-  location: string;
-  phone: string;
-  profileImage: string;
-  resumeUrl: string;
-  customDomain: string;
-  skills: Skill[];
-  education: Education[];
-  projects: Project[];
-  services: Service[];
-  testimonials: Testimonial[];
-  gallery: GalleryItem[];
-  hobbies: Hobby[];
-  achievements: Achievement[];
-  selectedSections: string[];
-  social: Record<string, string>;
-  designPreferences: {
-    theme: string; style: string; primaryColor: string; fontPreference: string;
-    buttonColor: string; buttonTextColor: string;
-    navBgColor: string; navLinkColor: string;
-    textColor: string; heroAnimation: string; logoStyle: string;
-    palette: string;
-  };
-};
-
-const INITIAL_FORM: FormData = {
-  userType: "nonit",
-  name: "", title: "", bio: "", email: "", location: "", phone: "",
-  profileImage: "", resumeUrl: "", customDomain: "",
-  skills: [], education: [], projects: [],
-  services: [], testimonials: [], gallery: [], hobbies: [], achievements: [],
-  selectedSections: [],
-  social: {},
-  designPreferences: {
-    theme: "dark", style: "creative", primaryColor: "#ffffff", fontPreference: "Black Ops One",
-    buttonColor: "", buttonTextColor: "", navBgColor: "", navLinkColor: "",
-    textColor: "", heroAnimation: "fadeUp", logoStyle: "initial", palette: "",
-  },
-};
+export type { Skill, Education, Project, Service, Testimonial, GalleryItem, Hobby, Achievement, FormData } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
 
 type StepDef = { id: number; label: string; icon: string; key: string };
 
@@ -92,86 +35,41 @@ function getSteps(selectedSections: string[]): StepDef[] {
 
 export default function GeneratePage() {
   const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
-  const [submitting, setSubmitting] = useState(false);
+  const { step, setStep, formData, update, submitting, prefilled, loadLastInput, generatePortfolio } = useGenerateStore();
   const [error, setError] = useState("");
-  const [prefilled, setPrefilled] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/portfolio/last-input`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (data.success && data.data.input) {
-          const prev = data.data.input;
-          setFormData((f) => ({
-            ...f,
-            name: prev.name || f.name,
-            title: prev.title || f.title,
-            bio: prev.bio || f.bio,
-            email: prev.email || f.email,
-            phone: prev.phone || f.phone,
-            location: prev.location || f.location,
-            profileImage: prev.profileImage || f.profileImage,
-            resumeUrl: prev.resumeUrl || f.resumeUrl,
-            customDomain: prev.customDomain || f.customDomain,
-            skills: prev.skills?.length ? prev.skills : f.skills,
-            education: prev.education?.length ? prev.education : f.education,
-            projects: prev.projects?.length ? prev.projects : f.projects,
-            services: prev.services?.length ? prev.services : f.services,
-            testimonials: prev.testimonials?.length ? prev.testimonials : f.testimonials,
-            gallery: prev.gallery?.length ? prev.gallery : f.gallery,
-            hobbies: prev.hobbies?.length ? prev.hobbies : f.hobbies,
-            achievements: prev.achievements?.length ? prev.achievements : f.achievements,
-            selectedSections: prev.selectedSections?.length ? prev.selectedSections : f.selectedSections,
-            social: { ...f.social, ...prev.social },
-            designPreferences: { ...f.designPreferences, ...prev.designPreferences },
-          }));
-          setPrefilled(true);
-        }
-      } catch { /* ignore */ }
-    };
-    load();
-  }, []);
+    setMounted(true);
+    loadLastInput();
+  }, [loadLastInput]);
 
-  const update = useCallback((partial: Partial<FormData>) => {
-    setFormData((prev) => ({ ...prev, ...partial }));
-  }, []);
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-10 sm:py-12" style={{ background: "var(--color-bg-primary)" }}>
+        <div className="w-8 h-8 rounded-full border-4 border-white/20 border-t-white animate-spin"></div>
+      </div>
+    );
+  }
 
   const handleSubmit = async () => {
-    setSubmitting(true);
     setError("");
     try {
-      const token = localStorage.getItem("token");
-      if (!token) { router.push("/auth/login"); return; }
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/portfolio`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        credentials: "include",
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error("GENERATION_FAILED");
+      const portfolioId = await generatePortfolio();
+      if (!portfolioId) throw new Error("GENERATION_FAILED");
+      
       toast.success("Generation started. Your live link is on the way.");
-      router.push(`/portfolio/${data.data.portfolioId}`);
-    } catch {
+      router.push(`/portfolio/${portfolioId}`);
+    } catch (err: any) {
       const message = "Failed to start generation. Please try again.";
       setError(message);
       toast.error(message);
-      setSubmitting(false);
     }
   };
 
   const currentSteps = getSteps(formData.selectedSections);
   const totalSteps = currentSteps.length;
   const currentKey = currentSteps[step - 1]?.key || "";
-  const stepProps = { formData, update };
 
   const hasSocialLink = Object.values(formData.social || {}).some((v) => (v || "").trim());
 
@@ -256,12 +154,12 @@ export default function GeneratePage() {
             </div>
           )}
 
-          {currentKey === "personal" && <PersonalInfoStep {...stepProps} />}
-          {currentKey === "education" && <EducationStep {...stepProps} />}
-          {currentKey === "design-nonit" && <NonITDesignStep {...stepProps} />}
-          {currentKey === "section-picker" && <SectionPickerStep {...stepProps} />}
-          {currentKey === "optional-sections" && <OptionalSectionsStep {...stepProps} />}
-          {currentKey === "review" && <ReviewStep formData={formData} />}
+          {currentKey === "personal" && <PersonalInfoStep />}
+          {currentKey === "education" && <EducationStep />}
+          {currentKey === "design-nonit" && <NonITDesignStep />}
+          {currentKey === "section-picker" && <SectionPickerStep />}
+          {currentKey === "optional-sections" && <OptionalSectionsStep />}
+          {currentKey === "review" && <ReviewStep />}
 
           <div className="flex justify-between gap-3 mt-8 pt-6 border-t" style={{ borderColor: "var(--color-border-subtle)" }}>
             <Button variant="ghost" size="sm" onClick={() => step > 1 && setStep(step - 1)} disabled={step === 1}>

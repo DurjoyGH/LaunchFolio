@@ -2,7 +2,9 @@
 
 import { useState, useRef } from "react";
 import Button from "@/components/ui/Button";
-import type { FormData, Project } from "@/app/generate/page";
+import type { FormData, Project } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
+import { uploadApi } from "@/api/upload-api";
 
 const EMPTY_PROJECT: Project = {
   title: "",
@@ -13,12 +15,8 @@ const EMPTY_PROJECT: Project = {
   image: "",
 };
 
-interface Props {
-  formData: FormData;
-  update: (partial: Partial<FormData>) => void;
-}
-
-export default function ProjectsStep({ formData, update }: Props) {
+export default function ProjectsStep() {
+  const { formData, update } = useGenerateStore();
   const [editing, setEditing] = useState<Project | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [techInput, setTechInput] = useState("");
@@ -63,18 +61,8 @@ export default function ProjectsStep({ formData, update }: Props) {
     if (!file || !editing) return;
     setUploadingImage(true);
     try {
-      const token = localStorage.getItem("token");
-      const fd = new window.FormData();
-      fd.append("image", file);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/project`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setEditing({ ...editing, image: data.data.url });
-      }
+      const data = await uploadApi.uploadFile(file, "project", "image");
+      setEditing({ ...editing, image: data.data.url });
     } catch (err) {
       console.error("Project image upload failed:", err);
     }

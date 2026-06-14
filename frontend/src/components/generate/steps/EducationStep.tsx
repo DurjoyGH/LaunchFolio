@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
-import type { FormData, Education } from "@/app/generate/page";
+import type { FormData, Education } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
 
 const EMPTY_EDU: Education = {
   institution: "",
@@ -13,12 +14,8 @@ const EMPTY_EDU: Education = {
   description: "",
 };
 
-interface Props {
-  formData: FormData;
-  update: (partial: Partial<FormData>) => void;
-}
-
-export default function EducationStep({ formData, update }: Props) {
+export default function EducationStep() {
+  const { formData, update } = useGenerateStore();
   const [editing, setEditing] = useState<Education | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [isCurrent, setIsCurrent] = useState(false);
@@ -91,9 +88,9 @@ export default function EducationStep({ formData, update }: Props) {
 
             <input className="input" placeholder="Institution *" value={editing.institution} onChange={(e) => setEditing({ ...editing, institution: e.target.value })} />
             <input className="input" placeholder="Degree * (e.g. B.Sc)" value={editing.degree} onChange={(e) => setEditing({ ...editing, degree: e.target.value })} />
-            <input className="input" placeholder="Field of Study (e.g. Computer Science)" value={editing.field} onChange={(e) => setEditing({ ...editing, field: e.target.value })} />
+            <input className="input" placeholder="Field of Study (e.g. Mathematics)" value={editing.field} onChange={(e) => setEditing({ ...editing, field: e.target.value })} />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input className="input" placeholder="Start Year (e.g. 2020)" value={editing.startYear} onChange={(e) => setEditing({ ...editing, startYear: e.target.value })} />
               <input
                 className="input"

@@ -1,14 +1,11 @@
 import { useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import type { FormData, Service } from "@/app/generate/page";
+import type { FormData, Service } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
 
-interface Props {
-  formData: FormData;
-  update: (partial: Partial<FormData>) => void;
-}
-
-export default function ServicesStep({ formData, update }: Props) {
+export default function ServicesStep() {
+  const { formData, update } = useGenerateStore();
   const [adding, setAdding] = useState(false);
   const [current, setCurrent] = useState<Service>({ title: "", description: "", price: "" });
 

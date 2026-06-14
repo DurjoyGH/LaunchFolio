@@ -1,30 +1,18 @@
 import { useState, useRef } from "react";
 import Input from "@/components/ui/Input";
-import type { FormData } from "@/app/generate/page";
+import type { FormData } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
+import { uploadApi } from "@/api/upload-api";
 
-interface Props {
-  formData: FormData;
-  update: (partial: Partial<FormData>) => void;
-}
-
-export default function GalleryStep({ formData, update }: Props) {
+export default function GalleryStep() {
+  const { formData, update } = useGenerateStore();
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const [draftCaptions, setDraftCaptions] = useState<Record<number, string>>({});
   const [savedIndex, setSavedIndex] = useState<number | null>(null);
 
   const uploadFile = async (file: File) => {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-    const fd = new window.FormData();
-    fd.append("image", file);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/profile`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: fd,
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.message || "Upload failed");
+    const data = await uploadApi.uploadFile(file, "profile", "image");
     return data.data.url;
   };
 
@@ -34,11 +22,16 @@ export default function GalleryStep({ formData, update }: Props) {
     
     setUploading(true);
     try {
-      for (let i = 0; i < files.length; i++) {
-        const url = await uploadFile(files[i]);
-        if (url) {
-          update({ gallery: [...formData.gallery, { url, caption: "" }] });
-        }
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const url = await uploadFile(file);
+        return url ? { url, caption: "" } : null;
+      });
+      
+      const results = await Promise.all(uploadPromises);
+      const newItems = results.filter((item): item is { url: string; caption: string } => item !== null);
+      
+      if (newItems.length > 0) {
+        update({ gallery: [...formData.gallery, ...newItems] });
       }
     } catch (err) {
       console.error("Gallery upload failed:", err);

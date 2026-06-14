@@ -1,10 +1,7 @@
-import type { FormData } from "@/app/generate/page";
+import type { FormData } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
 import type { ReactNode } from "react";
 import Badge from "@/components/ui/Badge";
-
-interface Props {
-  formData: FormData;
-}
 
 const SECTION_LABELS: Record<string, string> = {
   gallery: "Gallery",
@@ -25,7 +22,8 @@ function Section({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-export default function ReviewStep({ formData }: Props) {
+export default function ReviewStep() {
+  const { formData } = useGenerateStore();
   const {
     name, title, bio, email, phone,
     education, projects, skills,

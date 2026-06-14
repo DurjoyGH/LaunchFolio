@@ -8,15 +8,8 @@ import toast from "react-hot-toast";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 
-type Status = "queued" | "generating" | "building" | "deploying" | "deployed" | "failed";
-
-interface Portfolio {
-  _id: string;
-  status: Status;
-  input: { name: string; title: string };
-  deployment: { deployUrl?: string };
-  createdAt: string;
-}
+import { useAuthStore } from "@/stores/auth.store";
+import { usePortfolioStore, Portfolio, Status } from "@/stores/portfolio.store";
 
 const statusVariant: Record<Status, "default" | "info" | "warning" | "success" | "error"> = {
   queued: "default",
@@ -29,57 +22,57 @@ const statusVariant: Record<Status, "default" | "info" | "warning" | "success" |
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [userName, setUserName] = useState("");
+  const { user, fetchUser, logout } = useAuthStore();
+  const { portfolios, loading, fetchPortfolios, deletePortfolio } = usePortfolioStore();
   const [deleteTarget, setDeleteTarget] = useState<Portfolio | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) { router.push("/auth/login"); return; }
+  const [isInitializing, setIsInitializing] = useState(true);
 
-    const fetchData = async () => {
+  useEffect(() => {
+    const initAuth = async () => {
       try {
-        const [meRes, portRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/portfolio`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" }),
-        ]);
-        const meData = await meRes.json();
-        const portData = await portRes.json();
-        if (meData.success) setUserName(meData.data.user.name);
-        if (portData.success) setPortfolios(portData.data.portfolios);
-      } catch { /* handled */ } finally {
-        setLoading(false);
+        await fetchUser();
+        await fetchPortfolios();
+      } finally {
+        setIsInitializing(false);
       }
     };
+    initAuth();
+  }, [fetchUser, fetchPortfolios]);
 
-    fetchData();
-  }, [router]);
+  useEffect(() => {
+    if (!isInitializing && !user) {
+      router.push("/auth/login");
+    }
+  }, [isInitializing, user, router]);
+
+  // If we are still initializing, or if we don't have a user (meaning we are about to redirect),
+  // we can just render nothing or a full screen loader.
+  if (isInitializing || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-bg-primary)" }}>
+        <div className="w-8 h-8 rounded-full border-4 border-white/20 border-t-white animate-spin"></div>
+      </div>
+    );
+  }
 
   const handleLogout = async () => {
-    localStorage.removeItem("token");
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, { method: "POST", credentials: "include" });
+    await logout();
     router.push("/");
   };
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
-    try {
-      const token = localStorage.getItem("token");
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/portfolio/${deleteTarget._id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setPortfolios((prev) => prev.filter((x) => x._id !== deleteTarget._id));
+    const success = await deletePortfolio(deleteTarget._id);
+    if (success) {
       toast.success("Portfolio deleted.");
-    } catch {
+    } else {
       toast.error("Failed to delete. Please try again.");
-    } finally {
-      setDeleting(false);
-      setDeleteTarget(null);
     }
+    setDeleting(false);
+    setDeleteTarget(null);
   };
 
   return (
@@ -92,7 +85,7 @@ export default function DashboardPage() {
           </Link>
           <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end">
             <span className="text-sm hidden sm:block" style={{ color: "var(--color-text-secondary)" }}>
-              {userName && `Hello, ${userName.split(" ")[0]} 👋`}
+              {user?.name && `Hello, ${user.name.split(" ")[0]} 👋`}
             </span>
               <Link href="/">
                 <Button variant="ghost" size="sm">Home</Button>

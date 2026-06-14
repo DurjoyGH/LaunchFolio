@@ -5,8 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-
-type PortfolioStatus = "queued" | "generating" | "building" | "deploying" | "deployed" | "failed";
+import { usePortfolioStore, Status as PortfolioStatus } from "@/stores/portfolio.store";
 
 const STATUS_CONFIG: Record<
   PortfolioStatus,
@@ -24,40 +23,36 @@ const STEPS_ORDER: PortfolioStatus[] = ["queued", "generating", "building", "dep
 
 export default function PortfolioStatusPage() {
   const { id } = useParams<{ id: string }>();
-  const [status, setStatus] = useState<PortfolioStatus>("queued");
-  const [deployUrl, setDeployUrl] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [checking, setChecking] = useState(true);
+  
+  const {
+    currentStatus: status,
+    currentDeployUrl: deployUrl,
+    currentErrorMsg: errorMsg,
+    pollStatus,
+    resetStatus
+  } = usePortfolioStore();
 
   useEffect(() => {
     if (!id) return;
-    const poll = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/${id}/status`,
-          { headers: { Authorization: `Bearer ${token}` }, credentials: "include" }
-        );
-        const data = await res.json();
-        if (data.success) {
-          setStatus(data.data.status);
-          setDeployUrl(data.data.deployUrl);
-          setErrorMsg(data.data.error);
-        }
-      } catch {
-        // keep polling
-      } finally {
-        setChecking(false);
+    
+    resetStatus();
+    
+    let interval: ReturnType<typeof setInterval>;
+    
+    const check = async () => {
+      const isDone = await pollStatus(id);
+      if (isDone && interval) {
+        clearInterval(interval);
       }
     };
-
-    poll();
-    const interval = setInterval(() => {
-      if (status !== "deployed" && status !== "failed") poll();
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, [id, status]);
+    
+    check();
+    interval = setInterval(check, 8000);
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [id, pollStatus, resetStatus]);
 
   const config = STATUS_CONFIG[status] || STATUS_CONFIG.queued;
   const currentIdx = STEPS_ORDER.indexOf(status);

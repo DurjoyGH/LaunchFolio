@@ -1,6 +1,7 @@
 "use client";
 
-import type { FormData } from "@/app/generate/page";
+import type { FormData } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
 import ServicesStep from "./ServicesStep";
 import TestimonialsStep from "./TestimonialsStep";
 import GalleryStep from "./GalleryStep";
@@ -8,11 +9,6 @@ import ProjectsStep from "./ProjectsStep";
 import { useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-
-interface Props {
-  formData: FormData;
-  update: (partial: Partial<FormData>) => void;
-}
 
 // ----- HOBBIES COMPONENT -----
 function HobbiesSection({ formData, update }: Props) {
@@ -190,7 +186,8 @@ function SkillsInlineSection({ formData, update }: Props) {
 }
 
 // ----- MAIN STEP COMPONENT -----
-export default function OptionalSectionsStep({ formData, update }: Props) {
+export default function OptionalSectionsStep() {
+  const { formData, update } = useGenerateStore();
   const selected = formData.selectedSections;
 
   return (

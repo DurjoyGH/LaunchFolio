@@ -1,6 +1,7 @@
 "use client";
 
-import type { FormData } from "@/app/generate/page";
+import type { FormData } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
 
 const OPTIONAL_SECTIONS = [
   { key: "gallery",       label: "Gallery",          emoji: "🖼️", desc: "Showcase photos of your work or memories" },
@@ -14,12 +15,8 @@ const OPTIONAL_SECTIONS = [
 
 const MAX_SECTIONS = 3;
 
-interface Props {
-  formData: FormData;
-  update: (partial: Partial<FormData>) => void;
-}
-
-export default function SectionPickerStep({ formData, update }: Props) {
+export default function SectionPickerStep() {
+  const { formData, update } = useGenerateStore();
   const selected = formData.selectedSections;
 
   const toggle = (key: string) => {

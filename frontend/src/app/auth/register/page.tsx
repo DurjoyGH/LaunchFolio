@@ -5,93 +5,45 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
+import { useAuthStore } from "@/stores/auth.store";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { register, loading, error } = useAuthStore();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!data.success) {
-        const msg = typeof data.message === "string" ? data.message.toLowerCase() : "";
-        if (msg.includes("exists") || msg.includes("already")) {
-          throw new Error("ACCOUNT_EXISTS");
-        }
-        throw new Error("REGISTER_FAILED");
-      }
-      if (data.data?.token) localStorage.setItem("token", data.data.token);
+    const success = await register(form.name, form.email, form.password);
+    if (success) {
       toast.success("Account created. Let's build your portfolio.");
       router.push("/generate");
-    } catch (err: unknown) {
-      const code = err instanceof Error ? err.message : "REGISTER_FAILED";
-      const message = code === "ACCOUNT_EXISTS"
-        ? "An account already exists with this email."
-        : "Internal server error. Please try again.";
-      setError(message);
-      toast.error(message);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12"
-        style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.14), rgba(0,0,0,0.82))" }}>
-        <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-hero)" }} />
-        <div className="relative z-10">
-          <Link href="/" className="flex items-center gap-2.5 mb-16">
-            <Image src="/logo.png" alt="LaunchFolio" width={280} height={70} className="h-14 w-auto object-contain scale-[1.75] origin-left" />
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
+      <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-hero)" }} />
+
+      <div className="relative z-10 w-full max-w-md">
+        <div className="mb-6">
+          <Link href="/" className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
+            &larr; Back to Home
           </Link>
-          <h2 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Your portfolio,<br /><span className="gradient-text">live in minutes.</span>
-          </h2>
-          <p style={{ color: "var(--color-text-secondary)" }}>
-            AI-powered. Component-based. Automatically deployed to Vercel.
-          </p>
         </div>
-        <div className="relative z-10 space-y-4">
-          {["AI layout & content generation", "Automatic GitHub + Vercel deploy", "Custom themes & color palettes"].map((text) => (
-            <div key={text} className="flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs"
-                style={{ background: "linear-gradient(135deg, #ffffff, #bdbdbd)", color: "#000000" }}>✓</div>
-              <span className="text-sm text-white">{text}</span>
-            </div>
-          ))}
+        <div className="flex justify-center mb-8">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image src="/logo.png" alt="LaunchFolio" width={280} height={70} className="h-14 w-auto object-contain scale-[1.75]" />
+          </Link>
         </div>
-      </div>
 
-      {/* Right panel */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12" style={{ background: "var(--color-bg-primary)" }}>
-        <div className="w-full max-w-md">
-          <div className="mb-6">
-            <Link href="/" className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-              &larr; Back to Home
-            </Link>
-          </div>
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-2.5 mb-8">
-            <Image src="/logo.png" alt="LaunchFolio" width={200} height={48} className="h-10 w-auto object-contain scale-[1.75] origin-left" />
-          </div>
-
-          <h1 className="text-3xl font-bold text-white mb-2">Create your account</h1>
-          <p className="mb-8" style={{ color: "var(--color-text-secondary)" }}>
+        <div className="card p-5 sm:p-8">
+          <h1 className="text-2xl font-bold text-white mb-1 text-center">Create your account</h1>
+          <p className="text-sm text-center mb-8" style={{ color: "var(--color-text-secondary)" }}>
             Already have an account?{" "}
             <Link href="/auth/login" className="font-medium" style={{ color: "var(--color-brand-primary)" }}>
               Sign in
@@ -137,17 +89,9 @@ export default function RegisterPage() {
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 3l18 18" />
-                      <path d="M10.5 10.5a2 2 0 0 0 3 3" />
-                      <path d="M9.4 5.6A10.1 10.1 0 0 1 12 5c5.1 0 9.4 3.1 11 7-0.7 1.7-1.8 3.2-3.1 4.4" />
-                      <path d="M6.9 6.9C5.1 8.2 3.7 10 3 12c1.6 3.9 5.9 7 11 7 1.1 0 2.2-0.1 3.2-0.4" />
-                    </svg>
+                    <EyeOff size={18} />
                   ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
+                    <Eye size={18} />
                   )}
                 </button>
               }

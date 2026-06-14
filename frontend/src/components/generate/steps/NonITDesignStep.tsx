@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import * as simpleIcons from "simple-icons";
-import type { FormData } from "@/app/generate/page";
+import type { FormData } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
 
 // ===== COLOR PALETTES =====
 const PALETTES = [
@@ -60,12 +61,8 @@ const renderSimpleIcon = (icon: SimpleIcon, size = 16) => (
   </svg>
 );
 
-interface Props {
-  formData: FormData;
-  update: (partial: Partial<FormData>) => void;
-}
-
-export default function NonITDesignStep({ formData, update }: Props) {
+export default function NonITDesignStep() {
+  const { formData, update } = useGenerateStore();
   const dp = formData.designPreferences;
   const [showSocial, setShowSocial] = useState(false);
   const [socialSearch, setSocialSearch] = useState("");
