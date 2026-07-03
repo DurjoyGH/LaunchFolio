@@ -1,0 +1,64 @@
+import { useState } from "react";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
+import type { FormData, Testimonial } from "@/stores/generate.store";
+import { useGenerateStore } from "@/stores/generate.store";
+
+export default function TestimonialsStep() {
+  const { formData, update } = useGenerateStore();
+  const [adding, setAdding] = useState(false);
+  const [current, setCurrent] = useState<Testimonial>({ name: "", role: "", text: "" });
+
+  const handleAdd = () => {
+    if (!current.name.trim() || !current.text.trim()) return;
+    update({ testimonials: [...formData.testimonials, current] });
+    setCurrent({ name: "", role: "", text: "" });
+    setAdding(false);
+  };
+
+  const removeTestimonial = (index: number) => {
+    update({ testimonials: formData.testimonials.filter((_, i) => i !== index) });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        {formData.testimonials.map((t, i) => (
+          <div key={i} className="p-4 rounded-xl border flex items-start justify-between gap-4 group" style={{ borderColor: "var(--color-border-subtle)", background: "var(--color-bg-card)" }}>
+            <div>
+              <h3 className="font-bold text-white">{t.name} <span className="text-sm font-normal text-white/50">({t.role})</span></h3>
+              <p className="text-sm mt-2 italic" style={{ color: "var(--color-text-secondary)" }}>&quot;{t.text}&quot;</p>
+            </div>
+            <button onClick={() => removeTestimonial(i)} className="text-white/70 hover:text-white transition-colors opacity-0 group-hover:opacity-100">
+              Remove
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {adding ? (
+        <div className="p-4 rounded-xl border space-y-4" style={{ borderColor: "var(--color-border-subtle)" }}>
+          <Input label="Client Name *" value={current.name} onChange={(e) => setCurrent({ ...current, name: e.target.value })} placeholder="e.g., Jane Doe" />
+          <Input label="Role / Company (Optional)" value={current.role} onChange={(e) => setCurrent({ ...current, role: e.target.value })} placeholder="e.g., CEO at Startup" />
+          <div>
+            <label className="block text-sm font-medium text-white/70 mb-1">Testimonial Text *</label>
+            <textarea
+              className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 outline-none focus:border-white/30"
+              rows={4}
+              value={current.text}
+              onChange={(e) => setCurrent({ ...current, text: e.target.value })}
+            />
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="ghost" size="sm" onClick={() => setAdding(false)}>Cancel</Button>
+            <Button size="sm" onClick={handleAdd}>Add Testimonial</Button>
+          </div>
+        </div>
+      ) : (
+        <Button variant="ghost" className="w-full border-dashed" onClick={() => setAdding(true)}>
+          + Add Testimonial
+        </Button>
+      )}
+    </div>
+  );
+}
